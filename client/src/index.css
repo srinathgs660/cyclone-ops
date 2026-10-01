@@ -1,0 +1,490 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    min-height: 100%;
+    width: 100%;
+  }
+
+  body {
+    min-height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #0B1120;
+    color: #F8FAFC;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  #root {
+    min-height: 100vh;
+    width: 100%;
+  }
+}
+
+/* Light Theme System Base (Soft Off-White / Crisp Slate Canvas) */
+.light-theme body,
+.light-theme {
+  background-color: #F1F5F9 !important;
+  color: #0F172A !important;
+}
+
+/* Page & Container Backgrounds */
+.light-theme .bg-\[\#0B1120\],
+.light-theme [class*="bg-[#0B1120]"] {
+  background-color: #F1F5F9 !important;
+}
+
+/* Sidebar & Header Bars */
+.light-theme aside,
+.light-theme .bg-\[\#0F172A\],
+.light-theme .bg-\[\#0F172A\]\/90,
+.light-theme [class*="bg-[#0F172A]"] {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+
+.light-theme header {
+  background-color: #FFFFFF !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.light-theme header span.text-white,
+.light-theme header strong.text-white,
+.light-theme header h1.text-white {
+  color: #0F172A !important;
+}
+
+.light-theme header .bg-slate-800,
+.light-theme header .bg-slate-800\/80 {
+  background-color: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+.light-theme header .text-cyan-400 {
+  color: #0284C7 !important;
+  font-weight: 700 !important;
+}
+
+.light-theme header .text-slate-200,
+.light-theme header .text-slate-300 {
+  color: #1E293B !important;
+}
+
+.light-theme header .text-slate-400,
+.light-theme header .text-slate-500 {
+  color: #64748B !important;
+}
+
+/* Sidebar NavLink - Hover & Active Styling (fixes grey box & illegible text) */
+.light-theme aside nav a,
+.light-theme aside a {
+  color: #475569 !important;
+}
+
+.light-theme aside a:hover,
+.light-theme aside .hover\:bg-slate-800\/80:hover,
+.light-theme aside .hover\:bg-slate-800:hover {
+  background-color: #F1F5F9 !important;
+  color: #0284C7 !important;
+}
+
+.light-theme aside a:hover span,
+.light-theme aside a:hover svg {
+  color: #0284C7 !important;
+}
+
+.light-theme aside a.bg-cyan-500\/15 {
+  background-color: #E0F2FE !important;
+  color: #0369A1 !important;
+  border-color: #7DD3FC !important;
+}
+
+.light-theme aside a.bg-cyan-500\/15 span,
+.light-theme aside a.bg-cyan-500\/15 svg {
+  color: #0284C7 !important;
+}
+
+/* Main Cards, KPI Boxes & Telemetry Panels */
+.light-theme .light-adapt-box,
+.light-theme .landing-card,
+.light-theme .bg-\[\#131D31\],
+.light-theme .bg-\[\#131D31\]\/80,
+.light-theme .bg-\[\#131D31\]\/90,
+.light-theme .bg-\[\#131D31\]\/95,
+.light-theme [class*="bg-[#131D31]"],
+.light-theme .bg-\[\#15233D\],
+.light-theme [class*="bg-[#15233D]"] {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Sub-panels, Nested Cards & Metric Pods (e.g., Wind, Baro, Incidents) */
+.light-theme .bg-slate-900,
+.light-theme .bg-slate-900\/60,
+.light-theme .bg-slate-900\/80,
+.light-theme .bg-slate-900\/90,
+.light-theme [class*="bg-slate-900"] {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+
+.light-theme .bg-slate-800,
+.light-theme .bg-slate-800\/60,
+.light-theme .bg-slate-800\/80,
+.light-theme .bg-slate-800\/90,
+.light-theme [class*="bg-slate-800"] {
+  background-color: #F1F5F9 !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* High-Contrast Crisp Text Hierarchy in Light Mode */
+.light-theme .text-white,
+.light-theme [class*="text-white"] {
+  color: #0F172A !important;
+}
+
+.light-theme .text-slate-100,
+.light-theme .text-slate-200,
+.light-theme [class*="text-slate-100"],
+.light-theme [class*="text-slate-200"] {
+  color: #1E293B !important;
+}
+
+.light-theme .text-slate-300,
+.light-theme [class*="text-slate-300"] {
+  color: #334155 !important;
+}
+
+.light-theme .text-slate-400,
+.light-theme [class*="text-slate-400"] {
+  color: #475569 !important;
+}
+
+.light-theme .text-slate-500,
+.light-theme [class*="text-slate-500"] {
+  color: #64748B !important;
+}
+
+/* Universal Light Mode Borders */
+.light-theme .border-slate-800,
+.light-theme .border-slate-800\/80,
+.light-theme [class*="border-slate-800"] {
+  border-color: #E2E8F0 !important;
+}
+
+.light-theme .border-slate-700,
+.light-theme .border-slate-700\/80,
+.light-theme .border-slate-700\/60,
+.light-theme .border-slate-700\/50,
+.light-theme [class*="border-slate-700"] {
+  border-color: #CBD5E1 !important;
+}
+
+/* Accent Badges with Readable Contrast */
+.light-theme .bg-rose-500\/30,
+.light-theme .bg-rose-500\/20,
+.light-theme .bg-rose-500\/10,
+.light-theme [class*="bg-rose-500/"] {
+  background-color: #FEE2E2 !important;
+  color: #B91C1C !important;
+  border-color: #FCA5A5 !important;
+}
+.light-theme .text-rose-200,
+.light-theme .text-rose-300,
+.light-theme .text-rose-400,
+.light-theme [class*="text-rose-"] {
+  color: #B91C1C !important;
+  font-weight: 600;
+}
+
+.light-theme .bg-blue-500\/30,
+.light-theme .bg-blue-500\/20,
+.light-theme .bg-blue-500\/10,
+.light-theme [class*="bg-blue-500/"] {
+  background-color: #DBEAFE !important;
+  color: #1D4ED8 !important;
+  border-color: #93C5FD !important;
+}
+.light-theme .text-blue-200,
+.light-theme .text-blue-300,
+.light-theme .text-blue-400,
+.light-theme [class*="text-blue-"] {
+  color: #1D4ED8 !important;
+  font-weight: 600;
+}
+
+.light-theme .bg-emerald-500\/30,
+.light-theme .bg-emerald-500\/20,
+.light-theme .bg-emerald-500\/10,
+.light-theme [class*="bg-emerald-500/"] {
+  background-color: #D1FAE5 !important;
+  color: #047857 !important;
+  border-color: #6EE7B7 !important;
+}
+.light-theme .text-emerald-200,
+.light-theme .text-emerald-300,
+.light-theme .text-emerald-400,
+.light-theme [class*="text-emerald-"] {
+  color: #047857 !important;
+  font-weight: 600;
+}
+
+.light-theme .bg-cyan-500\/30,
+.light-theme .bg-cyan-500\/20,
+.light-theme .bg-cyan-500\/15,
+.light-theme .bg-cyan-500\/10,
+.light-theme [class*="bg-cyan-500/"] {
+  background-color: #E0F2FE !important;
+  color: #0369A1 !important;
+  border-color: #7DD3FC !important;
+}
+.light-theme .text-cyan-200,
+.light-theme .text-cyan-300,
+.light-theme .text-cyan-400,
+.light-theme [class*="text-cyan-"] {
+  color: #0284C7 !important;
+  font-weight: 600;
+}
+
+.light-theme .bg-amber-500\/40,
+.light-theme .bg-amber-500\/30,
+.light-theme .bg-amber-500\/20,
+.light-theme .bg-amber-500\/10,
+.light-theme [class*="bg-amber-500/"] {
+  background-color: #FEF3C7 !important;
+  color: #92400E !important;
+  border-color: #FCD34D !important;
+}
+.light-theme .text-amber-100,
+.light-theme .text-amber-200,
+.light-theme .text-amber-300,
+.light-theme .text-amber-400,
+.light-theme [class*="text-amber-"] {
+  color: #92400E !important;
+  font-weight: 600;
+}
+
+.light-theme .bg-purple-500\/30,
+.light-theme .bg-purple-500\/20,
+.light-theme .bg-purple-500\/10,
+.light-theme [class*="bg-purple-500/"] {
+  background-color: #EDE9FE !important;
+  color: #6D28D9 !important;
+  border-color: #C4B5FD !important;
+}
+.light-theme .text-purple-200,
+.light-theme .text-purple-300,
+.light-theme .text-purple-400,
+.light-theme [class*="text-purple-"] {
+  color: #6D28D9 !important;
+  font-weight: 600;
+}
+
+/* Banner Gradients & Hero Headers Overrides for Light Mode */
+.light-theme .from-\[\#0F172A\],
+.light-theme .via-\[\#131D31\],
+.light-theme .to-\[\#0F172A\],
+.light-theme .from-\[\#131D31\],
+.light-theme .via-\[\#162544\],
+.light-theme .to-\[\#131D31\],
+.light-theme .from-rose-950\/80,
+.light-theme [class*="from-rose-950"] {
+  --tw-gradient-from: #FFFFFF !important;
+  --tw-gradient-via: #F8FAFC !important;
+  --tw-gradient-to: #FFFFFF !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #F8FAFC, var(--tw-gradient-to) !important;
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+
+.light-theme .bg-gradient-to-r,
+.light-theme .bg-gradient-to-b {
+  background-image: none !important;
+  background-color: #FFFFFF !important;
+}
+
+/* Specific Page Overrides: Citizen Emergency Portal Hero Card */
+.light-theme .rounded-2xl.border-rose-500\/40,
+.light-theme .border-rose-500\/40.shadow-2xl {
+  background: #FFFFFF !important;
+  border-color: #FECDD3 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Specific Page Overrides: Impact Assessment Risk Cards (Critical, Very High, High) */
+.light-theme .bg-rose-950\/20,
+.light-theme [class*="bg-rose-950"] {
+  background-color: #FFF1F2 !important;
+  border-color: #FECDD3 !important;
+}
+.light-theme .text-rose-300,
+.light-theme .text-rose-400 {
+  color: #BE123C !important;
+  font-weight: 700 !important;
+}
+
+.light-theme .bg-orange-950\/20,
+.light-theme [class*="bg-orange-950"] {
+  background-color: #FFF7ED !important;
+  border-color: #FED7AA !important;
+}
+.light-theme .text-orange-300,
+.light-theme .text-orange-400 {
+  color: #C2410C !important;
+  font-weight: 700 !important;
+}
+
+.light-theme .bg-amber-950\/20,
+.light-theme [class*="bg-amber-950"] {
+  background-color: #FFFBEB !important;
+  border-color: #FDE68A !important;
+}
+.light-theme .text-amber-300,
+.light-theme .text-amber-400 {
+  color: #B45309 !important;
+  font-weight: 700 !important;
+}
+
+/* Specific Page Overrides: Relief Coordination AI Recommendations Card */
+.light-theme .border-cyan-500\/30.shadow-xl {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+
+.light-theme .from-\[\#1E293B\] {
+  --tw-gradient-from: #F8FAFC !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #F1F5F9, var(--tw-gradient-to, #F8FAFC) !important;
+}
+
+/* Input Fields in Light Mode */
+.light-theme input,
+.light-theme select,
+.light-theme textarea {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+.light-theme input::placeholder,
+.light-theme textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+/* Map tiles in light mode */
+.light-theme .dark-map-tiles {
+  filter: contrast(0.95) brightness(0.98) !important;
+}
+
+.light-theme .leaflet-container {
+  background-color: #E2E8F0 !important;
+}
+
+.light-theme .leaflet-popup-content-wrapper,
+.light-theme .leaflet-popup-tip {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 1px solid #CBD5E1 !important;
+}
+
+/* Custom modern scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 #0B1120;
+}
+
+.light-theme, .light-theme * {
+  scrollbar-color: #CBD5E1 #F1F5F9;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0B1120;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #06B6D4;
+}
+
+.light-theme ::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+.light-theme ::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+.light-theme ::-webkit-scrollbar-thumb:hover {
+  background: #0284C7;
+}
+
+/* Leaflet dark theme styling */
+.leaflet-container {
+  background-color: #0B1120 !important;
+  font-family: inherit;
+  width: 100%;
+  height: 100%;
+}
+
+.dark-map-tiles {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+.tactical-dark-tiles {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.25) brightness(0.75) !important;
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background: #1E293B !important;
+  color: #F8FAFC !important;
+  border: 1px solid #334155;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px;
+  line-height: 1.4;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  color: #94A3B8 !important;
+  padding: 6px 8px 0 0;
+}
+
+.leaflet-container a.leaflet-popup-close-button:hover {
+  color: #06B6D4 !important;
+}
+
+/* Cyclone pulse animation */
+@keyframes cyclone-radar {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+.cyclone-pulse {
+  animation: cyclone-radar 2.5s infinite ease-in-out;
+}
