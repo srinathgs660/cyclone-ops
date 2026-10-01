@@ -2,7 +2,11 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "http://localhost:5000/api/$1"
+      "destination": "https://cyclone-ops.onrender.com/api/$1"
+    },
+    {
+      "source": "/socket.io/(.*)",
+      "destination": "https://cyclone-ops.onrender.com/socket.io/$1"
     },
     {
       "source": "/(.*)",

@@ -16,7 +16,9 @@ export const SocketProvider = ({ children }) => {
   // Primary Gateway URL
   const socketUrl = import.meta.env.VITE_API_URL
     ? import.meta.env.VITE_API_URL.replace(/\/+$/, '')
-    : (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5000' : '/');
+    : (typeof window !== 'undefined' && window.location.hostname === 'localhost'
+        ? 'http://localhost:5000'
+        : 'https://cyclone-ops.onrender.com');
 
   const checkHealth = useCallback(async () => {
     try {
