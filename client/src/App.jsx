@@ -20,7 +20,23 @@ import ReportsPage from './pages/ReportsPage';
 import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/LoginPage';
 
-const ProtectedRoute = ({ children, roleRequired }) => {
+const getDefaultDashboardForRole = (role) => {
+  switch (role) {
+    case 'citizen':
+    case 'volunteer':
+      return '/dashboard/citizen';
+    case 'responder':
+      return '/dashboard/incidents';
+    case 'coordinator':
+      return '/dashboard/relief';
+    case 'officer':
+    case 'admin':
+    default:
+      return '/dashboard';
+  }
+};
+
+const ProtectedRoute = ({ children, roleRequired, allowedRoles }) => {
   const { user, loading } = useAuth();
   if (loading) {
     return (
@@ -31,7 +47,10 @@ const ProtectedRoute = ({ children, roleRequired }) => {
   }
   if (!user) return <Navigate to="/login" replace />;
   if (roleRequired && user.role !== roleRequired) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={getDefaultDashboardForRole(user.role)} replace />;
+  }
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to={getDefaultDashboardForRole(user.role)} replace />;
   }
   return children;
 };
@@ -58,22 +77,78 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<CommandCenter />} />
+        <Route 
+          index 
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'officer', 'responder', 'coordinator']}>
+              <CommandCenter />
+            </ProtectedRoute>
+          } 
+        />
         <Route path="cyclones" element={<CycloneTracker />} />
-        <Route path="risk" element={<ImpactAssessment />} />
+        <Route 
+          path="risk" 
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'officer']}>
+              <ImpactAssessment />
+            </ProtectedRoute>
+          } 
+        />
         <Route path="evacuation" element={<EvacuationPlanning />} />
         <Route path="shelters" element={<SheltersManagement />} />
-        <Route path="incidents" element={<IncidentBoard />} />
-        <Route path="teams" element={<ResponseTeamsPage />} />
-        <Route path="relief" element={<ReliefCoordination />} />
+        <Route 
+          path="incidents" 
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'officer', 'responder']}>
+              <IncidentBoard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="teams" 
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'officer', 'responder']}>
+              <ResponseTeamsPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="relief" 
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'officer', 'coordinator']}>
+              <ReliefCoordination />
+            </ProtectedRoute>
+          } 
+        />
         <Route path="citizen" element={<CitizenPortal />} />
-        <Route path="alerts" element={<AlertCenter />} />
-        <Route path="analytics" element={<AnalyticsForecast />} />
-        <Route path="reports" element={<ReportsPage />} />
+        <Route 
+          path="alerts" 
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'officer']}>
+              <AlertCenter />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="analytics" 
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'officer']}>
+              <AnalyticsForecast />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="reports" 
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'officer', 'coordinator']}>
+              <ReportsPage />
+            </ProtectedRoute>
+          } 
+        />
         <Route
           path="admin"
           element={
-            <ProtectedRoute roleRequired="admin">
+            <ProtectedRoute allowedRoles={['admin']}>
               <AdminPage />
             </ProtectedRoute>
           }

@@ -16,15 +16,15 @@ const KpiCard = ({ title, value, delta, status, icon: Icon, color = 'cyan', onCl
   return (
     <div
       onClick={onClick}
-      className={`group relative overflow-hidden rounded-xl border border-slate-800 bg-[#131D31]/90 p-4 shadow-lg backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-cyan-900/20 ${onClick ? 'cursor-pointer hover:border-slate-600' : ''}`}
+      className={`group relative overflow-hidden rounded-xl border border-slate-800 bg-[#131D31]/90 p-3.5 sm:p-4 shadow-lg backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-cyan-900/20 min-w-0 ${onClick ? 'cursor-pointer hover:border-slate-600' : ''}`}
     >
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{title}</p>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-bold tracking-tight text-white font-mono">{value}</span>
+      <div className="flex items-start justify-between gap-2 min-w-0">
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-400 truncate">{title}</p>
+          <div className="mt-1.5 flex flex-wrap items-baseline gap-1.5 min-w-0">
+            <span className="text-xl sm:text-2xl font-bold tracking-tight text-white font-mono">{value}</span>
             {status && (
-              <span className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <span className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
                 {status}
               </span>
@@ -32,25 +32,25 @@ const KpiCard = ({ title, value, delta, status, icon: Icon, color = 'cyan', onCl
           </div>
         </div>
         {Icon && (
-          <div className={`rounded-lg p-2.5 border ${colorMap[color] || colorMap.cyan}`}>
-            <Icon className="h-5 w-5" />
+          <div className={`rounded-lg p-2 sm:p-2.5 border shrink-0 ${colorMap[color] || colorMap.cyan}`}>
+            <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
           </div>
         )}
       </div>
 
-      <div className="mt-3 flex items-center justify-between border-t border-slate-800/80 pt-2 text-xs">
+      <div className="mt-2.5 flex items-center justify-between border-t border-slate-800/80 pt-2 text-xs min-w-0">
         {delta ? (
-          <span className={`flex items-center gap-1 font-medium ${isPositiveDelta ? 'text-amber-400' : 'text-emerald-400'}`}>
-            {isPositiveDelta ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
-            {delta}
+          <span className={`flex items-center gap-1 font-medium truncate ${isPositiveDelta ? 'text-amber-400' : 'text-emerald-400'}`}>
+            {isPositiveDelta ? <TrendingUp className="h-3.5 w-3.5 shrink-0" /> : <TrendingDown className="h-3.5 w-3.5 shrink-0" />}
+            <span className="truncate">{delta}</span>
           </span>
         ) : (
-          <span className="text-slate-500">Real-time Telemetry</span>
+          <span className="text-slate-500 truncate text-[11px]">Real-time Telemetry</span>
         )}
 
         {onClick && (
-          <span className="flex items-center gap-1 text-[11px] text-cyan-400 opacity-0 transition-opacity group-hover:opacity-100">
-            View details <ArrowRight className="h-3 w-3" />
+          <span className="flex items-center gap-1 text-[11px] text-cyan-400 opacity-0 transition-opacity group-hover:opacity-100 shrink-0">
+            View <ArrowRight className="h-3 w-3" />
           </span>
         )}
       </div>

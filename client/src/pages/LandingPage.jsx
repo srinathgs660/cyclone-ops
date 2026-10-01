@@ -12,32 +12,28 @@ import { Sun, Moon } from 'lucide-react';
 const LandingPage = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme, isLight } = useTheme();
-  const { user, quickLogin } = useAuth();
+  const { user } = useAuth();
 
   const handleAccessSystem = () => {
     if (user) {
-      navigate(user.role === 'citizen' ? '/dashboard/citizen' : '/dashboard');
+      if (user.role === 'citizen' || user.role === 'volunteer') {
+        navigate('/dashboard/citizen');
+      } else if (user.role === 'coordinator') {
+        navigate('/dashboard/relief');
+      } else if (user.role === 'responder') {
+        navigate('/dashboard/incidents');
+      } else {
+        navigate('/dashboard');
+      }
     } else {
       navigate('/login');
     }
   };
 
-  const handleCitizenPortal = async () => {
-    if (!user || user.role !== 'citizen') {
-      try {
-        await quickLogin('citizen');
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    navigate('/dashboard/citizen');
-  };
-
-  const handleQuickRoleSelect = async (role) => {
-    try {
-      await quickLogin(role);
-      navigate(role === 'citizen' ? '/dashboard/citizen' : '/dashboard');
-    } catch (err) {
+  const handleCitizenPortal = () => {
+    if (user) {
+      navigate('/dashboard/citizen');
+    } else {
       navigate('/login');
     }
   };
@@ -262,17 +258,17 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Quick Role-Based Evaluation Sandbox */}
+      {/* Multi-Role Operational Architecture */}
       <section className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-800/80">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <span className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest block">
-            Pre-Seeded Multi-Role Simulation
+            Role-Based Access Control Architecture
           </span>
           <h2 className="text-2xl sm:text-3xl font-extrabold uppercase font-mono text-white mt-2">
-            Instant 1-Click Role Access
+            6 Specialized Stakeholder Roles
           </h2>
           <p className="mt-2 text-xs text-slate-400">
-            Sign in instantly to evaluate how each stakeholder interacts with the platform.
+            Each operational stakeholder is provisioned with tailored emergency workflows and strictly segmented telemetry.
           </p>
         </div>
 
@@ -280,7 +276,7 @@ const LandingPage = () => {
           {quickRoles.map((r, i) => (
             <div
               key={i}
-              onClick={() => handleQuickRoleSelect(r.role)}
+              onClick={() => navigate('/login')}
               className="cursor-pointer rounded-xl border border-slate-800 bg-[#131D31]/90 p-4 shadow-lg transition hover:border-cyan-500/50 hover:bg-slate-800/80 flex items-center justify-between"
             >
               <div>

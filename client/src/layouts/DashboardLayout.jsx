@@ -27,7 +27,7 @@ const DashboardLayout = () => {
     });
   };
 
-  const { user, logout, quickLogin } = useAuth();
+  const { user, logout } = useAuth();
   const { 
     connected, 
     lastUpdated, 
@@ -41,51 +41,61 @@ const DashboardLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const navSections = [
+  const userRole = user?.role || 'citizen';
+
+  const allNavSections = [
     {
       title: 'DISASTER OPS',
       items: [
-        { label: 'Command Center', to: '/dashboard', icon: Compass },
-        { label: 'Cyclone Tracking', to: '/dashboard/cyclones', icon: Radio },
-        { label: 'Impact Assessment', to: '/dashboard/risk', icon: ShieldAlert },
+        { label: 'Command Center', to: '/dashboard', icon: Compass, allowedRoles: ['admin', 'officer', 'responder', 'coordinator'] },
+        { label: 'Cyclone Tracking', to: '/dashboard/cyclones', icon: Radio, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
+        { label: 'Impact Assessment', to: '/dashboard/risk', icon: ShieldAlert, allowedRoles: ['admin', 'officer'] },
       ]
     },
     {
-      title: 'RESPONSE',
+      title: 'RESPONSE & SAFETY',
       items: [
-        { label: 'Evacuation Planning', to: '/dashboard/evacuation', icon: NavigationIcon },
-        { label: 'Shelters Management', to: '/dashboard/shelters', icon: Home },
-        { label: 'Incident Triage', to: '/dashboard/incidents', icon: AlertTriangle },
-        { label: 'Response Teams', to: '/dashboard/teams', icon: LifeBuoy },
+        { label: 'Evacuation Planning', to: '/dashboard/evacuation', icon: NavigationIcon, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
+        { label: 'Shelters Management', to: '/dashboard/shelters', icon: Home, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
+        { label: 'Incident Triage', to: '/dashboard/incidents', icon: AlertTriangle, allowedRoles: ['admin', 'officer', 'responder'] },
+        { label: 'Response Teams', to: '/dashboard/teams', icon: LifeBuoy, allowedRoles: ['admin', 'officer', 'responder'] },
       ]
     },
     {
-      title: 'RELIEF',
+      title: 'RELIEF & LOGISTICS',
       items: [
-        { label: 'Relief & Inventory', to: '/dashboard/relief', icon: Truck },
+        { label: 'Relief & Inventory', to: '/dashboard/relief', icon: Truck, allowedRoles: ['admin', 'officer', 'coordinator'] },
       ]
     },
     {
       title: 'COMMUNICATION',
       items: [
-        { label: 'Emergency Alerts', to: '/dashboard/alerts', icon: Bell },
-        { label: 'Citizen SOS Portal', to: '/dashboard/citizen', icon: PhoneCall, highlight: true },
+        { label: 'Emergency Alerts', to: '/dashboard/alerts', icon: Bell, allowedRoles: ['admin', 'officer'] },
+        { label: 'Citizen SOS Portal', to: '/dashboard/citizen', icon: PhoneCall, highlight: true, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
       ]
     },
     {
       title: 'ANALYTICS',
       items: [
-        { label: 'Analytics & Forecast', to: '/dashboard/analytics', icon: BarChart3 },
-        { label: 'Operational Reports', to: '/dashboard/reports', icon: FileText },
+        { label: 'Analytics & Forecast', to: '/dashboard/analytics', icon: BarChart3, allowedRoles: ['admin', 'officer'] },
+        { label: 'Operational Reports', to: '/dashboard/reports', icon: FileText, allowedRoles: ['admin', 'officer', 'coordinator'] },
       ]
     },
     {
-      title: 'ADMIN',
+      title: 'ADMINISTRATION',
       items: [
-        { label: 'Administration', to: '/dashboard/admin', icon: Users, roleRequired: 'admin' },
+        { label: 'Administration & Staff', to: '/dashboard/admin', icon: Users, allowedRoles: ['admin'] },
       ]
     }
   ];
+
+  // Strictly filter sections and items according to the logged-in user's role
+  const navSections = allNavSections
+    .map(sec => ({
+      ...sec,
+      items: sec.items.filter(item => item.allowedRoles.includes(userRole))
+    }))
+    .filter(sec => sec.items.length > 0);
 
   function NavigationIcon(props) {
     return (
@@ -94,6 +104,48 @@ const DashboardLayout = () => {
       </svg>
     );
   }
+
+  const getRoleBadgeStyle = (role) => {
+    switch (role) {
+      case 'admin':
+        return 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+      case 'officer':
+        return 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40';
+      case 'responder':
+        return 'bg-rose-500/20 text-rose-300 border-rose-500/40';
+      case 'coordinator':
+        return 'bg-orange-500/20 text-orange-300 border-orange-500/40';
+      case 'volunteer':
+        return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
+      case 'citizen':
+      default:
+        return 'bg-slate-700/60 text-slate-300 border-slate-600';
+    }
+  };
+
+  const getRoleDisplayName = (role) => {
+    switch (role) {
+      case 'admin': return 'Chief Commander';
+      case 'officer': return 'Operations Lead';
+      case 'responder': return 'NDRF Responder';
+      case 'coordinator': return 'Logistics Lead';
+      case 'volunteer': return 'Volunteer';
+      case 'citizen': return 'Citizen';
+      default: return 'User';
+    }
+  };
+
+  const handleHomeNavigation = () => {
+    if (userRole === 'citizen' || userRole === 'volunteer') {
+      navigate('/dashboard/citizen');
+    } else if (userRole === 'coordinator') {
+      navigate('/dashboard/relief');
+    } else if (userRole === 'responder') {
+      navigate('/dashboard/incidents');
+    } else {
+      navigate('/dashboard');
+    }
+  };
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[#0B1120] text-slate-100 font-['Plus_Jakarta_Sans',sans-serif]">
@@ -106,9 +158,9 @@ const DashboardLayout = () => {
         {/* Brand Header */}
         <div className="flex h-16 items-center justify-between border-b border-slate-800 px-4">
           <div 
-            onClick={() => navigate('/dashboard')}
+            onClick={handleHomeNavigation}
             className="flex items-center gap-3 overflow-hidden cursor-pointer hover:opacity-90 transition"
-            title="Go to Command Center"
+            title="Go to Home"
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl overflow-hidden p-0.5 border border-cyan-500/30 bg-slate-900 shadow-lg shadow-cyan-900/30">
               <img src="/logo.png" alt="CycloneCommand Logo" className="h-full w-full object-contain rounded-lg" />
@@ -116,7 +168,7 @@ const DashboardLayout = () => {
             {!collapsed && (
               <div className="overflow-hidden">
                 <h1 className="text-sm font-extrabold tracking-wider text-white uppercase font-mono">CYCLONE OPS</h1>
-                <p className="text-[10px] text-cyan-400 font-mono">EOC COMMAND CENTER</p>
+                <p className="text-[10px] text-cyan-400 font-mono uppercase">{getRoleDisplayName(userRole)}</p>
               </div>
             )}
           </div>
@@ -130,102 +182,152 @@ const DashboardLayout = () => {
 
         {/* Navigation links */}
         <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
-          {navSections.map((sec, sIdx) => {
-            const filteredItems = sec.items.filter(
-              item => !item.roleRequired || user?.role === item.roleRequired
-            );
-            if (filteredItems.length === 0) return null;
+          {navSections.map((sec, sIdx) => (
+            <div key={sIdx}>
+              {!collapsed && (
+                <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono">
+                  {sec.title}
+                </p>
+              )}
+              <div className="space-y-1">
+                {sec.items.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname === item.to;
 
-            return (
-              <div key={sIdx}>
-                {!collapsed && (
-                  <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono">
-                    {sec.title}
-                  </p>
-                )}
-                <div className="space-y-1">
-                  {filteredItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = location.pathname === item.to;
-
-                    return (
-                      <NavLink
-                        key={item.to}
-                        to={item.to}
-                        title={collapsed ? item.label : ''}
-                        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
-                          isActive
-                            ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-md shadow-cyan-950/20'
-                            : item.highlight
-                            ? 'bg-rose-500/10 text-rose-300 border border-rose-500/20 hover:bg-rose-500/20'
-                            : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-200'
-                        }`}
-                      >
-                        <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-cyan-400' : ''}`} />
-                        {!collapsed && <span>{item.label}</span>}
-                      </NavLink>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Sidebar Footer: Redesigned Quick Demo Role Switcher */}
-        <div className="border-t border-slate-700/80 p-3 bg-slate-900/90 light-adapt-box">
-          {!collapsed ? (
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] uppercase font-bold tracking-wider text-cyan-400 font-mono">Demo Role Switcher</span>
-                <span className="text-[9px] font-mono text-slate-400">1-Click</span>
-              </div>
-              <div className="grid grid-cols-3 gap-1.5 text-[10px]">
-                {[
-                  { role: 'admin', label: 'Admin', icon: '👑' },
-                  { role: 'officer', label: 'Officer', icon: '🎖️' },
-                  { role: 'responder', label: 'NDRF', icon: '🚑' },
-                  { role: 'coordinator', label: 'Logistics', icon: '📦' },
-                  { role: 'volunteer', label: 'Volunteer', icon: '🤝' },
-                  { role: 'citizen', label: 'Citizen', icon: '👤' }
-                ].map((r) => {
-                  const isActive = user?.role === r.role;
                   return (
-                    <button
-                      key={r.role}
-                      onClick={async () => {
-                        await quickLogin(r.role);
-                        if (r.role === 'citizen') {
-                          navigate('/dashboard/citizen');
-                        }
-                      }}
-                      className={`flex flex-col items-center justify-center rounded-lg py-1.5 px-1 font-bold transition shadow-sm border ${
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      title={collapsed ? item.label : ''}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
                         isActive
-                          ? 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white border-cyan-400 ring-1 ring-cyan-400/50'
-                          : 'bg-slate-800/90 text-slate-300 border-slate-700/70 hover:bg-slate-700 hover:text-white'
+                          ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-md shadow-cyan-950/20'
+                          : item.highlight
+                          ? 'bg-rose-500/10 text-rose-300 border border-rose-500/20 hover:bg-rose-500/20'
+                          : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-200'
                       }`}
-                      title={`Switch to ${r.label} mode`}
                     >
-                      <span className="text-xs mb-0.5">{r.icon}</span>
-                      <span className="text-[9px] uppercase tracking-tight">{r.label}</span>
-                    </button>
+                      <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-cyan-400' : ''}`} />
+                      {!collapsed && <span>{item.label}</span>}
+                    </NavLink>
                   );
                 })}
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* Sidebar Footer: Authenticated User Profile & Logout */}
+        <div className="border-t border-slate-800 p-3 bg-slate-900/90 light-adapt-box">
+          {!collapsed ? (
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/30 border border-cyan-500/30 text-cyan-300 font-bold font-mono text-sm shadow">
+                  {user?.name?.[0]?.toUpperCase() || 'U'}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-white truncate font-mono">
+                    {user?.name || 'Authorized User'}
+                  </p>
+                  <span className={`inline-block px-1.5 py-0.2 rounded text-[9px] font-extrabold uppercase font-mono tracking-wider border ${getRoleBadgeStyle(userRole)}`}>
+                    {userRole.toUpperCase()}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={logout}
+                className="rounded-lg p-2 text-slate-400 hover:bg-rose-500/20 hover:text-rose-300 border border-transparent hover:border-rose-500/30 transition shrink-0"
+                title="Sign Out"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </div>
           ) : (
             <div className="flex justify-center">
               <button
-                onClick={() => quickLogin(user?.role === 'officer' ? 'citizen' : 'officer')}
-                className="h-8 w-8 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 flex items-center justify-center text-xs font-bold font-mono hover:bg-cyan-500/30 transition"
-                title="Toggle Role"
+                onClick={logout}
+                className="h-8 w-8 rounded-lg bg-slate-800 text-slate-400 hover:bg-rose-500/20 hover:text-rose-300 border border-slate-700 flex items-center justify-center transition"
+                title="Sign Out"
               >
-                {user?.role?.[0]?.toUpperCase() || 'O'}
+                <LogOut className="h-4 w-4" />
               </button>
             </div>
           )}
         </div>
       </aside>
+
+      {/* MOBILE SLIDE-OUT DRAWER */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setMobileOpen(false)}
+          />
+          <aside className="relative flex flex-col w-72 max-w-[85vw] bg-[#0F172A] border-r border-slate-800 z-50 h-full shadow-2xl">
+            <div className="flex h-16 items-center justify-between border-b border-slate-800 px-4">
+              <div 
+                onClick={() => { handleHomeNavigation(); setMobileOpen(false); }}
+                className="flex items-center gap-2.5 overflow-hidden cursor-pointer"
+              >
+                <img src="/logo.png" alt="Logo" className="h-8 w-8 object-contain" />
+                <span className="text-sm font-bold text-white uppercase font-mono">CYCLONE OPS</span>
+              </div>
+              <button 
+                onClick={() => setMobileOpen(false)}
+                className="rounded-lg p-1.5 text-slate-400 hover:text-white"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
+              {navSections.map((sec, sIdx) => (
+                <div key={sIdx}>
+                  <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono">
+                    {sec.title}
+                  </p>
+                  <div className="space-y-1">
+                    {sec.items.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = location.pathname === item.to;
+                      return (
+                        <NavLink
+                          key={item.to}
+                          to={item.to}
+                          onClick={() => setMobileOpen(false)}
+                          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
+                            isActive
+                              ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30'
+                              : item.highlight
+                              ? 'bg-rose-500/10 text-rose-300 border border-rose-500/20'
+                              : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                          }`}
+                        >
+                          <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-cyan-400' : ''}`} />
+                          <span>{item.label}</span>
+                        </NavLink>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="border-t border-slate-800 p-3 bg-slate-900/90 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-white truncate font-mono">{user?.name || 'Authorized User'}</p>
+                <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-mono border ${getRoleBadgeStyle(userRole)}`}>
+                  {userRole.toUpperCase()}
+                </span>
+              </div>
+              <button onClick={logout} className="p-2 text-slate-400 hover:text-rose-400" title="Sign Out">
+                <LogOut className="h-4 w-4" />
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
 
       {/* MAIN CONTENT AREA */}
       <div className="flex flex-1 flex-col overflow-hidden">

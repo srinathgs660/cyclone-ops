@@ -14,9 +14,8 @@ export const SocketProvider = ({ children }) => {
   const [syncStatusMessage, setSyncStatusMessage] = useState('');
 
   // Primary Gateway URL
-  const socketUrl = typeof window !== 'undefined' && window.location.hostname === 'localhost'
-    ? 'http://localhost:5000'
-    : '/';
+  const socketUrl = import.meta.env.VITE_API_URL
+    || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5000' : '/');
 
   const checkHealth = useCallback(async () => {
     try {

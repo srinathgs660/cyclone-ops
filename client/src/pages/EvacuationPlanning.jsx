@@ -14,11 +14,30 @@ import { useAuth } from '../context/AuthContext';
 // Helper component to center map on selection or overview
 const MapController = ({ center, zoom, bounds }) => {
   const map = useMap();
+  const prevCenter = React.useRef(null);
+  const prevBounds = React.useRef(null);
+  const prevZoom = React.useRef(null);
+
+  useEffect(() => {
+    if (map && map.scrollWheelZoom) {
+      map.scrollWheelZoom.enable();
+    }
+  }, [map]);
+
   useEffect(() => {
     if (bounds && Array.isArray(bounds) && bounds.length === 2) {
-      map.fitBounds(bounds, { padding: [50, 50], animate: true, duration: 1.2 });
-    } else if (center) {
-      map.flyTo(center, zoom || 8, { duration: 1.2 });
+      const boundsStr = JSON.stringify(bounds);
+      if (boundsStr !== prevBounds.current) {
+        prevBounds.current = boundsStr;
+        map.fitBounds(bounds, { padding: [50, 50], animate: true, duration: 1.2 });
+      }
+    } else if (center && Array.isArray(center)) {
+      const centerStr = `${center[0]},${center[1]}`;
+      if (centerStr !== prevCenter.current || (zoom && zoom !== prevZoom.current)) {
+        prevCenter.current = centerStr;
+        prevZoom.current = zoom;
+        map.flyTo(center, zoom || 8, { duration: 1.2 });
+      }
     }
   }, [center, zoom, bounds, map]);
   return null;

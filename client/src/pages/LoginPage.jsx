@@ -31,7 +31,7 @@ const LoginPage = ({ defaultMode }) => {
   const [successMsg, setSuccessMsg] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const { login, register, quickLogin } = useAuth();
+  const { login, register } = useAuth();
   const navigate = useNavigate();
 
   const districtsList = [
@@ -98,8 +98,16 @@ const LoginPage = ({ defaultMode }) => {
     setSubmitting(true);
     try {
       const data = await login(email, password);
-      const isCitizen = data?.user?.role === 'citizen' || email.toLowerCase().includes('citizen');
-      navigate(isCitizen ? '/dashboard/citizen' : '/dashboard');
+      const role = data?.user?.role;
+      if (role === 'citizen' || role === 'volunteer') {
+        navigate('/dashboard/citizen');
+      } else if (role === 'coordinator') {
+        navigate('/dashboard/relief');
+      } else if (role === 'responder') {
+        navigate('/dashboard/incidents');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please check credentials.');
     } finally {
@@ -136,8 +144,12 @@ const LoginPage = ({ defaultMode }) => {
       setSuccessMsg(`Welcome aboard, ${res.user.name}! Your account has been registered.`);
 
       setTimeout(() => {
-        if (regRole === 'citizen') {
+        if (regRole === 'citizen' || regRole === 'volunteer') {
           navigate('/dashboard/citizen');
+        } else if (regRole === 'coordinator') {
+          navigate('/dashboard/relief');
+        } else if (regRole === 'responder') {
+          navigate('/dashboard/incidents');
         } else {
           navigate('/dashboard');
         }
@@ -148,28 +160,6 @@ const LoginPage = ({ defaultMode }) => {
       setSubmitting(false);
     }
   };
-
-  const handleQuick = async (role) => {
-    setError('');
-    setSubmitting(true);
-    try {
-      await quickLogin(role);
-      navigate(role === 'citizen' ? '/dashboard/citizen' : '/dashboard');
-    } catch (err) {
-      setError('Quick login failed');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const demoRoles = [
-    { role: 'admin', label: 'Admin (Commander Varma)', badge: 'EOC CHIEF' },
-    { role: 'officer', label: 'Officer (Ananya Iyer)', badge: 'OPS LEAD' },
-    { role: 'responder', label: 'Responder (Vikram Rathore)', badge: 'NDRF UNIT' },
-    { role: 'coordinator', label: 'Coordinator (Meera Krishnan)', badge: 'LOGISTICS' },
-    { role: 'volunteer', label: 'Volunteer (Karthik S.)', badge: 'COMMUNITY' },
-    { role: 'citizen', label: 'Citizen (Suresh Kumar)', badge: 'PUBLIC SOS' }
-  ];
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#0B1120] p-4 font-['Plus_Jakarta_Sans',sans-serif]">
@@ -280,26 +270,6 @@ const LoginPage = ({ defaultMode }) => {
                   <ArrowRight className="h-4 w-4 text-white" />
                 </button>
               </form>
-
-              {/* Quick 1-Click Role Switcher */}
-              <div className="mt-6 border-t border-slate-800 pt-4">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono text-center mb-3">
-                  One-Click Evaluation Access (All 6 Roles)
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  {demoRoles.map((dr) => (
-                    <button
-                      key={dr.role}
-                      type="button"
-                      onClick={() => handleQuick(dr.role)}
-                      className="flex flex-col items-start rounded-lg border border-slate-800 bg-slate-900/80 p-2 text-left transition hover:border-cyan-500/40 hover:bg-slate-800"
-                    >
-                      <span className="text-[9px] font-bold uppercase text-cyan-400 font-mono">{dr.badge}</span>
-                      <span className="text-xs font-semibold text-slate-200 truncate w-full">{dr.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
           )}
 

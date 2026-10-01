@@ -6,11 +6,31 @@ import { Eye, Layers, Shield, Navigation, Home, AlertTriangle, Users, Compass } 
 // Custom Map Helper to fly to coordinates or fit bounds
 const MapRecenter = ({ center, zoom, bounds }) => {
   const map = useMap();
+
+  React.useEffect(() => {
+    if (map && map.scrollWheelZoom) {
+      map.scrollWheelZoom.enable();
+    }
+  }, [map]);
+
+  const prevCenterRef = React.useRef(null);
+  const prevBoundsRef = React.useRef(null);
+  const prevZoomRef = React.useRef(null);
+
   React.useEffect(() => {
     if (bounds && Array.isArray(bounds) && bounds.length === 2) {
-      map.fitBounds(bounds, { padding: [30, 30], maxZoom: 3, animate: true, duration: 1.2 });
+      const boundsStr = JSON.stringify(bounds);
+      if (boundsStr !== prevBoundsRef.current) {
+        prevBoundsRef.current = boundsStr;
+        map.fitBounds(bounds, { padding: [30, 30], maxZoom: 3, animate: true, duration: 1.2 });
+      }
     } else if (center && center[0] !== undefined && center[1] !== undefined) {
-      map.flyTo(center, zoom !== undefined ? zoom : 9, { duration: 1.2 });
+      const centerStr = `${center[0]},${center[1]}`;
+      if (centerStr !== prevCenterRef.current || zoom !== prevZoomRef.current) {
+        prevCenterRef.current = centerStr;
+        prevZoomRef.current = zoom;
+        map.flyTo(center, zoom !== undefined ? zoom : 9, { duration: 1.2 });
+      }
     }
   }, [center, zoom, bounds, map]);
   return null;
@@ -90,21 +110,33 @@ const CommandMap = ({
     key: 0
   });
 
+  const lastCoordsRef = React.useRef(centerCoords);
+  const lastZoomPropRef = React.useRef(zoom);
+
   React.useEffect(() => {
-    setMapTarget(prev => ({
-      ...prev,
-      center: centerCoords,
-      zoom: zoom || 9
-    }));
-  }, [centerCoords, zoom]);
+    const latDiff = Math.abs((centerCoords?.[0] || 0) - (lastCoordsRef.current?.[0] || 0));
+    const lngDiff = Math.abs((centerCoords?.[1] || 0) - (lastCoordsRef.current?.[1] || 0));
+    const zoomDiff = zoom !== lastZoomPropRef.current;
+
+    if (latDiff > 0.001 || lngDiff > 0.001 || zoomDiff) {
+      lastCoordsRef.current = centerCoords;
+      lastZoomPropRef.current = zoom;
+      setMapTarget(prev => ({
+        ...prev,
+        center: centerCoords,
+        zoom: zoom || 9
+      }));
+    }
+  }, [centerCoords?.[0], centerCoords?.[1], zoom]);
 
   const toggleLayer = (key) => {
     setLayers(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
   const focusCyclone = () => {
-    const target = (cyclones && cyclones.find(c => c._id === selectedCycloneId)) || (cyclones && cyclones[0]);
-    if (target?.currentLocation?.coordinates) {
+    const valid = Array.isArray(cyclones) ? cyclones.filter(Boolean) : [];
+    const target = valid.find(c => c && (c._id === selectedCycloneId || c.name === selectedCycloneId)) || valid[0];
+    if (target?.currentLocation?.coordinates && target.currentLocation.coordinates.length >= 2) {
       const [lng, lat] = target.currentLocation.coordinates;
       setMapTarget({
         center: [lat, lng],
@@ -208,7 +240,7 @@ const CommandMap = ({
         zoom={zoom}
         minZoom={2}
         worldCopyJump={true}
-        scrollWheelZoom={false}
+        scrollWheelZoom={true}
         className="h-full w-full z-0"
         style={{ minHeight: '480px' }}
       >
@@ -229,18 +261,22 @@ const CommandMap = ({
         />
 
         {/* 1. CYCLONES LAYER */}
-        {layers.cyclones && cyclones.map((c) => {
-          if (!c.currentLocation?.coordinates) return null;
+        {layers.cyclones && Array.isArray(cyclones) && cyclones.filter(Boolean).map((c) => {
+          if (!c?.currentLocation?.coordinates || c.currentLocation.coordinates.length < 2) return null;
           const [cLng, cLat] = c.currentLocation.coordinates;
           const isSelected = selectedCycloneId 
             ? (c._id === selectedCycloneId || c.name === selectedCycloneId)
             : true;
 
-          const pastPositions = (c.pastTrack || []).map(pt => [pt.coordinates[1], pt.coordinates[0]]);
+          const pastPositions = Array.isArray(c.pastTrack)
+            ? c.pastTrack
+                .filter(pt => pt?.coordinates && pt.coordinates.length >= 2)
+                .map(pt => [pt.coordinates[1], pt.coordinates[0]])
+            : [];
           pastPositions.push([cLat, cLng]);
 
           return (
-            <React.Fragment key={c._id || c.name}>
+            <React.Fragment key={c._id || c.name || Math.random()}>
               {/* Cyclone Eye Marker */}
               <Marker
                 position={[cLat, cLng]}

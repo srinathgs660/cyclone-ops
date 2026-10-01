@@ -126,7 +126,7 @@ const CommandCenter = () => {
       <SimulationBar />
 
       {/* Top 8 KPI Cards */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 2xl:grid-cols-8">
         <KpiCard
           title="Active Disasters"
           value={kpis.activeDisasters.value}

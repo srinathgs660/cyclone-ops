@@ -100,17 +100,19 @@ const CitizenPortal = () => {
           Immediate life-safety rescue, real-time localized threat level, and verified shelter navigation.
         </p>
 
-        {/* Current Risk Snapshot */}
+        {/* Current Risk Snapshot (Always a prominent, high-contrast dark box) */}
         {riskAssessment && (
-          <div className="mt-4 inline-flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-950/80 px-4 py-2 text-xs font-mono">
-            <span className="text-slate-400">Your Local Threat:</span>
-            <span className={`font-black uppercase px-2 py-0.5 rounded ${
-              riskAssessment.riskLevel === 'CRITICAL' ? 'bg-rose-500 text-slate-950' :
-              riskAssessment.riskLevel === 'HIGH' ? 'bg-orange-500 text-slate-950' : 'bg-emerald-500 text-slate-950'
+          <div className="citizen-black-threat-box mt-4 inline-flex flex-wrap items-center justify-center gap-2.5 rounded-xl px-4 py-2 text-xs font-mono">
+            <span className="threat-box-text">Your Local Threat:</span>
+            <span className={`font-black uppercase px-2.5 py-0.5 rounded text-xs shadow-sm ${
+              riskAssessment.riskLevel === 'CRITICAL' ? 'bg-rose-600 text-white' :
+              riskAssessment.riskLevel === 'HIGH' ? 'bg-amber-400 text-slate-950' : 'bg-emerald-500 text-slate-950'
             }`}>
               {riskAssessment.riskLevel}
             </span>
-            <span className="text-slate-400">• Cyclone Eye: <strong>{riskAssessment.cycloneDistanceKm} km</strong></span>
+            <span className="threat-box-text">
+              • Cyclone Eye: <strong className="threat-box-highlight">{riskAssessment.cycloneDistanceKm} km</strong>
+            </span>
           </div>
         )}
       </div>

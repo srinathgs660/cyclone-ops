@@ -1,178 +1,158 @@
 # 🌪️ Cyclone Disaster Operations Command Center (EOC)
-### Real-Time Cyclone Tracking, Impact Prediction, Evacuation Planning & Relief Coordination Platform
+### Real-Time Cyclone Tracking, Impact Prediction, Evacuation Planning & Multi-Agency Relief Coordination Platform
 
 > A production-grade **Disaster Operations Command System** built on the **MERN Stack** (MongoDB Atlas, Express.js, React.js + Tailwind CSS, Node.js + Socket.IO) designed for disaster management authorities (NDMA, NDRF, SDMAs, IMD) to monitor cyclones, assess multi-criteria risks, coordinate evacuations, triage life-threatening incidents, optimize relief logistics, and protect affected citizens.
 
 ---
 
-## 📌 Quick Access & Direct URLs
+## 🔑 All 6 Stakeholder Accounts & Credentials
 
-| Platform Interface | Direct URL | Description & Access Mode |
-| :--- | :--- | :--- |
-| **Public Landing & Overview Page** | **[http://localhost:5173/](http://localhost:5173/)** | Animated overview, hero metrics, capability showcase & role sandbox |
-| **Tactical Command Center** | **[http://localhost:5173/dashboard](http://localhost:5173/dashboard)** | Real-time operations cockpit, interactive GIS map & telemetry |
-| **Mobile Citizen SOS Portal** | **[http://localhost:5173/dashboard/citizen](http://localhost:5173/dashboard/citizen)** | 1-touch SOS beacon, nearest shelter GPS finder & helplines |
-| **Sign In & Role Evaluation** | **[http://localhost:5173/login](http://localhost:5173/login)** | 1-click role switcher with instant pre-configured credentials |
-| **Backend REST API** | **[http://localhost:5000](http://localhost:5000)** | Express.js + Socket.IO real-time server |
-| **System Health Endpoint** | **[http://localhost:5000/api/health](http://localhost:5000/api/health)** | `{"status": "OPERATIONAL", "liveDataConnected": true}` |
+The system provides 6 pre-seeded role accounts with strictly differentiated, role-based navigation and permissions:
 
----
-
-## ✨ Latest Updates & Newly Added Features (Changelog)
-
-### 1. 🌍 Real-Time Worldwide Cyclone Tracking (NASA EONET & GDACS)
-* **Authoritative Live Feeds:** Direct, real-time ingestion from **NASA EONET** (`severeStorms`), **GDACS (UN-OCHA / European Commission)**, **JTWC**, and **NOAA NHC** without requiring external private API keys.
-* **Global Ocean Basin Coverage:** Full monitoring across all major meteorological basins:
-  - 🇮🇳 **North Indian Ocean** (Bay of Bengal & Arabian Sea)
-  - 🇯🇵 **Western North Pacific** (Typhoons - Asia Pacific)
-  - 🇲🇽 / 🇺🇸 **Eastern Pacific & North Atlantic** (Hurricanes)
-  - 🇲🇬 / 🇦🇺 **South-West Indian Ocean & South Pacific**
-* **Dynamic Recenter & Worldwide View:** The GIS map seamlessly flies to any coordinate on Earth with a dedicated **"🌍 World View"** toggle.
-* **On-Demand & Background Polling:** Automated 15-minute background sync plus a one-touch **"⚡ Refresh Live Satellite Feeds"** button with instant Socket.IO broadcasts across all connected command terminals.
-* **72-Hour Numerical Predictions & Uncertainty Cones:** Expanding corridors (±35km to ±275km) based on atmospheric steering currents and Coriolis parameter models.
-
-### 2. 🚀 Root Landing Page (`http://localhost:5173/`)
-* Visiting the root URL (`/`) now directly displays the **Platform Overview Landing Page** instead of bouncing straight to the sign-in form.
-* Features an animated hero banner, live cyclone stats, interactive capabilities grid, and an instant 1-click evaluation sandbox.
-
-### 2. 🎨 Ergonomic Dual Theme (Light & Dark Mode)
-* **One-Click Theme Switcher:** Integrated directly in the top navigation bar (Sun ☀️ / Moon 🌙 toggle).
-* **Calibrated Soft-Light Palette:** Eliminated harsh pure-white glare. Optimized card backgrounds (`#FFFFFF`), borders (`#CBD5E1`), and body canvas (`#E2E8F0`) with high-contrast, perfectly legible dark text.
-* **Smart Map Inversion:** Map tiles automatically adapt in both dark tactical and clean natural daytime styles with zero watermarks.
-
-### 3. 🎛️ Redesigned Tactical Role Switcher
-* Redesigned the sidebar footer into a sleek **2x3 Segmented Card Grid** with custom role icons:
-  - `👑 Admin`, `🎖️ Officer`, `🚑 NDRF`, `📦 Logistics`, `🤝 Volunteer`, `👤 Citizen`.
-* Features active role glowing borders, crisp contrast, and instant 1-click identity switching.
-
-### 4. 🛡️ Role-Based Access Control (RBAC) & Citizen Protections
-* **Incident Triage (`/incidents`):**
-  - Only authorized operational staff (`admin`, `officer`, `responder`, `coordinator`) have access to **"Assign Team"**, **"Set In-Progress"**, and **"Mark Resolved"**.
-  - Citizens and volunteers have **Read-Only** visibility with clean status indicator tags.
-* **Response Teams (`/teams`):**
-  - The **"Dispatch Unit"** / **"Mark Available"** action is restricted to operational commanders.
-  - Citizens see a protective **"Deployment Control: Authorized Ops Only"** badge with full team gear and readiness visibility.
+| # | Operational Role | Email Identifier | Password | Access Scope & Allowed Modules |
+| :-: | :--- | :--- | :--- | :--- |
+| **1** | **EOC Chief Commander (Admin)** | `admin@cycloneops.gov` | `password123` | **Full Platform Access**: Command Center, Cyclone Tracking, Impact Assessment, Evacuation Planning, Shelters, Incidents, Response Teams, Relief & Inventory, Alerts, Analytics, Reports, and Administration (`/dashboard/admin`) with full personnel management & strike team assembly. |
+| **2** | **Operations Lead (Officer)** | `officer@cycloneops.gov` | `password123` | **Operational Command Deck**: Command Center, Cyclone Tracking, Impact Assessment, Evacuation Planning, Shelters, Incidents, Response Teams, Relief & Inventory, Emergency Alerts, Analytics, Reports, Citizen SOS. *(Excludes System Administration)* |
+| **3** | **NDRF Field Responder (Responder)** | `responder@cycloneops.gov` | `password123` | **Tactical Field Rescue**: Command Center, Incident Triage (dispatch status, rescue assignments), Response Teams (squad roster, vehicle readiness), Shelters Management, Evacuation Planning, Cyclone Tracking, Citizen SOS Alerts. |
+| **4** | **Logistics Coordinator (Coordinator)** | `coordinator@cycloneops.gov` | `password123` | **Supply Chain & Depots**: Command Center, Relief & Inventory (stockpile burn rates, depot manifests, supply convoys), Shelters Management (rations & supply levels), Evacuation Corridors, Cyclone Tracking, Operational Reports, Citizen SOS. |
+| **5** | **Community Volunteer (Volunteer)** | `volunteer@cycloneops.gov` | `password123` | **Community Assistance**: Citizen SOS Portal (field needs verification, community relief requests), Shelters Management (open facility occupancy & bed availability), Evacuation Planning (safe routes, road status), Cyclone Tracking. |
+| **6** | **Public Resident (Citizen)** | `citizen@cycloneops.gov` | `password123` | **Public Safety & SOS**: Citizen SOS Portal (1-touch emergency SOS broadcast with GPS coordinates, emergency helplines), Cyclone Radar Tracking, Safe Evacuation Routes & Roadblock Alerts, Nearest Open Shelter Finder. |
 
 ---
 
-## 🔑 Demo User Accounts & Roles
+## 🛡️ Role-Based Access Control (RBAC) & Navigation Breakdown
 
-You can sign in instantly using the **One-Click Switcher** on the login page, landing page, or within the sidebar:
+Each stakeholder has a dedicated, tailored navigation menu and strict route-level protection:
 
-| Role | Demo Email | Password | Operational Scope |
-| :--- | :--- | :--- | :--- |
-| **Emergency Commander (Admin)** | `admin@cycloneops.gov` | `password123` | Full governance, agency authorization, platform configs & audit logs |
-| **Operations Officer** | `officer@cycloneops.gov` | `password123` | Tactical GIS Map, evacuation planning, risk matrix & storm cones |
-| **Field Rescue Responder** | `responder@cycloneops.gov` | `password123` | Incident triage, team dispatch & field rescue status |
-| **Relief Logistics Coordinator** | `coordinator@cycloneops.gov` | `password123` | Shelter capacity grid, warehouse inventories & supply convoys |
-| **Community Volunteer** | `volunteer@cycloneops.gov` | `password123` | Shelter check-ins, assistance request triage (Read-Only triage) |
-| **Vulnerable Citizen** | `citizen@cycloneops.gov` | `password123` | 1-touch SOS beacon, nearby shelter locator & local risk radar |
+```
+┌─────────────────────────────┬───────────┬─────────────┬───────────────┬─────────────────┬─────────────┬───────────┐
+│ Module / Route              │   Admin   │   Officer   │   Responder   │   Coordinator   │  Volunteer  │  Citizen  │
+├─────────────────────────────┼───────────┼─────────────┼───────────────┼─────────────────┼─────────────┼───────────┤
+│ Command Center (/dashboard) │     ✅    │      ✅     │       ✅      │        ✅       │      ❌     │     ❌    │
+│ Cyclone Tracking (/cyclones)│     ✅    │      ✅     │       ✅      │        ✅       │      ✅     │     ✅    │
+│ Impact Assessment (/risk)   │     ✅    │      ✅     │       ❌      │        ❌       │      ❌     │     ❌    │
+│ Evacuation (/evacuation)    │     ✅    │      ✅     │       ✅      │        ✅       │      ✅     │     ✅    │
+│ Shelters (/shelters)        │     ✅    │      ✅     │       ✅      │        ✅       │      ✅     │     ✅    │
+│ Incident Triage (/incidents)│     ✅    │      ✅     │       ✅      │        ❌       │      ❌     │     ❌    │
+│ Response Teams (/teams)     │     ✅    │      ✅     │       ✅      │        ❌       │      ❌     │     ❌    │
+│ Relief Inventory (/relief)  │     ✅    │      ✅     │       ❌      │        ✅       │      ❌     │     ❌    │
+│ Citizen SOS Portal (/citizen│     ✅    │      ✅     │       ✅      │        ✅       │      ✅     │     ✅    │
+│ Emergency Alerts (/alerts)  │     ✅    │      ✅     │       ❌      │        ❌       │      ❌     │     ❌    │
+│ Analytics (/analytics)      │     ✅    │      ✅     │       ❌      │        ❌       │      ❌     │     ❌    │
+│ Operational Reports(/report)│     ✅    │      ✅     │       ❌      │        ✅       │      ❌     │     ❌    │
+│ Administration (/admin)     │     ✅    │      ❌     │       ❌      │        ❌       │      ❌     │     ❌    │
+└─────────────────────────────┴───────────┴─────────────┴───────────────┴─────────────────┴─────────────┴───────────┘
+```
+
+> **Automatic Route Protection:** If a citizen or volunteer attempts to manually enter an operational URL (e.g. `/dashboard` or `/dashboard/risk` or `/dashboard/admin`), the `ProtectedRoute` component intercepts the request and automatically redirects them to `/dashboard/citizen`.
 
 ---
 
-## 🌟 Key Architecture & Capabilities
+## 🚀 Deployment Guide (Vercel & Remote Hosting)
 
-### 1. Leaflet GIS Tactical Command Map
-* **Clean Tiles (Zero Watermarks):** Integrated OpenStreetMap tiles with high-tech tactical dark CSS inversion filter and crisp light mode compatibility.
-* **Animated Cyclone Core:** Pulsing Doppler radar sweep eye marker 🌀, rotating outer wind bands, and category styling.
-* **Intensity Wind Radii:** Interactive circles for Gale ($160\text{ km}$), Storm ($75\text{ km}$), and Hurricane-force winds ($35\text{ km}$).
-* **Predictive Forecast Cone of Uncertainty:** Trajectory predictions at $24\text{h}$, $48\text{h}$, and $72\text{h}$ intervals.
-* **Geospatial Overlays:** High-risk polygon zones, emergency shelters with live occupancy status, triage incidents, and active evacuation convoy routes.
+This repository is optimized for quick, production-ready deployment on **Vercel** for the client and any Node.js hosting platform (Render, Railway, Fly.io, or AWS) for the server.
 
-### 2. Algorithmic Intelligence Engines (`server/services/`)
-* **Multi-Criteria Risk Scoring (`riskService.js`):**
+### Option A: Deploying Frontend to Vercel
+
+1. **Push your repository** to GitHub, GitLab, or Bitbucket.
+2. In the **[Vercel Dashboard](https://vercel.com/dashboard)**:
+   * Click **"Add New Project"** and import this repository.
+   * If prompted for **Root Directory**, set it to `client` (or leave as root; both `client/vercel.json` and root `vercel.json` are pre-configured).
+   * **Framework Preset**: Vite
+   * **Build Command**: `npm run build`
+   * **Output Directory**: `dist`
+3. **Environment Variables on Vercel**:
+   * Add the following environment variable pointing to your deployed backend API:
+     * `VITE_API_URL`: `https://your-cyclone-backend.onrender.com` (leave blank if deploying backend on the same domain or local reverse proxy).
+4. Click **Deploy**. Vercel will build the frontend and serve it globally on a custom `.vercel.app` URL with automatic SPA rewriting (no 404s on page refresh).
+
+### Option B: Deploying Backend to Render / Railway
+
+1. Create a **Web Service** on [Render](https://render.com) or [Railway](https://railway.app).
+2. Set **Root Directory** to `server`.
+3. **Build Command**: `npm install`
+4. **Start Command**: `npm start`
+5. **Environment Variables**:
+   * `PORT`: `5000`
+   * `NODE_ENV`: `production`
+   * `MONGO_URI`: `mongodb+srv://<username>:<password>@cluster.mongodb.net/cyclone_command_eoc?retryWrites=true&w=majority`
+   * `JWT_SECRET`: `<your_secure_random_jwt_secret>`
+   * `CORS_ORIGIN`: `https://your-frontend.vercel.app`
+
+---
+
+## 💻 Local Development Setup
+
+### 1. Prerequisites
+* **Node.js** (v18.0.0 or higher)
+* **MongoDB** (Local instance or free MongoDB Atlas URI)
+* **npm** (v9.0.0 or higher)
+
+### 2. Environment Variables Configuration
+Ensure `server/.env` contains your MongoDB connection string:
+```env
+PORT=5000
+NODE_ENV=development
+MONGO_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/cyclone_command_eoc?retryWrites=true&w=majority
+JWT_SECRET=emergency_command_secret_key_2026
+JWT_EXPIRE=30d
+```
+
+### 3. Seed Database with All 6 Roles & Live Meteorological Data
+```bash
+cd server
+npm install
+npm run seed
+```
+
+### 4. Run Both Servers Locally
+* **Terminal 1 (Backend REST API & Socket.IO):**
+  ```bash
+  cd server
+  npm start
+  # Running at http://localhost:5000 (Health Check: http://localhost:5000/api/health)
+  ```
+* **Terminal 2 (Frontend Client):**
+  ```bash
+  cd client
+  npm install
+  npm run dev
+  # Running at http://localhost:5173
+  ```
+
+---
+
+## 🌟 Core Modules & Architecture
+
+### 1. GIS Command Radar & Trajectory Map (`/dashboard/cyclones`)
+* **Doppler Radar GIS Stage:** Interactive OpenStreetMap canvas with smooth mouse wheel zooming, eye position centering, and dual light/dark tactical cartography.
+* **Real-time Live Meteorological Feeds:** Ingests live severe storms from **NASA EONET**, **GDACS (UN-OCHA / European Commission)**, and **NOAA NHC** without requiring private API keys.
+* **72-Hour Numerical Predictions:** Expanding cone of uncertainty (±35 km to ±275 km) derived from atmospheric steering currents and Coriolis parameter models.
+
+### 2. Multi-Criteria Risk Scoring (`/dashboard/risk`)
+* Dynamic algorithmic threat calculation combining storm surge height, proximity to landfall, population density, and infrastructure exposure:
   $$\text{Risk Score} = 0.35 \times C_{\text{proximity}} + 0.25 \times P_{\text{density}} + 0.20 \times I_{\text{exposure}} + 0.20 \times T_{\text{surge}}$$
-  Dynamically recalculates risk zones as the cyclone advances.
-* **Dynamic Evacuation Priority Matrix (`evacuationService.js`):**
-  Ranks vulnerable zones by dynamic priority score considering inundation probability, special-needs demographics, and road bottleneck constraints.
-* **Automated Shelter Capacity Routing (`shelterService.js`):**
-  Real-time occupancy tracking with automatic divert-and-reroute when a coastal shelter reaches $100\%$ capacity.
-* **Threat-to-Life Incident Triage & Auto-Dispatch (`incidentService.js`):**
-  Dispatches closest available specialized rescue squad (NDRF, Coast Guard, SDRF) using geospatial coordinates.
-* **Relief Demand Optimizer (`reliefOptimizerService.js`):**
-  Calculates burn rates for drinking water ($3\text{L/person/day}$), food rations, and medical kits, triggering automated logistics resupply convoys.
 
-### 3. Mobile-First Citizen Emergency Portal (`/dashboard/citizen`)
-* **🚨 Emergency SOS Trigger:** 1-tap emergency request broadcasting GPS coordinates to the EOC.
-* **📍 Find Nearest Shelter:** Instantly resolves user coordinates to the closest open facility with capacity and distance.
-* **🗺️ Local Risk Radar:** Real-time distance to eye of cyclone with immediate action advice (Shelter-in-Place vs. Evacuate).
-* **☎️ Emergency Helplines:** Quick-dial buttons for NDRF (`1078`), Coast Guard (`1554`), and State EOC (`1070`).
+### 3. Evacuation Planning & Bottleneck Mitigation (`/dashboard/evacuation`)
+* Dynamic corridor waybills with interactive Leaflet polylines, checkpoint statuses, road blockage warnings (e.g. coastal inundation), and route travel time estimates.
 
-### 4. 5-Scenario Interactive Simulation Controller
-Directly accessible from the top toolbar in the Command Center:
-1. **Scenario 1: Cyclone Approaching & Intensification:** Wind speed $+25\text{ km/h}$, eye advances $35\text{ km}$ coastward, emergency warning broadcast.
-2. **Scenario 2: Evacuation Surge:** $+28,000$ citizens evacuated, shelter occupancy spikes to near capacity.
-3. **Scenario 3: Shelter Overcapacity:** Coastal shelter reaches $100\%$, system reroutes convoys to backup inland facilities.
-4. **Scenario 4: Citizen Emergency SOS:** $14$ civilians trapped in tidal surge; system creates a critical incident and dispatches the nearest rescue boat squad.
-5. **Scenario 5: Relief Shortage & Supply Convoy:** Bottled water reserves fall below critical levels; automated emergency convoy departs Central Warehouse.
+### 4. Shelters Management (`/dashboard/shelters`)
+* Real-time capacity and occupancy tracking (+50/-50 manual intake controls for field staff), bed availability indicators, and automated overflow rerouting.
 
----
+### 5. Threat-to-Life Incident Triage (`/dashboard/incidents`)
+* Prioritized emergency queue (P1 Critical, P2 High, P3 Moderate) with automated closest-squad dispatch and live status transitions (`REPORTED` → `ASSIGNED` → `IN_PROGRESS` → `RESOLVED`).
 
-## 🏗️ Project Structure
+### 6. Strike Response Teams (`/dashboard/teams`)
+* Complete readiness tracker for specialized rescue forces (NDRF, Coast Guard, SDRF, Medical Corps) with live GPS locations, amphibious boat assets, and equipment manifests.
 
-```text
-cyclone-disaster-management/
-├── server/
-│   ├── config/
-│   │   ├── db.js                 # Mongoose connection with TLS & fail-fast retry
-│   │   ├── mockData.js           # High-availability in-memory disaster fallback
-│   │   └── constants.js          # Roles, categories, priorities, statuses
-│   ├── models/                   # 14 Mongoose Data Schemas
-│   ├── routes/                   # 13 REST API Routers
-│   ├── services/                 # Algorithmic & Simulation Engines
-│   ├── sockets/
-│   │   └── socketManager.js      # Socket.IO bi-directional gateway
-│   ├── scripts/
-│   │   └── seed.js               # Production-grade seed data for Atlas
-│   └── server.js                 # Express + HTTP + Socket.IO server entry
-│
-├── client/
-│   ├── src/
-│   │   ├── components/           # KpiCard, SimulationBar, CycloneInfoPanel, etc.
-│   │   ├── context/              # Auth, Socket, Simulation, and Theme Contexts
-│   │   ├── layouts/
-│   │   │   └── DashboardLayout.jsx # EOC Sidebar, Header, Theme Toggle, Role Switcher
-│   │   ├── maps/
-│   │   │   └── CommandMap.jsx    # Leaflet Tactical Command Map
-│   │   ├── pages/
-│   │   │   ├── LandingPage.jsx        # Root Animated Overview Page (/)
-│   │   │   ├── CommandCenter.jsx      # Main EOC Tactical Cockpit
-│   │   │   ├── CycloneTracker.jsx     # Storm track, radii, satellite info
-│   │   │   ├── ImpactAssessment.jsx   # Risk zones, population exposure
-│   │   │   ├── EvacuationPlanning.jsx # Evacuation routes & bottleneck matrix
-│   │   │   ├── SheltersManagement.jsx # Shelter capacity & rerouting
-│   │   │   ├── IncidentBoard.jsx      # Threat-to-life incident triage
-│   │   │   ├── ResponseTeamsPage.jsx  # Rescue squad tracking & deployment
-│   │   │   ├── ReliefCoordination.jsx # Supply chains & convoy dispatch
-│   │   │   ├── CitizenPortal.jsx      # Mobile Citizen SOS & Helpline
-│   │   │   ├── AlertCenter.jsx        # Broadcast alerts & siren triggers
-│   │   │   ├── AnalyticsForecast.jsx  # Performance KPIs & historical charts
-│   │   │   ├── ReportsPage.jsx        # Situation reports & PDF export
-│   │   │   ├── AdminPage.jsx          # Agency governance & audit logs
-│   │   │   └── LoginPage.jsx          # 1-click role authentication
-│   │   ├── App.jsx               # Routes & Auth Guards
-│   │   └── index.css             # Tailwind styling, dark/light themes & radar animations
-│   ├── tailwind.config.js
-│   └── vite.config.js
-└── README.md
-```
+### 7. Logistics & Relief Inventory (`/dashboard/relief`)
+* Stockpile volume tracking, automated burn rate forecasting (drinking water at $3\text{L/person/day}$, meal rations, hygiene kits, baby formula), and live GPS tracking for emergency relief convoys.
 
----
+### 8. Common Alerting Protocol (CAP v1.2) Gateway (`/dashboard/alerts`)
+* Dual-key broadcast mechanism with multi-channel dispatch (Cell Broadcast, Siren Array, SMS, FM Radio) and multilingual translation previews (English, Tamil, Telugu, Hindi, Bengali, Odia).
 
-## 🚀 Setup & Execution Guide
+### 9. Mobile Citizen SOS Portal (`/dashboard/citizen`)
+* 1-touch SOS beacon broadcasting live GPS coordinates directly to the EOC triage desk, accompanied by nearest shelter lookup and emergency helplines.
 
-### 1. Backend Setup
-```bash
-cd cyclone-disaster-management/server
-npm install
-node server.js
-```
-*Listens on port `5000`.*
-
-### 2. Frontend Setup
-```bash
-cd cyclone-disaster-management/client
-npm install
-npm run dev -- --host
-```
-*Accessible on `http://localhost:5173/`.*
+### 10. Operational Reports & Auditing (`/dashboard/reports` & `/dashboard/admin`)
+* Statutory incident documentation templates (NDRF / FEMA Form 201/202), printable official SITREP summaries with verification signatures, CSV exports, and zero-trust audit ledger.
