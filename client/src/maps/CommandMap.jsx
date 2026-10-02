@@ -95,6 +95,10 @@ const CommandMap = ({
   const [layers, setLayers] = useState({
     cyclones: true,
     forecast: true,
+    windStreamlines: true,
+    weatherRadar: false,
+    satelliteClouds: false,
+    coastalStations: true,
     riskZones: true,
     shelters: true,
     incidents: true,
@@ -169,36 +173,78 @@ const CommandMap = ({
   return (
     <div className="relative h-full w-full overflow-hidden rounded-xl border border-slate-800 bg-[#0B1120] shadow-2xl">
       {/* Top Map Action Bar */}
-      <div className="absolute right-4 top-4 z-[1000] flex items-center gap-2">
+      <div className="absolute right-4 top-4 z-[1000] flex flex-wrap items-center justify-end gap-1.5 sm:gap-2 max-w-[90vw]">
+        {/* Quick Satellite IR Layer Toggle */}
+        <button
+          onClick={() => toggleLayer('satelliteClouds')}
+          className={`flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs font-semibold backdrop-blur-md shadow-lg transition ${
+            layers.satelliteClouds
+              ? 'border-cyan-400 bg-cyan-600/40 text-cyan-200 font-bold ring-1 ring-cyan-400/50'
+              : 'border-slate-700 bg-slate-900/90 text-slate-300 hover:bg-slate-800'
+          }`}
+          title="Toggle NASA GIBS High-Resolution Satellite Cloud Layer"
+        >
+          <span>🛰️</span>
+          <span className="hidden sm:inline">NASA Satellite</span>
+        </button>
+
+        {/* Quick Weather Radar Toggle */}
+        <button
+          onClick={() => toggleLayer('weatherRadar')}
+          className={`flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs font-semibold backdrop-blur-md shadow-lg transition ${
+            layers.weatherRadar
+              ? 'border-emerald-400 bg-emerald-600/40 text-emerald-200 font-bold ring-1 ring-emerald-400/50'
+              : 'border-slate-700 bg-slate-900/90 text-slate-300 hover:bg-slate-800'
+          }`}
+          title="Toggle Real-Time Precipitation & Cyclone Radar (RainViewer)"
+        >
+          <span>🌧️</span>
+          <span className="hidden sm:inline">Live Radar</span>
+        </button>
+
+        {/* Quick Wind Vortex Toggle */}
+        <button
+          onClick={() => toggleLayer('windStreamlines')}
+          className={`flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs font-semibold backdrop-blur-md shadow-lg transition ${
+            layers.windStreamlines
+              ? 'border-amber-400 bg-amber-600/40 text-amber-200 font-bold ring-1 ring-amber-400/50'
+              : 'border-slate-700 bg-slate-900/90 text-slate-300 hover:bg-slate-800'
+          }`}
+          title="Toggle Spiraling Wind Vortex Field"
+        >
+          <span>💨</span>
+          <span className="hidden sm:inline">Wind Vortex</span>
+        </button>
+
         <button
           onClick={focusCyclone}
-          className="flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-slate-900/90 px-3 py-1.5 text-xs font-semibold text-cyan-300 backdrop-blur-md shadow-lg transition hover:bg-slate-800"
+          className="flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-slate-900/90 px-2.5 py-1.5 text-xs font-semibold text-cyan-300 backdrop-blur-md shadow-lg transition hover:bg-slate-800"
           title="Track Active Cyclone Eye"
         >
           <Compass className="h-4 w-4 text-cyan-400" />
-          Focus Eye
+          <span className="hidden md:inline">Focus Eye</span>
         </button>
 
         <button
           onClick={showWorldView}
-          className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold backdrop-blur-md shadow-lg transition ${
+          className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-semibold backdrop-blur-md shadow-lg transition ${
             mapTarget.zoom <= 2
               ? 'border-indigo-400 bg-indigo-600/40 text-white font-bold ring-1 ring-indigo-400/50'
               : 'border-indigo-500/40 bg-slate-900/90 text-indigo-300 hover:bg-slate-800'
           }`}
-          title="Zoom out to Global Worldwide View (All Continents & Oceans)"
+          title="Zoom out to Global Worldwide View"
         >
           <span>🌍</span>
-          <span>World View</span>
+          <span className="hidden sm:inline">World View</span>
         </button>
 
         <button
           onClick={resetCoastView}
-          className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs font-semibold text-slate-300 backdrop-blur-md shadow-lg transition hover:bg-slate-800"
+          className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-900/90 px-2.5 py-1.5 text-xs font-semibold text-slate-300 backdrop-blur-md shadow-lg transition hover:bg-slate-800"
           title="Reset to Coastal Command View"
         >
           <Navigation className="h-4 w-4" />
-          Coast Center
+          <span className="hidden md:inline">Coast Center</span>
         </button>
 
         <div className="relative">
@@ -211,7 +257,7 @@ const CommandMap = ({
           </button>
 
           {layerMenuOpen && (
-            <div className="absolute right-0 mt-2 w-56 rounded-xl border border-slate-700 bg-[#131D31]/95 p-3 shadow-2xl backdrop-blur-md">
+            <div className="absolute right-0 mt-2 w-60 rounded-xl border border-slate-700 bg-[#131D31]/95 p-3 shadow-2xl backdrop-blur-md">
               <p className="border-b border-slate-800 pb-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">
                 GIS Command Layers
               </p>
@@ -259,6 +305,28 @@ const CommandMap = ({
           maxZoom={19}
           minZoom={2}
         />
+
+        {/* NASA GIBS Satellite Cloud Layer */}
+        {layers.satelliteClouds && (
+          <TileLayer
+            attribution="&copy; NASA EOSDIS GIBS"
+            url={`https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/${new Date().toISOString().split('T')[0]}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`}
+            opacity={0.65}
+            zIndex={14}
+            maxZoom={9}
+          />
+        )}
+
+        {/* RainViewer Live Weather & Cyclone Radar Layer */}
+        {layers.weatherRadar && (
+          <TileLayer
+            attribution='&copy; <a href="https://www.rainviewer.com/">RainViewer</a>'
+            url="https://tilecache.rainviewer.com/v2/radar/nowcast_0/256/{z}/{x}/{y}/2/1_1.png"
+            opacity={0.7}
+            zIndex={15}
+            maxZoom={12}
+          />
+        )}
 
         {/* 1. CYCLONES LAYER */}
         {layers.cyclones && Array.isArray(cyclones) && cyclones.filter(Boolean).map((c) => {
@@ -396,6 +464,61 @@ const CommandMap = ({
                   ))}
                 </>
               )}
+
+              {/* Coastal Landfall Stations & ETA Vectors */}
+              {layers.coastalStations && isSelected && Array.isArray(c.coastalEtaMatrix) && c.coastalEtaMatrix.map(st => {
+                const badgeBg = st.threatBadgeColor === 'rose' 
+                  ? '#EF4444' 
+                  : st.threatBadgeColor === 'orange' 
+                  ? '#F97316' 
+                  : '#0284C7';
+
+                const stIcon = createCustomIcon(`
+                  <div style="background: ${badgeBg}; color: white; border: 1.5px solid white; border-radius: 6px; padding: 2px 6px; font-weight: bold; font-size: 9px; font-family: monospace; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 3px;">
+                    <span>⚓</span>
+                    <span>${st.etaFormatted}</span>
+                  </div>
+                `, 'coastal-eta-marker', [80, 22]);
+
+                return (
+                  <React.Fragment key={st.stationId}>
+                    <Marker position={[st.coordinates[1], st.coordinates[0]]} icon={stIcon}>
+                      <Popup>
+                        <div className="p-1 min-w-[210px] text-xs font-mono">
+                          <div className="border-b border-slate-700 pb-1 flex items-center justify-between">
+                            <h5 className="font-bold text-white text-[12px]">{st.stationName}</h5>
+                            <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold ${
+                              st.threatBadgeColor === 'rose' ? 'bg-rose-950 text-rose-300' : 'bg-amber-950 text-amber-300'
+                            }`}>
+                              {st.threatLevel}
+                            </span>
+                          </div>
+                          <div className="mt-1.5 text-slate-300 space-y-1 text-[10px]">
+                            <div>District: <strong className="text-white">{st.district}</strong></div>
+                            <div>Distance to Eye: <strong className="text-cyan-300">{st.distanceKm} km</strong></div>
+                            <div>Approach Velocity: <strong className="text-blue-300">{st.approachSpeedKmh} km/h</strong></div>
+                            <div>Landfall ETA: <strong className="text-rose-400 font-bold">{st.etaFormatted}</strong></div>
+                            <div>Gale Wind Arrival: <strong className="text-amber-300">{st.galeEtaFormatted}</strong></div>
+                            <div>Coastal Shelters Active: <strong className="text-emerald-400">{st.sheltersAvailable}</strong></div>
+                          </div>
+                        </div>
+                      </Popup>
+                    </Marker>
+                    {/* Landfall Approach Vector Line to High-Threat Stations */}
+                    {(st.threatBadgeColor === 'rose' || st.threatBadgeColor === 'orange') && (
+                      <Polyline
+                        positions={[[cLat, cLng], [st.coordinates[1], st.coordinates[0]]]}
+                        pathOptions={{ 
+                          color: st.threatBadgeColor === 'rose' ? '#EF4444' : '#F97316', 
+                          weight: st.threatBadgeColor === 'rose' ? 2 : 1.5, 
+                          dashArray: '5, 5', 
+                          opacity: 0.85 
+                        }}
+                      />
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </React.Fragment>
           );
         })}

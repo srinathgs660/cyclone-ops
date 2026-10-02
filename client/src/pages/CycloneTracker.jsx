@@ -323,6 +323,166 @@ const CycloneTracker = () => {
               </div>
             </div>
           </div>
+
+          {/* D. DYNAMIC COASTAL LANDFALL ETA & IMPACT COUNTDOWN MATRIX */}
+          {activeStorm.coastalEtaMatrix && activeStorm.coastalEtaMatrix.length > 0 && (
+            <div className="rounded-xl border border-slate-800 bg-[#131D31]/95 p-5 shadow-xl light-adapt-box space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">⚓</span>
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
+                      <span>Coastal Landfall ETA & Impact Countdown Matrix</span>
+                      <span className="rounded bg-rose-500/20 border border-rose-500/40 px-2 py-0.5 text-[9px] font-bold text-rose-300">
+                        AUTOMATED PROXIMITY TELEMETRY
+                      </span>
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      Dynamic Haversine vector calculations & closing velocity toward key maritime ports & coastal population zones.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="text-[11px] font-mono text-cyan-400 bg-cyan-950/40 border border-cyan-800/60 px-3 py-1.5 rounded-lg">
+                  Storm Velocity: <strong>{activeStorm.movementSpeed} km/h</strong> @ {activeStorm.movementDirection} ({activeStorm.movementBearing}°)
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left font-mono text-xs">
+                  <thead>
+                    <tr className="border-b border-slate-800 text-[10px] text-slate-400 uppercase">
+                      <th className="pb-2">Station / Port</th>
+                      <th className="pb-2">District</th>
+                      <th className="pb-2">Distance to Eye</th>
+                      <th className="pb-2">Approach Speed</th>
+                      <th className="pb-2 text-rose-400">Landfall ETA</th>
+                      <th className="pb-2 text-amber-400">Gale Wind Arrival</th>
+                      <th className="pb-2">Shelters Active</th>
+                      <th className="pb-2 text-right">Threat Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800/60">
+                    {activeStorm.coastalEtaMatrix.map((st) => (
+                      <tr key={st.stationId} className="hover:bg-slate-800/40 transition">
+                        <td className="py-2.5 font-bold text-white flex items-center gap-1.5">
+                          <span>⚓</span>
+                          <span>{st.stationName}</span>
+                        </td>
+                        <td className="py-2.5 text-slate-300">{st.district}</td>
+                        <td className="py-2.5">
+                          <span className="font-bold text-cyan-300">{st.distanceKm} km</span>
+                        </td>
+                        <td className="py-2.5 text-blue-300 font-semibold">
+                          {st.approachSpeedKmh > 0 ? `${st.approachSpeedKmh} km/h` : 'Tangential'}
+                        </td>
+                        <td className="py-2.5">
+                          <span className={`rounded px-2 py-0.5 font-bold text-[11px] ${
+                            st.threatBadgeColor === 'rose'
+                              ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse'
+                              : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+                          }`}>
+                            {st.etaFormatted}
+                          </span>
+                        </td>
+                        <td className="py-2.5 text-amber-300 font-semibold">{st.galeEtaFormatted}</td>
+                        <td className="py-2.5 text-emerald-400 font-bold">{st.sheltersAvailable} Facilities</td>
+                        <td className="py-2.5 text-right">
+                          <span className={`inline-block rounded px-2 py-0.5 text-[9px] font-bold uppercase ${
+                            st.threatBadgeColor === 'rose'
+                              ? 'bg-rose-950 text-rose-300 border border-rose-800'
+                              : st.threatBadgeColor === 'orange'
+                              ? 'bg-orange-950 text-orange-300 border border-orange-800'
+                              : 'bg-slate-800 text-slate-300'
+                          }`}>
+                            {st.threatLevel}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* E. INCOIS REAL-TIME STORM SURGE & TIDAL INUNDATION FORECAST */}
+          {activeStorm.incoisSurgeForecast && (
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <div className="rounded-xl border border-slate-800 bg-[#131D31]/95 p-5 shadow-xl light-adapt-box space-y-3">
+                <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <span className="text-xl">🌊</span>
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono">
+                      INCOIS Hydrodynamic Surge Model
+                    </h4>
+                    <span className="text-[10px] text-cyan-400 font-mono">
+                      Earth System Science Organisation (ESSO)
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-2 text-xs font-mono">
+                  <div className="flex justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
+                    <span className="text-slate-400">Peak Meteorological Surge:</span>
+                    <strong className="text-rose-400 text-sm">+{activeStorm.incoisSurgeForecast.peakSurgeMeters} meters</strong>
+                  </div>
+                  <div className="flex justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
+                    <span className="text-slate-400">Astronomical Spring Tide:</span>
+                    <strong className="text-cyan-300">+{activeStorm.incoisSurgeForecast.astronomicalTideMeters} meters</strong>
+                  </div>
+                  <div className="flex justify-between p-2 rounded bg-rose-950/30 border border-rose-500/40">
+                    <span className="text-rose-200">Total Water Level (TWL):</span>
+                    <strong className="text-rose-300 text-base font-extrabold">
+                      {activeStorm.incoisSurgeForecast.totalWaterLevelMeters} meters
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-lg border border-amber-500/40 bg-amber-950/20 text-[11px] text-amber-300 font-mono">
+                  <strong>Warning:</strong> {activeStorm.incoisSurgeForecast.inundationWarning}
+                </div>
+              </div>
+
+              {/* Station-by-Station Surge Table */}
+              <div className="lg:col-span-2 rounded-xl border border-slate-800 bg-[#131D31]/95 p-5 shadow-xl light-adapt-box">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono">
+                    Predicted Coastal Station Inundation Levels
+                  </h4>
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {activeStorm.incoisSurgeForecast.tidePhase}
+                  </span>
+                </div>
+
+                <div className="space-y-2">
+                  {activeStorm.incoisSurgeForecast.stations.map((st, sIdx) => (
+                    <div key={sIdx} className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-lg border border-slate-800/80 bg-slate-900/60 text-xs font-mono">
+                      <div>
+                        <span className="font-bold text-white">{st.name}</span>
+                        <div className="text-[10px] text-slate-400 mt-0.5">
+                          Tide: +{st.tideMeters}m • Surge: +{st.surgeMeters}m • Expected at {st.peakTime}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <span className="text-sm font-bold text-rose-400">+{st.totalWaterMeters}m</span>
+                          <span className="text-[9px] text-slate-500 block">Total Elevation</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
+                          st.alertLevel.includes('CRITICAL')
+                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                            : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                        }`}>
+                          {st.alertLevel}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
