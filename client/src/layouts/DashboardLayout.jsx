@@ -335,10 +335,10 @@ const DashboardLayout = () => {
         {!hideTopBar && (
           <header className="flex h-16 shrink-0 items-center justify-between border-b border-slate-800 bg-[#0F172A]/90 px-3 sm:px-4 backdrop-blur-md z-20">
             {/* Left section: mobile hamburger + brand, desktop title + status */}
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white shrink-0"
+                className="md:hidden flex items-center justify-center h-9 w-9 rounded-lg border border-slate-700 bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white shrink-0"
                 aria-label="Open Navigation Menu"
               >
                 <Menu className="h-5 w-5" />
@@ -349,8 +349,8 @@ const DashboardLayout = () => {
                 onClick={handleHomeNavigation}
                 className="flex md:hidden items-center gap-2 cursor-pointer shrink-0"
               >
-                <img src="/logo.png" alt="Logo" className="h-6 w-6 object-contain" />
-                <span className="text-xs font-bold text-white font-mono tracking-tight">CYCLONE OPS</span>
+                <img src="/logo.png" alt="Logo" className="h-7 w-7 object-contain" />
+                <span className="text-xs font-bold text-white font-mono tracking-tight whitespace-nowrap">CYCLONE OPS</span>
               </div>
 
               {/* Desktop Operations Center Badge */}
@@ -380,7 +380,7 @@ const DashboardLayout = () => {
             </div>
 
             {/* Right section: last updated, refresh, theme, notifications, profile */}
-            <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <div className="hidden xl:flex flex-col text-right text-xs">
                 <span className="text-[10px] text-slate-500 font-mono uppercase">Last Updated</span>
                 <span className="font-mono text-slate-300 font-semibold">{lastUpdated.toLocaleTimeString()}</span>
@@ -390,40 +390,40 @@ const DashboardLayout = () => {
               <button
                 onClick={() => syncRealtimeCyclones()}
                 disabled={isSyncing}
-                className="flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/15 p-2 sm:px-3 sm:py-1.5 text-xs font-mono font-bold text-cyan-300 hover:bg-cyan-500/25 hover:border-cyan-400 transition shadow-sm disabled:opacity-50"
+                className="flex items-center justify-center h-9 w-9 sm:w-auto sm:px-3 sm:py-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500/25 hover:border-cyan-400 transition shadow-sm disabled:opacity-50 shrink-0"
                 title="Fetch latest real-time cyclone telemetry from IMD, NOAA & NASA satellites"
               >
-                <RefreshCw className={`h-4 w-4 ${isSyncing ? 'animate-spin text-cyan-400' : 'text-cyan-300'}`} />
-                <span className="hidden md:inline">{isSyncing ? 'SYNCING...' : 'REFRESH'}</span>
+                <RefreshCw className={`h-4 w-4 shrink-0 ${isSyncing ? 'animate-spin text-cyan-400' : 'text-cyan-300'}`} />
+                <span className="hidden md:inline font-mono font-bold text-xs ml-1.5">{isSyncing ? 'SYNCING...' : 'REFRESH'}</span>
               </button>
 
               {/* Dark / Light Theme Toggle */}
               <button
                 onClick={toggleTheme}
-                className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 p-2 sm:px-2.5 sm:py-1.5 text-xs text-slate-300 hover:bg-slate-750 hover:text-white transition shadow"
+                className="flex items-center justify-center h-9 w-9 sm:w-auto sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-750 hover:text-white transition shadow shrink-0"
                 title={`Switch to ${isLight ? 'Dark' : 'Light'} Mode`}
               >
                 {isLight ? (
                   <>
-                    <Moon className="h-4 w-4 text-indigo-400" />
-                    <span className="hidden md:inline font-mono text-[11px]">Dark</span>
+                    <Moon className="h-4 w-4 text-indigo-400 shrink-0" />
+                    <span className="hidden md:inline font-mono text-[11px] ml-1.5">Dark</span>
                   </>
                 ) : (
                   <>
-                    <Sun className="h-4 w-4 text-amber-400" />
-                    <span className="hidden md:inline font-mono text-[11px]">Light</span>
+                    <Sun className="h-4 w-4 text-amber-400 shrink-0" />
+                    <span className="hidden md:inline font-mono text-[11px] ml-1.5">Light</span>
                   </>
                 )}
               </button>
 
               {/* Notification Dropdown */}
-              <div className="relative">
+              <div className="relative shrink-0">
                 <button
                   onClick={() => setNotificationsOpen(!notificationsOpen)}
-                  className="relative rounded-lg border border-slate-700 bg-slate-800 p-2 text-slate-300 hover:bg-slate-700 transition"
+                  className="relative flex items-center justify-center h-9 w-9 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 transition"
                   title="Emergency Notifications"
                 >
-                  <Bell className="h-4 w-4" />
+                  <Bell className="h-4 w-4 shrink-0" />
                   {liveAlerts.length > 0 && (
                     <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white font-mono animate-pulse">
                       {liveAlerts.length}
@@ -456,8 +456,8 @@ const DashboardLayout = () => {
                 )}
               </div>
 
-              {/* User Badge */}
-              <div className="flex items-center gap-2 border-l border-slate-800 pl-3">
+              {/* User Badge - Desktop Only */}
+              <div className="hidden md:flex items-center gap-2 border-l border-slate-800 pl-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-600 to-blue-700 text-white font-bold text-xs shadow">
                   {user?.name?.[0] || 'U'}
                 </div>
@@ -467,19 +467,20 @@ const DashboardLayout = () => {
                 </div>
               </div>
 
-              {/* Hide / Remove Top Bar button */}
+              {/* Hide / Remove Top Bar button - Desktop Only */}
               <button
                 onClick={toggleTopBar}
-                className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/80 px-2 py-1.5 text-xs text-slate-400 hover:text-cyan-400 hover:bg-slate-700 transition"
+                className="hidden md:flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/80 px-2 py-1.5 text-xs text-slate-400 hover:text-cyan-400 hover:bg-slate-700 transition"
                 title="Hide Top Navigation Bar (Maximized Workspace)"
               >
                 <ChevronUp className="h-4 w-4" />
                 <span className="hidden xl:inline font-mono text-[11px]">Hide Bar</span>
               </button>
 
+              {/* Sign Out Button - Desktop Only */}
               <button
                 onClick={logout}
-                className="rounded-lg border border-slate-700 bg-slate-800 p-2 text-slate-400 hover:bg-rose-500/20 hover:text-rose-400 transition"
+                className="hidden md:flex rounded-lg border border-slate-700 bg-slate-800 p-2 text-slate-400 hover:bg-rose-500/20 hover:text-rose-400 transition"
                 title="Sign Out"
               >
                 <LogOut className="h-4 w-4" />

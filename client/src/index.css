@@ -77,7 +77,8 @@
 }
 
 .light-theme header .bg-slate-800,
-.light-theme header .bg-slate-800\/80 {
+.light-theme header .bg-slate-800\/80,
+.light-theme header .bg-slate-800\/90 {
   background-color: #F8FAFC !important;
   border-color: #CBD5E1 !important;
   color: #0F172A !important;
