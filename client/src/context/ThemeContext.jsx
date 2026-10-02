@@ -10,12 +10,15 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('eoc_theme', theme);
     const root = document.documentElement;
+    const themeColorMeta = document.getElementById('theme-color-meta');
     if (theme === 'light') {
       root.classList.add('light-theme');
       root.classList.remove('dark-theme');
+      if (themeColorMeta) themeColorMeta.setAttribute('content', '#FFFFFF');
     } else {
       root.classList.add('dark-theme');
       root.classList.remove('light-theme');
+      if (themeColorMeta) themeColorMeta.setAttribute('content', '#0B1120');
     }
   }, [theme]);
 

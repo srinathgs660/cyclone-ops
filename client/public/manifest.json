@@ -1,0 +1,39 @@
+{
+  "name": "CycloneCommand EOC - Disaster Operations",
+  "short_name": "CycloneOps",
+  "description": "Real-Time Cyclone Tracking, Impact Prediction, Evacuation Planning & Multi-Agency Relief Coordination Platform",
+  "start_url": "/",
+  "id": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#0B1120",
+  "theme_color": "#0B1120",
+  "orientation": "any",
+  "categories": ["weather", "utilities", "government"],
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    }
+  ]
+}
