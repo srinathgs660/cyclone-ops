@@ -14,6 +14,8 @@ router.post('/safe-checkin', async (req, res, next) => {
       phone, 
       shelterId, 
       shelterName, 
+      country,
+      state,
       district, 
       familyMembersCount, 
       familyMembersNames, 
@@ -30,6 +32,9 @@ router.post('/safe-checkin', async (req, res, next) => {
       name: citizenName,
       phone: phone.slice(-4),
       shelter: shelterName,
+      country: country || 'India',
+      state: state || 'Tamil Nadu',
+      district: district || 'Chennai',
       members: familyMembersCount || 1,
       time: new Date().toISOString()
     });
@@ -39,7 +44,9 @@ router.post('/safe-checkin', async (req, res, next) => {
       phone,
       shelterId,
       shelterName,
-      district: district || 'Chennai Coastal Zone',
+      country: country || 'India',
+      state: state || 'Tamil Nadu',
+      district: district || 'Chennai',
       familyMembersCount: familyMembersCount || 1,
       familyMembersNames: familyMembersNames || [],
       medicalAssistanceRequired: !!medicalAssistanceRequired,
@@ -53,6 +60,8 @@ router.post('/safe-checkin', async (req, res, next) => {
         id: checkin._id,
         citizenName: checkin.citizenName,
         shelterName: checkin.shelterName,
+        country: checkin.country,
+        state: checkin.state,
         district: checkin.district,
         familyMembersCount: checkin.familyMembersCount,
         time: checkin.createdAt
@@ -71,11 +80,11 @@ router.post('/safe-checkin', async (req, res, next) => {
 
 /**
  * GET /api/registry/search
- * Public search for anxious relatives looking for family members
+ * Public search for relatives looking for family members across Country, State, District
  */
 router.get('/search', async (req, res, next) => {
   try {
-    const { q, district } = req.query;
+    const { q, country, state, district } = req.query;
     if (!q || q.trim().length < 2) {
       return res.json({ success: true, count: 0, data: [] });
     }
@@ -85,13 +94,16 @@ router.get('/search', async (req, res, next) => {
       $or: [
         { citizenName: { $regex: cleanQ, $options: 'i' } },
         { phone: { $regex: cleanQ, $options: 'i' } },
-        { shelterName: { $regex: cleanQ, $options: 'i' } }
+        { shelterName: { $regex: cleanQ, $options: 'i' } },
+        { district: { $regex: cleanQ, $options: 'i' } },
+        { state: { $regex: cleanQ, $options: 'i' } },
+        { country: { $regex: cleanQ, $options: 'i' } }
       ]
     };
 
-    if (district && district !== 'all') {
-      query.district = district;
-    }
+    if (country && country !== 'all') query.country = country;
+    if (state && state !== 'all') query.state = state;
+    if (district && district !== 'all') query.district = district;
 
     const results = await SafeCheckin.find(query).sort({ createdAt: -1 }).limit(50);
 
@@ -101,6 +113,8 @@ router.get('/search', async (req, res, next) => {
       citizenName: r.citizenName,
       phoneMasked: r.phone ? r.phone.replace(/(\d{2})\d{4}(\d{4})/, '$1****$2') : 'Verified',
       shelterName: r.shelterName,
+      country: r.country || 'India',
+      state: r.state || 'Tamil Nadu',
       district: r.district,
       familyMembersCount: r.familyMembersCount,
       medicalAssistanceRequired: r.medicalAssistanceRequired,
@@ -121,7 +135,7 @@ router.get('/search', async (req, res, next) => {
 
 /**
  * GET /api/registry/recent
- * Returns latest verified check-ins and statistics
+ * Returns latest verified check-ins and statistics with global location
  */
 router.get('/recent', async (req, res, next) => {
   try {
@@ -138,6 +152,8 @@ router.get('/recent', async (req, res, next) => {
       citizenName: r.citizenName,
       phoneMasked: r.phone ? r.phone.replace(/(\d{2})\d{4}(\d{4})/, '$1****$2') : 'Verified',
       shelterName: r.shelterName,
+      country: r.country || 'India',
+      state: r.state || 'Tamil Nadu',
       district: r.district,
       familyMembersCount: r.familyMembersCount,
       status: r.status,
