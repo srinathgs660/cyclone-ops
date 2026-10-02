@@ -13,9 +13,9 @@ const LoginPage = ({ defaultMode }) => {
 
   const [mode, setMode] = useState(isInitialSignup ? 'signup' : 'login');
   
-  // Login form state
-  const [email, setEmail] = useState('officer@cycloneops.gov');
-  const [password, setPassword] = useState('password123');
+  // Login form state (empty defaults for production security)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   // Sign Up form state
   const [regName, setRegName] = useState('');
@@ -141,15 +141,22 @@ const LoginPage = ({ defaultMode }) => {
       };
 
       const res = await register(payload);
+
+      if (res?.requiresApproval) {
+        setSuccessMsg(res.message || 'Registration submitted! Your operational account is pending approval by an EOC Administrator or Officer. You can log in once approved.');
+        setTimeout(() => {
+          setMode('login');
+          setEmail(regEmail);
+          setPassword('');
+        }, 3000);
+        return;
+      }
+
       setSuccessMsg(`Welcome aboard, ${res.user.name}! Your account has been registered.`);
 
       setTimeout(() => {
-        if (regRole === 'citizen' || regRole === 'volunteer') {
+        if (regRole === 'citizen') {
           navigate('/dashboard/citizen');
-        } else if (regRole === 'coordinator') {
-          navigate('/dashboard/relief');
-        } else if (regRole === 'responder') {
-          navigate('/dashboard/incidents');
         } else {
           navigate('/dashboard');
         }

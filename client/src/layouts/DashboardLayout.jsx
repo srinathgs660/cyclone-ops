@@ -84,7 +84,7 @@ const DashboardLayout = () => {
     {
       title: 'ADMINISTRATION',
       items: [
-        { label: 'Administration & Staff', to: '/dashboard/admin', icon: Users, allowedRoles: ['admin'] },
+        { label: 'Personnel & Approvals', to: '/dashboard/admin', icon: Users, allowedRoles: ['admin', 'officer'] },
       ]
     }
   ];
@@ -333,32 +333,30 @@ const DashboardLayout = () => {
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* TOP NAVIGATION BAR (Collapsible / Hideable) */}
         {!hideTopBar && (
-          <header className="flex h-16 shrink-0 items-center justify-between border-b border-slate-800 bg-[#0F172A]/90 px-4 backdrop-blur-md z-20">
-            {/* Left section: mobile hamburger & region selector */}
-            <div className="flex items-center gap-3">
+          <header className="flex h-16 shrink-0 items-center justify-between border-b border-slate-800 bg-[#0F172A]/90 px-3 sm:px-4 backdrop-blur-md z-20">
+            {/* Left section: mobile hamburger + brand, desktop title + status */}
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden rounded-lg p-2 text-slate-400 hover:bg-slate-800"
+                className="md:hidden rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white shrink-0"
+                aria-label="Open Navigation Menu"
               >
                 <Menu className="h-5 w-5" />
               </button>
 
-              <div className="flex items-center gap-2 rounded-lg border border-slate-700/80 bg-slate-800/80 px-3 py-1.5 text-xs text-slate-200 shadow-sm">
-                <span className="text-cyan-400 font-bold font-mono">Cyclone Operations Center</span>
-                <span className="text-slate-500 font-mono">|</span>
-                <span className="font-semibold text-white">Bay of Bengal Sector (Amara)</span>
+              {/* Mobile compact title */}
+              <div 
+                onClick={handleHomeNavigation}
+                className="flex md:hidden items-center gap-2 cursor-pointer shrink-0"
+              >
+                <img src="/logo.png" alt="Logo" className="h-6 w-6 object-contain" />
+                <span className="text-xs font-bold text-white font-mono tracking-tight">CYCLONE OPS</span>
               </div>
 
-              {/* On-Demand Real-Time Satellite Refresh */}
-              <button
-                onClick={() => syncRealtimeCyclones()}
-                disabled={isSyncing}
-                className="flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/15 px-3 py-1.5 text-xs font-mono font-bold text-cyan-300 hover:bg-cyan-500/25 hover:border-cyan-400 transition shadow-sm disabled:opacity-50"
-                title="Fetch latest real-time cyclone telemetry from IMD, NOAA & NASA satellites"
-              >
-                <RefreshCw className={`h-3.5 w-3.5 ${isSyncing ? 'animate-spin text-cyan-400' : 'text-cyan-300'}`} />
-                <span className="hidden sm:inline">{isSyncing ? 'SYNCING SATELLITES...' : 'REFRESH REAL-TIME'}</span>
-              </button>
+              {/* Desktop Operations Center Badge */}
+              <div className="hidden md:flex items-center gap-2 rounded-lg border border-slate-700/80 bg-slate-800/80 px-3 py-1.5 text-xs text-slate-200 shadow-sm shrink-0">
+                <span className="text-cyan-400 font-bold font-mono">Cyclone Operations Center</span>
+              </div>
 
               {/* Live Data Connection Indicator */}
               {connected ? (
@@ -381,17 +379,28 @@ const DashboardLayout = () => {
               )}
             </div>
 
-            {/* Right section: last updated, notifications, theme, hide top bar, profile, logout */}
-            <div className="flex items-center gap-2.5 sm:gap-3">
-              <div className="hidden sm:flex flex-col text-right text-xs">
+            {/* Right section: last updated, refresh, theme, notifications, profile */}
+            <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+              <div className="hidden xl:flex flex-col text-right text-xs">
                 <span className="text-[10px] text-slate-500 font-mono uppercase">Last Updated</span>
                 <span className="font-mono text-slate-300 font-semibold">{lastUpdated.toLocaleTimeString()}</span>
               </div>
 
+              {/* On-Demand Real-Time Satellite Refresh */}
+              <button
+                onClick={() => syncRealtimeCyclones()}
+                disabled={isSyncing}
+                className="flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/15 p-2 sm:px-3 sm:py-1.5 text-xs font-mono font-bold text-cyan-300 hover:bg-cyan-500/25 hover:border-cyan-400 transition shadow-sm disabled:opacity-50"
+                title="Fetch latest real-time cyclone telemetry from IMD, NOAA & NASA satellites"
+              >
+                <RefreshCw className={`h-4 w-4 ${isSyncing ? 'animate-spin text-cyan-400' : 'text-cyan-300'}`} />
+                <span className="hidden md:inline">{isSyncing ? 'SYNCING...' : 'REFRESH'}</span>
+              </button>
+
               {/* Dark / Light Theme Toggle */}
               <button
                 onClick={toggleTheme}
-                className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1.5 text-xs text-slate-300 hover:bg-slate-750 hover:text-white transition shadow"
+                className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 p-2 sm:px-2.5 sm:py-1.5 text-xs text-slate-300 hover:bg-slate-750 hover:text-white transition shadow"
                 title={`Switch to ${isLight ? 'Dark' : 'Light'} Mode`}
               >
                 {isLight ? (
@@ -412,6 +421,7 @@ const DashboardLayout = () => {
                 <button
                   onClick={() => setNotificationsOpen(!notificationsOpen)}
                   className="relative rounded-lg border border-slate-700 bg-slate-800 p-2 text-slate-300 hover:bg-slate-700 transition"
+                  title="Emergency Notifications"
                 >
                   <Bell className="h-4 w-4" />
                   {liveAlerts.length > 0 && (

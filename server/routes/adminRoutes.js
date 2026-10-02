@@ -8,8 +8,8 @@ const { protect } = require('../middleware/auth');
 const { authorize } = require('../middleware/rbac');
 const { emitEvent } = require('../sockets/socketManager');
 
-// Restrict all routes below to authenticated Admins
-router.use(protect, authorize('admin'));
+// Restrict all routes below to authenticated Admins and Officers
+router.use(protect, authorize('admin', 'officer'));
 
 /**
  * GET /api/admin/users
@@ -76,6 +76,55 @@ router.put('/users/:id', async (req, res, next) => {
     });
 
     res.json({ success: true, data: user });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * PATCH /api/admin/users/:id/approve
+ * Approve a pending operational user account (Coordinator, Volunteer, Responder)
+ */
+router.patch('/users/:id/approve', async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { isApproved: true, isActive: true },
+      { new: true }
+    )
+      .select('-password')
+      .populate('agency')
+      .populate('assignedTeam');
+
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    try {
+      await AuditLog.create({
+        user: req.user._id,
+        userName: req.user.name,
+        userRole: req.user.role,
+        action: 'USER_APPROVE',
+        module: 'ADMIN',
+        details: { approvedUserId: user._id, approvedEmail: user.email, approvedRole: user.role, approvedBy: req.user.name }
+      });
+    } catch (aErr) {}
+
+    try {
+      emitEvent('admin:user_approved', {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        isApproved: true,
+        approvedBy: req.user.name
+      });
+    } catch (sErr) {}
+
+    res.json({
+      success: true,
+      message: `Account for ${user.name} (${user.role.toUpperCase()}) approved successfully!`,
+      data: user
+    });
   } catch (err) {
     next(err);
   }

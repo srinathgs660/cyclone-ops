@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema({
     coordinates: { type: [Number], default: [80.2707, 13.0827] }
   },
   isActive: { type: Boolean, default: true },
+  isApproved: { type: Boolean, default: true },
   avatar: { type: String, default: '' }
 }, { timestamps: true });
 

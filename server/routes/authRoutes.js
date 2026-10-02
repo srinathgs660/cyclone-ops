@@ -23,6 +23,7 @@ router.post('/register', async (req, res, next) => {
     // Validate permitted signup roles (security: admin/officer requires administrative elevation)
     const allowedRoles = ['citizen', 'volunteer', 'coordinator', 'responder'];
     const assignedRole = allowedRoles.includes(role?.toLowerCase()) ? role.toLowerCase() : 'citizen';
+    const requiresApproval = ['coordinator', 'volunteer', 'responder'].includes(assignedRole);
 
     // Format skills array
     let skillsArray = [];
@@ -42,10 +43,9 @@ router.post('/register', async (req, res, next) => {
       skills: skillsArray,
       agency: agency || undefined,
       availability: 'available',
+      isApproved: !requiresApproval,
       location: coordinates ? { type: 'Point', coordinates } : undefined
     });
-
-    const token = user.generateAuthToken();
 
     try {
       await AuditLog.create({
@@ -54,11 +54,11 @@ router.post('/register', async (req, res, next) => {
         userRole: user.role,
         action: 'USER_REGISTER',
         module: 'AUTH',
-        details: { email: user.email, role: user.role, district: user.district, skills: user.skills }
+        details: { email: user.email, role: user.role, district: user.district, skills: user.skills, isApproved: user.isApproved }
       });
     } catch (e) {}
 
-    // Real-time broadcast to Admin dashboard
+    // Real-time broadcast to Admin/Officer dashboard
     try {
       const { emitEvent } = require('../sockets/socketManager');
       emitEvent('admin:user_registered', {
@@ -70,9 +70,20 @@ router.post('/register', async (req, res, next) => {
         district: user.district,
         skills: user.skills,
         availability: user.availability,
+        isApproved: user.isApproved,
         createdAt: user.createdAt
       });
     } catch (sErr) {}
+
+    if (requiresApproval) {
+      return res.status(201).json({
+        success: true,
+        requiresApproval: true,
+        message: `Account registration submitted! As an operational stakeholder (${assignedRole.toUpperCase()}), your profile is pending verification and approval by an EOC Administrator or Officer. You can log in once authorized.`
+      });
+    }
+
+    const token = user.generateAuthToken();
 
     res.status(201).json({
       success: true,
@@ -105,6 +116,14 @@ router.post('/login', async (req, res, next) => {
       if (user) {
         const isMatch = await user.comparePassword(password);
         if (isMatch) {
+          // Verify operational accounts approval status
+          if (user.isApproved === false && ['coordinator', 'volunteer', 'responder'].includes(user.role)) {
+            return res.status(403).json({
+              success: false,
+              message: `Your account registration as ${user.role.toUpperCase()} is pending verification and approval by an EOC Administrator or Officer. Please check back shortly.`
+            });
+          }
+
           const token = user.generateAuthToken();
           try {
             await AuditLog.create({

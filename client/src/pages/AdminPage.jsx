@@ -321,6 +321,19 @@ const AdminPage = () => {
     }
   };
 
+  // Approve User Account (Coordinators, Volunteers, Responders)
+  const handleApproveUser = async (userId, name, role) => {
+    try {
+      const res = await axios.patch(`/api/admin/users/${userId}/approve`);
+      if (res.data.success) {
+        showNotification(res.data.message || `Account for ${name} (${role.toUpperCase()}) approved!`);
+        fetchAdminData();
+      }
+    } catch (err) {
+      showNotification(err.response?.data?.message || 'Failed to approve user.', 'error');
+    }
+  };
+
   // Mark task as completed
   const handleCompleteTask = async (userId) => {
     try {
@@ -337,9 +350,13 @@ const AdminPage = () => {
     }
   };
 
-  // Filtering users
+  // Filtering users (including pending approvals)
   const filteredUsers = users.filter(u => {
-    if (roleFilter !== 'all' && u.role?.toLowerCase() !== roleFilter.toLowerCase()) return false;
+    if (roleFilter === 'pending') {
+      if (u.isApproved !== false) return false;
+    } else if (roleFilter !== 'all' && u.role?.toLowerCase() !== roleFilter.toLowerCase()) {
+      return false;
+    }
     if (districtFilter !== 'all' && u.district?.toLowerCase() !== districtFilter.toLowerCase()) return false;
     if (availabilityFilter !== 'all' && u.availability !== availabilityFilter) return false;
     if (searchQuery.trim()) {
@@ -354,6 +371,7 @@ const AdminPage = () => {
   });
 
   // KPI calculations
+  const pendingApprovalCount = users.filter(u => u.isApproved === false).length;
   const volunteerCount = users.filter(u => u.role === 'volunteer').length;
   const responderCount = users.filter(u => u.role === 'responder').length;
   const coordinatorCount = users.filter(u => u.role === 'coordinator').length;
@@ -448,13 +466,23 @@ const AdminPage = () => {
           <div className="text-[10px] text-amber-300/80 font-mono mt-0.5">Supply Coordinators</div>
         </div>
 
-        <div className="rounded-xl border border-slate-800 bg-[#131D31]/95 p-3.5 shadow-lg">
+        <div 
+          onClick={() => setRoleFilter(roleFilter === 'pending' ? 'all' : 'pending')}
+          className={`rounded-xl border p-3.5 shadow-lg cursor-pointer transition ${
+            pendingApprovalCount > 0 
+              ? 'border-amber-500/60 bg-amber-950/30 hover:border-amber-400' 
+              : 'border-slate-800 bg-[#131D31]/95'
+          }`}
+          title="Filter pending authorizations"
+        >
           <div className="flex items-center justify-between text-slate-400 mb-1">
-            <span className="text-[10px] font-mono uppercase font-bold">Formed Teams</span>
-            <Award className="h-4 w-4 text-purple-400" />
+            <span className="text-[10px] font-mono uppercase font-bold text-amber-300">Approvals</span>
+            <UserCheck className={`h-4 w-4 ${pendingApprovalCount > 0 ? 'text-amber-400 animate-bounce' : 'text-slate-500'}`} />
           </div>
-          <div className="text-2xl font-black font-mono text-purple-400">{teams.length}</div>
-          <div className="text-[10px] text-purple-300/80 font-mono mt-0.5">Response Squads</div>
+          <div className="text-2xl font-black font-mono text-amber-300">{pendingApprovalCount}</div>
+          <div className="text-[10px] text-amber-300/80 font-mono mt-0.5">
+            {pendingApprovalCount > 0 ? 'Pending Verification' : 'All Authorized'}
+          </div>
         </div>
 
         <div className="rounded-xl border border-slate-800 bg-[#131D31]/95 p-3.5 shadow-lg">
@@ -550,6 +578,7 @@ const AdminPage = () => {
                 className="w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs text-white font-mono focus:border-cyan-500 focus:outline-none"
               >
                 <option value="all">All Roles ({users.length})</option>
+                <option value="pending">⏳ Pending Approvals ({pendingApprovalCount})</option>
                 <option value="volunteer">Volunteers ({volunteerCount})</option>
                 <option value="responder">Responders ({responderCount})</option>
                 <option value="coordinator">Logistics ({coordinatorCount})</option>
@@ -683,6 +712,11 @@ const AdminPage = () => {
                             }`}>
                               {u.role}
                             </span>
+                            {u.isApproved === false && (
+                              <span className="block mt-1 rounded bg-amber-500/20 px-1.5 py-0.5 text-[9px] font-bold text-amber-300 border border-amber-500/40 text-center animate-pulse">
+                                ⏳ PENDING APPROVAL
+                              </span>
+                            )}
                           </td>
 
                           {/* District */}
@@ -770,6 +804,18 @@ const AdminPage = () => {
                           {/* Action Buttons */}
                           <td className="p-3 text-right">
                             <div className="flex items-center justify-end gap-1.5">
+                              {/* Quick Approve Button for Pending Users */}
+                              {u.isApproved === false && (
+                                <button
+                                  onClick={() => handleApproveUser(u._id, u.name, u.role)}
+                                  title="Approve User Registration"
+                                  className="flex items-center gap-1 rounded bg-emerald-500/20 border border-emerald-500/50 px-2 py-1 text-[11px] font-bold text-emerald-300 hover:bg-emerald-600 hover:text-white transition shadow-sm"
+                                >
+                                  <UserCheck className="h-3.5 w-3.5" />
+                                  <span>Approve</span>
+                                </button>
+                              )}
+
                               {/* Assign Task Button */}
                               <button
                                 onClick={() => openTaskModal(u)}

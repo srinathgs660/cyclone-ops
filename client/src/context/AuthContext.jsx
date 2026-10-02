@@ -47,10 +47,12 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     const res = await axios.post('/api/auth/register', userData);
     if (res.data.success) {
-      localStorage.setItem('eoc_token', res.data.token);
-      setToken(res.data.token);
-      setUser(res.data.user);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+      if (res.data.token) {
+        localStorage.setItem('eoc_token', res.data.token);
+        setToken(res.data.token);
+        setUser(res.data.user);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+      }
       return res.data;
     }
   };
