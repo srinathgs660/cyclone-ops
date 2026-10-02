@@ -1,4 +1,4 @@
-﻿const axios = require('axios');
+const axios = require('axios');
 const Cyclone = require('../models/Cyclone');
 const { emitEvent } = require('../sockets/socketManager');
 
@@ -534,7 +534,9 @@ function getActiveEocMissionStorm() {
     externalId: 'IMD-BOB-2026-AMARA',
     name: 'Amara',
     title: 'Very Severe Cyclonic Storm Amara',
-    source: 'IMD RSMC New Delhi / JTWC',
+    isDemo: true,
+    isScenario: true,
+    source: 'EOC Scenario Benchmark (IMD Model)',
     basin: 'North Indian Ocean',
     basinCode: 'indian-ocean',
     subBasin: 'Bay of Bengal',

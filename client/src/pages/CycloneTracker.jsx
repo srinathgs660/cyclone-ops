@@ -188,11 +188,16 @@ const CycloneTracker = () => {
                   {c.flag || '🌀'}
                 </div>
                 <div>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 flex-wrap">
                     <span className="text-xs font-bold text-white font-mono uppercase">{c.name}</span>
                     <span className="rounded bg-rose-500/20 px-1.5 py-0.2 text-[9px] font-bold text-rose-300 font-mono">
                       {c.category}
                     </span>
+                    {(c.name?.toLowerCase().includes('amara') || c.isDemo || c.isScenario) && (
+                      <span className="rounded bg-amber-500/20 border border-amber-500/40 px-1.5 py-0.2 text-[8px] font-bold text-amber-300 font-mono">
+                        🎯 DEMO SCENARIO
+                      </span>
+                    )}
                   </div>
                   <div className="text-[10px] text-slate-400 font-mono mt-0.5 flex items-center gap-2">
                     <span className="text-cyan-300 font-bold">{c.windSpeed} km/h</span>
@@ -209,6 +214,17 @@ const CycloneTracker = () => {
       {/* Active Storm Deep Telemetry Grid */}
       {activeStorm && (
         <>
+          {(activeStorm.name?.toLowerCase().includes('amara') || activeStorm.isDemo || activeStorm.isScenario) && (
+            <div className="flex items-center gap-2.5 rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-300 font-mono">
+              <span className="text-lg shrink-0">🎯</span>
+              <div>
+                <strong className="text-amber-200">EOC MISSION BENCHMARK (DEMO SCENARIO DATA):</strong>{' '}
+                <span className="text-amber-300/90">
+                  This cyclone is an operational simulation based on historical IMD/JTWC track models to power local Tamil Nadu evacuation planning, risk maps, and shelter allocations during clear weather.
+                </span>
+              </div>
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             <div className="rounded-xl border border-slate-800 bg-[#131D31]/90 p-3.5 light-adapt-box shadow-sm">
               <p className="text-[10px] uppercase text-slate-400 font-mono">Intensity Category</p>

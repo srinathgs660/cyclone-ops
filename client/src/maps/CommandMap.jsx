@@ -303,6 +303,26 @@ const CommandMap = ({
                         {c.category}
                       </span>
                     </div>
+
+                    {/* Telemetry Status Badge: Demo Scenario vs Live Stream */}
+                    {c.name?.toLowerCase().includes('amara') || c.isDemo || c.isScenario ? (
+                      <div className="mt-1.5 mb-1.5 flex items-center justify-between rounded bg-amber-500/15 border border-amber-500/30 px-2 py-1 text-[9px] font-bold text-amber-300 font-mono">
+                        <span className="flex items-center gap-1">
+                          <span>🎯</span>
+                          <span>EOC BENCHMARK SCENARIO (DEMO DATA)</span>
+                        </span>
+                        <span className="text-[8px] opacity-80 uppercase tracking-tight">Drill Mode</span>
+                      </div>
+                    ) : (
+                      <div className="mt-1.5 mb-1.5 flex items-center justify-between rounded bg-emerald-500/15 border border-emerald-500/30 px-2 py-1 text-[9px] font-bold text-emerald-300 font-mono">
+                        <span className="flex items-center gap-1">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
+                          <span>VERIFIED LIVE TELEMETRY</span>
+                        </span>
+                        <span className="text-[8px] opacity-80 uppercase tracking-tight">Real-Time</span>
+                      </div>
+                    )}
+
                     <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-300">
                       <div>Wind: <strong className="text-cyan-300 font-mono">{c.windSpeed} km/h</strong></div>
                       <div>Baro: <strong className="text-amber-300 font-mono">{c.pressure} hPa</strong></div>
