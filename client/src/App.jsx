@@ -19,11 +19,14 @@ import AnalyticsForecast from './pages/AnalyticsForecast';
 import ReportsPage from './pages/ReportsPage';
 import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/LoginPage';
+import SafeRegistryPage from './pages/SafeRegistryPage';
+import VolunteerTaskBoard from './pages/VolunteerTaskBoard';
 
 const getDefaultDashboardForRole = (role) => {
   switch (role) {
-    case 'citizen':
     case 'volunteer':
+      return '/dashboard/volunteer-tasks';
+    case 'citizen':
       return '/dashboard/citizen';
     case 'responder':
       return '/dashboard/incidents';
@@ -121,6 +124,15 @@ function AppRoutes() {
           } 
         />
         <Route path="citizen" element={<CitizenPortal />} />
+        <Route path="safe-registry" element={<SafeRegistryPage />} />
+        <Route 
+          path="volunteer-tasks" 
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'officer', 'coordinator', 'responder', 'volunteer']}>
+              <VolunteerTaskBoard />
+            </ProtectedRoute>
+          } 
+        />
         <Route 
           path="alerts" 
           element={
@@ -164,6 +176,8 @@ function AppRoutes() {
       <Route path="/teams" element={<Navigate to="/dashboard/teams" replace />} />
       <Route path="/relief" element={<Navigate to="/dashboard/relief" replace />} />
       <Route path="/citizen" element={<Navigate to="/dashboard/citizen" replace />} />
+      <Route path="/safe-registry" element={<Navigate to="/dashboard/safe-registry" replace />} />
+      <Route path="/volunteer-tasks" element={<Navigate to="/dashboard/volunteer-tasks" replace />} />
       <Route path="/alerts" element={<Navigate to="/dashboard/alerts" replace />} />
       <Route path="/analytics" element={<Navigate to="/dashboard/analytics" replace />} />
       <Route path="/reports" element={<Navigate to="/dashboard/reports" replace />} />

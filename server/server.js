@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -47,6 +47,9 @@ app.use('/api/citizen', require('./routes/citizenRoutes'));
 app.use('/api/analytics', require('./routes/analyticsRoutes'));
 app.use('/api/simulation', require('./routes/simulationRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/registry', require('./routes/registryRoutes'));
+app.use('/api/volunteer-tasks', require('./routes/volunteerTaskRoutes'));
+app.use('/api/sitrep', require('./routes/sitrepRoutes'));
 
 // Error handling
 app.use(errorHandler);

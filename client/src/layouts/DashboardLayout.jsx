@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   Compass, Radio, ShieldAlert, AlertTriangle, Home,
   LifeBuoy, Truck, Bell, FileText, BarChart3, Users,
   Settings, LogOut, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Menu,
-  Flame, CheckCircle2, Shield, User, HelpCircle, PhoneCall, RefreshCw
+  Flame, CheckCircle2, Shield, User, HelpCircle, PhoneCall, RefreshCw,
+  WifiOff, HeartHandshake, ClipboardCheck
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import AlertBanner from '../components/AlertBanner';
+import OfflineVaultModal from '../components/OfflineVaultModal';
 
 import { useTheme } from '../context/ThemeContext';
 import { Sun, Moon } from 'lucide-react';
@@ -17,7 +19,23 @@ const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [offlineVaultOpen, setOfflineVaultOpen] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [hideTopBar, setHideTopBar] = useState(() => localStorage.getItem('hideTopBar') === 'true');
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => {
+      setIsOnline(false);
+      setOfflineVaultOpen(true); // Auto-open offline vault when signal is lost!
+    };
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   const toggleTopBar = () => {
     setHideTopBar(prev => {
@@ -57,6 +75,8 @@ const DashboardLayout = () => {
       items: [
         { label: 'Evacuation Planning', to: '/dashboard/evacuation', icon: NavigationIcon, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
         { label: 'Shelters Management', to: '/dashboard/shelters', icon: Home, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
+        { label: 'Safe Persons Registry', to: '/dashboard/safe-registry', icon: HeartHandshake, highlight: true, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
+        { label: 'Volunteer Task Board', to: '/dashboard/volunteer-tasks', icon: ClipboardCheck, allowedRoles: ['admin', 'officer', 'coordinator', 'responder', 'volunteer'] },
         { label: 'Incident Triage', to: '/dashboard/incidents', icon: AlertTriangle, allowedRoles: ['admin', 'officer', 'responder'] },
         { label: 'Response Teams', to: '/dashboard/teams', icon: LifeBuoy, allowedRoles: ['admin', 'officer', 'responder'] },
       ]
@@ -416,6 +436,22 @@ const DashboardLayout = () => {
                 )}
               </button>
 
+              {/* Offline-First "Grid-Down" Mode Vault */}
+              <button
+                onClick={() => setOfflineVaultOpen(true)}
+                className={`flex items-center justify-center h-9 px-2 sm:px-2.5 sm:py-1.5 rounded-lg border transition shadow-sm shrink-0 ${
+                  !isOnline
+                    ? 'border-rose-500 bg-rose-500/25 text-rose-300 animate-pulse'
+                    : 'border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-750 hover:text-white'
+                }`}
+                title="Offline-First 'Grid-Down' Vault: Shelters, Family QR Passport, SOS Queue, Radio Frequencies"
+              >
+                <WifiOff className={`h-4 w-4 shrink-0 ${!isOnline ? 'text-rose-400' : 'text-amber-400'}`} />
+                <span className="hidden md:inline font-mono font-bold text-xs ml-1.5">
+                  {!isOnline ? 'GRID DOWN' : 'OFFLINE'}
+                </span>
+              </button>
+
               {/* Notification Dropdown */}
               <div className="relative shrink-0">
                 <button
@@ -545,6 +581,12 @@ const DashboardLayout = () => {
 
           <AlertBanner />
           <Outlet />
+
+          {/* Offline Grid-Down Vault Modal */}
+          <OfflineVaultModal 
+            isOpen={offlineVaultOpen} 
+            onClose={() => setOfflineVaultOpen(false)} 
+          />
         </main>
       </div>
     </div>

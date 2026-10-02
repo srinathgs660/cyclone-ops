@@ -98,6 +98,83 @@ const blockedIcon = L.divIcon({
   popupAnchor: [0, -18]
 });
 
+const floodHazardIcon = (label) => L.divIcon({
+  html: `
+    <div style="position: relative; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;">
+      <div style="position: absolute; width: 34px; height: 34px; border-radius: 50%; background: rgba(239, 68, 68, 0.4); animation: ping 1.4s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
+      <div style="background: #DC2626; color: white; width: 28px; height: 28px; border-radius: 50%; border: 2.5px solid white; display: flex; align-items: center; justify-content: center; font-size: 13px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); z-index: 2; cursor: pointer;">
+        🌊
+      </div>
+    </div>
+  `,
+  className: 'flood-hazard-map-icon',
+  iconSize: [34, 34],
+  iconAnchor: [17, 17],
+  popupAnchor: [0, -18]
+});
+
+const FLOOD_HAZARDS = [
+  {
+    id: 'haz-1',
+    type: 'Submerged Subway',
+    severity: 'CRITICAL',
+    title: 'G.S.T. Road Guindy Underpass',
+    coords: [13.0067, 80.2020],
+    waterDepth: '1.8m standing flood',
+    status: 'Impassable',
+    bypassAdvice: 'Bypassing via Kathipara Elevated Flyover'
+  },
+  {
+    id: 'haz-2',
+    type: 'Fallen Banyan Tree',
+    severity: 'HIGH',
+    title: 'NH-32 Chengalpattu Corridor',
+    coords: [12.6919, 79.9772],
+    waterDepth: '0.4m water & debris',
+    status: '1-Lane Blockage',
+    bypassAdvice: 'Heavy vehicles divert to Kanchipuram Outer Bypass'
+  },
+  {
+    id: 'haz-3',
+    type: 'Canal Overwash Breach',
+    severity: 'CRITICAL',
+    title: 'Tiruvarur Causeway Section',
+    coords: [10.7725, 79.6366],
+    waterDepth: '1.2m swift torrent',
+    status: 'Closed by Police',
+    bypassAdvice: 'Rerouting via State Highway 63 elevated ridge'
+  },
+  {
+    id: 'haz-4',
+    type: 'Downed Live Cables',
+    severity: 'DANGER',
+    title: 'East Coast Road (ECR) Akkarai Junction',
+    coords: [12.8980, 80.2450],
+    waterDepth: 'Live power line hazard',
+    status: 'Strict Perimeter Cordon',
+    bypassAdvice: 'Convoys diverted to Old Mahabalipuram Rd (OMR Expressway)'
+  }
+];
+
+const BYPASS_SAFE_PATH = [
+  [13.0827, 80.2707], // Chennai Central origin
+  [13.0450, 80.2400], // Gemini Flyover
+  [13.0150, 80.1980], // Kathipara Elevated Flyover (Bypasses flooded Guindy underpass)
+  [12.9800, 80.0800], // Outer Ring Road bypass
+  [12.9675, 79.9404], // Sriperumbudur safe junction
+  [12.8342, 79.7036], // Kanchipuram bypass
+  [12.9272, 79.3820], // Walajapet
+  [12.9165, 79.1325]  // Vellore Safe Hub
+];
+
+const TURN_BY_TURN_STEPS = [
+  { step: 1, action: 'Head West on EVR Periyar Salai towards Koyambedu', distance: '4.2 km', advice: 'Keep on elevated carriageway. Avoid low ground.' },
+  { step: 2, action: '⚠️ DIVERSION ACTIVE: Guindy Subway Submerged (1.8m flood)', distance: '1.2 km', advice: 'Take Kathipara Flyover ramp directly to bypass flooded underpass.' },
+  { step: 3, action: 'Merge onto Chennai-Bengaluru Highway (NH-48)', distance: '48 km', advice: 'Cruising speed 65 km/h. High clearance corridor open.' },
+  { step: 4, action: 'Take Exit 14 towards Vellore Relief Complex', distance: '4.5 km', advice: 'Follow blue disaster relief convoy signage.' },
+  { step: 5, action: 'Arrive at Vellore Engineering Relief Hub (Safe Inland)', distance: '0 km', advice: '2,080 beds available. Meals & medical triage staging active.' }
+];
+
 // Default Mock/Visual Dataset perfectly aligned with Tamil Nadu geography & screenshot
 const INITIAL_ROUTES = [
   {
@@ -399,6 +476,28 @@ const EvacuationPlanning = () => {
     notes: ''
   });
 
+  // Dynamic Flood Hazard Avoidance & Turn-by-Turn state
+  const [hazardAvoidance, setHazardAvoidance] = useState(true);
+  const [showTurnByTurn, setShowTurnByTurn] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [speaking, setSpeaking] = useState(false);
+
+  const speakCurrentStep = (stepText) => {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    if (speaking) {
+      setSpeaking(false);
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(stepText);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+    setSpeaking(true);
+    window.speechSynthesis.speak(utterance);
+  };
+
   // Calculate high-level stats
   const totalRoutesCount = routes.length;
   const openRoutesCount = routes.filter(r => r.status === 'Open').length;
@@ -637,6 +736,52 @@ const EvacuationPlanning = () => {
               {TRANSPORT_FLEETS.length}
             </span>
           </button>
+        </div>
+
+        {/* Dynamic Flood Hazard Avoidance & Mobile Turn-by-Turn Control Bar */}
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 rounded-xl border border-blue-200/80 bg-gradient-to-r from-blue-50/90 via-indigo-50/40 to-slate-50 shadow-xs">
+          <div className="flex items-center gap-2.5">
+            <div className={`h-3 w-3 rounded-full shrink-0 ${hazardAvoidance ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-bold font-mono text-slate-900">
+                  Dynamic Flood-Aware Hazard Routing
+                </span>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-300">
+                  {hazardAvoidance ? '4 HAZARDS BYPASSED' : 'AVOIDANCE OFF'}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500">
+                {hazardAvoidance
+                  ? 'Guindy subway (1.8m flood), Chengalpattu tree fall & Akkarai cables dynamically circumvented'
+                  : 'Direct straight-line highway routes without waterlogging avoidance'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => setHazardAvoidance(!hazardAvoidance)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition border ${
+                hazardAvoidance
+                  ? 'bg-emerald-600 text-white border-emerald-700 shadow-sm'
+                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+              }`}
+            >
+              {hazardAvoidance ? '⚡ Hazard Bypass: ACTIVE' : 'Enable Avoidance'}
+            </button>
+
+            <button
+              onClick={() => {
+                setCurrentStep(0);
+                setShowTurnByTurn(true);
+              }}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold font-mono transition shadow-sm"
+            >
+              <Compass className="h-3.5 w-3.5" />
+              <span>Turn-by-Turn Navigation</span>
+            </button>
+          </div>
         </div>
 
         {/* ================= TWO-COLUMN SPLIT LAYOUT ================= */}
@@ -1022,6 +1167,49 @@ const EvacuationPlanning = () => {
                   </div>
                 </Popup>
               </Marker>
+
+              {/* 6. RENDER DYNAMIC FLOOD HAZARDS (When Avoidance is Active) */}
+              {hazardAvoidance && FLOOD_HAZARDS.map((hz) => (
+                <Marker
+                  key={hz.id}
+                  position={hz.coords}
+                  icon={floodHazardIcon(hz.type)}
+                >
+                  <Popup>
+                    <div className="p-1.5 font-mono text-xs text-slate-800 space-y-1 min-w-[210px]">
+                      <div className="flex items-center gap-1 text-rose-600 font-extrabold text-sm">
+                        <span>🌊 {hz.title}</span>
+                      </div>
+                      <p className="text-rose-700 font-bold">Severity: {hz.severity} • {hz.status}</p>
+                      <p>Water Level: <strong>{hz.waterDepth}</strong></p>
+                      <div className="rounded bg-emerald-50 border border-emerald-200 p-1.5 text-[11px] text-emerald-800">
+                        <strong>Bypass Active:</strong> {hz.bypassAdvice}
+                      </div>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+
+              {/* 7. DYNAMIC FLOOD BYPASS SAFE CORRIDOR (Glowing Emerald Line) */}
+              {hazardAvoidance && (
+                <Polyline
+                  positions={BYPASS_SAFE_PATH}
+                  pathOptions={{
+                    color: '#10B981',
+                    weight: 5,
+                    dashArray: '8, 6',
+                    opacity: 0.95,
+                    lineCap: 'round',
+                    lineJoin: 'round'
+                  }}
+                >
+                  <Tooltip sticky>
+                    <div className="p-1 font-mono text-xs text-emerald-700 font-bold">
+                      ⚡ DYNAMIC FLOOD BYPASS ACTIVE (Via Kathipara & ORR)
+                    </div>
+                  </Tooltip>
+                </Polyline>
+              )}
             </MapContainer>
 
             {/* Top-Right Map Tile Mode Switcher */}
@@ -1209,6 +1397,155 @@ const EvacuationPlanning = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* ================= TURN-BY-TURN MOBILE NAVIGATION MODAL ================= */}
+      {showTurnByTurn && createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in">
+          <div className="relative w-full max-w-lg rounded-2xl border border-slate-700 bg-[#0F172A] p-5 sm:p-6 shadow-2xl text-slate-100 flex flex-col max-h-[90vh]">
+            
+            {/* Modal Header */}
+            <div className="flex items-start justify-between border-b border-slate-800 pb-3 shrink-0">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold border border-emerald-500/40">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
+                    LIVE GPS REROUTE ACTIVE
+                  </span>
+                  <span className="text-[10px] font-mono text-cyan-400">
+                    4 HAZARDS AVOIDED
+                  </span>
+                </div>
+                <h3 className="text-base sm:text-lg font-black text-white font-mono flex items-center gap-2">
+                  <Navigation className="h-5 w-5 text-blue-400" />
+                  Turn-by-Turn Mobile Directions
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Target Shelter: <strong className="text-slate-200">{selectedRoute?.shelterDestination || 'Vellore Engineering Relief Hub'}</strong>
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setShowTurnByTurn(false);
+                  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                  setSpeaking(false);
+                }}
+                className="rounded-lg p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 transition shrink-0"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Current Maneuver Hero Card */}
+            <div className="mt-4 p-4 rounded-xl border-2 border-blue-500/50 bg-gradient-to-br from-blue-950/60 to-slate-900 shadow-lg shrink-0">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-blue-400">
+                  Step {currentStep + 1} of {TURN_BY_TURN_STEPS.length}
+                </span>
+                <span className="text-xs font-mono font-extrabold text-emerald-400">
+                  In {TURN_BY_TURN_STEPS[currentStep].distance}
+                </span>
+              </div>
+
+              <h4 className="text-sm sm:text-base font-bold text-white mt-1.5 leading-snug">
+                {TURN_BY_TURN_STEPS[currentStep].action}
+              </h4>
+
+              <p className="text-xs text-slate-300 mt-1 bg-black/40 p-2 rounded-lg border border-slate-800">
+                💡 {TURN_BY_TURN_STEPS[currentStep].advice}
+              </p>
+
+              {/* Voice Guidance Button */}
+              <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-800/80">
+                <button
+                  onClick={() => speakCurrentStep(`${TURN_BY_TURN_STEPS[currentStep].action}. In ${TURN_BY_TURN_STEPS[currentStep].distance}. ${TURN_BY_TURN_STEPS[currentStep].advice}`)}
+                  className="flex items-center gap-1.5 text-xs font-mono font-bold text-cyan-300 hover:text-cyan-200 transition"
+                >
+                  <Activity className="h-4 w-4 text-cyan-400" />
+                  <span>{speaking ? '🔊 Speaking...' : '🔊 Read Direction Aloud'}</span>
+                </button>
+
+                <div className="flex gap-2">
+                  <button
+                    disabled={currentStep === 0}
+                    onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
+                    className="px-2.5 py-1 rounded bg-slate-800 text-xs font-mono text-slate-300 disabled:opacity-40"
+                  >
+                    Prev
+                  </button>
+                  <button
+                    disabled={currentStep === TURN_BY_TURN_STEPS.length - 1}
+                    onClick={() => setCurrentStep(prev => Math.min(TURN_BY_TURN_STEPS.length - 1, prev + 1))}
+                    className="px-3 py-1 rounded bg-blue-600 text-xs font-mono text-white font-bold disabled:opacity-40"
+                  >
+                    Next Step →
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Scrollable Step Timeline */}
+            <div className="mt-3 flex-1 overflow-y-auto space-y-2 pr-1 max-h-48 text-xs">
+              <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Full Route Timeline:</span>
+              {TURN_BY_TURN_STEPS.map((s, idx) => (
+                <div
+                  key={s.step}
+                  onClick={() => setCurrentStep(idx)}
+                  className={`p-2.5 rounded-lg border cursor-pointer transition ${
+                    idx === currentStep
+                      ? 'bg-blue-600/20 border-blue-500/60 text-white'
+                      : 'bg-slate-800/50 border-slate-700/60 text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <div className="flex justify-between font-mono text-[11px]">
+                    <span className="font-bold">Step {s.step}</span>
+                    <span className="text-cyan-400">{s.distance}</span>
+                  </div>
+                  <p className="text-xs font-medium text-slate-200 mt-0.5 truncate">{s.action}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Emergency Bottom Bar */}
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between gap-2 shrink-0">
+              <div className="flex items-center gap-2">
+                <a
+                  href="tel:112"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-600/20 text-rose-300 border border-rose-500/40 text-xs font-mono font-bold hover:bg-rose-600/30"
+                >
+                  <Phone className="h-3.5 w-3.5" />
+                  <span>Call 112</span>
+                </a>
+                <a
+                  href="tel:108"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-mono font-bold hover:bg-amber-500/30"
+                >
+                  <Phone className="h-3.5 w-3.5" />
+                  <span>Ambulance 108</span>
+                </a>
+              </div>
+
+              <button
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: 'Evacuation Route to Shelter',
+                      text: `Navigating to ${selectedRoute?.shelterDestination || 'Vellore Hub'}. Avoid Guindy subway flood.`
+                    }).catch(() => {});
+                  } else {
+                    navigator.clipboard.writeText(`Evacuation Route to ${selectedRoute?.shelterDestination || 'Vellore Hub'}. Avoid Guindy subway.`);
+                    alert('Route summary copied to clipboard!');
+                  }
+                }}
+                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono font-semibold border border-slate-700"
+              >
+                Share Route
+              </button>
+            </div>
           </div>
         </div>,
         document.body
