@@ -3,6 +3,14 @@ const router = express.Router();
 const User = require('../models/User');
 const AuditLog = require('../models/AuditLog');
 const { protect } = require('../middleware/auth');
+const { validateEmail } = require('../utils/emailValidator');
+
+// GET /api/auth/validate-email - Live validation endpoint for client forms
+router.get('/validate-email', async (req, res) => {
+  const { email } = req.query;
+  const result = await validateEmail(email);
+  res.json(result);
+});
 
 // POST /api/auth/register
 router.post('/register', async (req, res, next) => {
@@ -15,6 +23,12 @@ router.post('/register', async (req, res, next) => {
 
     if (password.length < 6) {
       return res.status(400).json({ success: false, message: 'Password must be at least 6 characters.' });
+    }
+
+    // Enforce Disposable / Fake Email Blocklist & Real-Time DNS Validation
+    const emailCheck = await validateEmail(email);
+    if (!emailCheck.isValid) {
+      return res.status(400).json({ success: false, message: emailCheck.message });
     }
 
     const existing = await User.findOne({ email: email.toLowerCase().trim() });

@@ -128,6 +128,13 @@ const LoginPage = ({ defaultMode }) => {
       return setError('Password must be at least 6 characters.');
     }
 
+    // Client-side quick check for obvious disposable email domains
+    const disposableKeywords = ['mailinator', 'tempmail', 'temp-mail', '10minute', 'guerrilla', 'yopmail', 'trashmail', 'sharklasers', 'dispostable', 'burnermail', 'dropmail', 'mohmal', 'nada.ltd', 'emailfake'];
+    const emailDomain = regEmail.split('@')[1]?.toLowerCase();
+    if (emailDomain && disposableKeywords.some(kw => emailDomain.includes(kw))) {
+      return setError(`The domain '${emailDomain}' is identified as a temporary/disposable email service. Please use a verified personal or organizational email address.`);
+    }
+
     setSubmitting(true);
     try {
       const payload = {
@@ -352,7 +359,10 @@ const LoginPage = ({ defaultMode }) => {
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Email Address</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-slate-300 font-semibold">Email Address</label>
+                  <span className="text-[10px] text-slate-400 font-mono">Real / Permanent Email Required</span>
+                </div>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                   <input
@@ -360,10 +370,13 @@ const LoginPage = ({ defaultMode }) => {
                     required
                     value={regEmail}
                     onChange={(e) => setRegEmail(e.target.value)}
-                    placeholder="ramesh@example.com"
+                    placeholder="yourname@domain.com"
                     className="w-full rounded-lg border border-slate-700 bg-slate-900/90 pl-9 pr-3 py-2 text-white font-mono focus:border-cyan-500 focus:outline-none"
                   />
                 </div>
+                <p className="text-[10px] text-slate-500 mt-1 font-mono">
+                  Temporary / disposable email domains (mailinator, 10minutemail, etc.) are blocked.
+                </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
