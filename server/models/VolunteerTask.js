@@ -19,7 +19,9 @@ const volunteerTaskSchema = new mongoose.Schema({
     status: { type: String, enum: ['ACCEPTED', 'IN_PROGRESS', 'COMPLETED'], default: 'ACCEPTED' },
     acceptedAt: { type: Date, default: Date.now },
     completedAt: Date,
-    proofNotes: String
+    proofNotes: String,
+    proofPhotoUrl: String,
+    proofPhotoPublicId: String
   }],
   status: { type: String, enum: ['OPEN', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'], default: 'OPEN' },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

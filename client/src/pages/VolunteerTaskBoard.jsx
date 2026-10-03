@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { 
   ClipboardCheck, Users, MapPin, AlertCircle, PlusCircle, CheckCircle2, 
-  Award, ShieldAlert, Sparkles, Filter, Clock, Phone, ChevronRight, X, Camera
+  Award, ShieldAlert, Sparkles, Filter, Clock, Phone, ChevronRight, X, Camera, Eye, Image as ImageIcon
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
@@ -29,6 +29,10 @@ const VolunteerTaskBoard = () => {
   const [completionModalTask, setCompletionModalTask] = useState(null);
   const [proofNotes, setProofNotes] = useState('');
   const [proofImageName, setProofImageName] = useState('');
+  const [proofFile, setProofFile] = useState(null);
+  const [proofPreviewUrl, setProofPreviewUrl] = useState(null);
+  const [submittingProof, setSubmittingProof] = useState(false);
+  const [viewingPhotoModal, setViewingPhotoModal] = useState(null);
   const [notification, setNotification] = useState(null);
 
   // New task form state (for Officers/Coordinators)
@@ -159,22 +163,34 @@ const VolunteerTaskBoard = () => {
     if (!completionModalTask) return;
 
     try {
+      setSubmittingProof(true);
       const token = localStorage.getItem('token');
-      const res = await axios.post(`/api/volunteer-tasks/${completionModalTask._id}/complete`, {
-        proofNotes: proofNotes || `Task completed at ${new Date().toLocaleTimeString()} by ${user?.name}.`
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
+      const formData = new FormData();
+      formData.append('proofNotes', proofNotes || `Task completed at ${new Date().toLocaleTimeString()} by ${user?.name}.`);
+      if (proofFile) {
+        formData.append('proofPhoto', proofFile);
+      }
+
+      const res = await axios.post(`/api/volunteer-tasks/${completionModalTask._id}/complete`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
       });
 
       if (res.data.success) {
-        showNotification(`Assignment marked completed! +50 Volunteer Points awarded.`, 'success');
+        showNotification(res.data.message || `Assignment marked completed! +50 Volunteer Points awarded.`, 'success');
         setCompletionModalTask(null);
         setProofNotes('');
         setProofImageName('');
+        setProofFile(null);
+        setProofPreviewUrl(null);
         fetchTasks();
       }
     } catch (err) {
       showNotification(err.response?.data?.message || 'Failed to submit proof', 'error');
+    } finally {
+      setSubmittingProof(false);
     }
   };
 
@@ -409,17 +425,37 @@ const VolunteerTaskBoard = () => {
                   {assignedCount > 0 && (
                     <div className="mt-3 pt-2.5 border-t border-slate-800/80">
                       <span className="text-[10px] font-mono text-slate-500 uppercase">Field Team:</span>
-                      <div className="flex flex-wrap gap-1 mt-1">
+                      <div className="flex flex-wrap gap-1.5 mt-1">
                         {task.volunteersAssigned.map((v, i) => (
                           <span 
                             key={i} 
-                            className={`text-[10px] px-2 py-0.5 rounded font-mono border ${
+                            className={`inline-flex items-center gap-1.5 text-[10px] px-2 py-0.5 rounded font-mono border ${
                               v.status === 'COMPLETED'
                                 ? 'bg-teal-500/15 text-teal-300 border-teal-500/30'
                                 : 'bg-slate-800 text-slate-300 border-slate-700'
                             }`}
                           >
-                            {v.name} {v.status === 'COMPLETED' ? '✓' : ''}
+                            <span>{v.name} {v.status === 'COMPLETED' ? '✓' : ''}</span>
+                            {v.proofPhotoUrl && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setViewingPhotoModal({
+                                    url: v.proofPhotoUrl,
+                                    name: v.name,
+                                    taskTitle: task.title,
+                                    notes: v.proofNotes,
+                                    completedAt: v.completedAt
+                                  });
+                                }}
+                                title="View Cloudinary Photo Proof"
+                                className="inline-flex items-center text-teal-300 hover:text-white transition bg-teal-500/20 px-1 py-0.5 rounded hover:bg-teal-500/40"
+                              >
+                                <Camera className="h-3 w-3" />
+                                <span className="text-[9px] ml-0.5">Proof</span>
+                              </button>
+                            )}
                           </span>
                         ))}
                       </div>
@@ -626,54 +662,162 @@ const VolunteerTaskBoard = () => {
                 />
               </div>
 
-              {/* Photo Proof Simulation */}
+              {/* Photo Proof Upload with Cloudinary Integration */}
               <div>
                 <label className="block text-xs font-mono font-semibold text-slate-300 mb-1">
-                  Photo Verification (Optional / Mobile Camera)
+                  On-Site Photo Proof (Cloudinary Cloud Storage)
                 </label>
-                <div className="rounded-lg border border-dashed border-slate-700 bg-slate-800/40 p-4 text-center cursor-pointer hover:border-cyan-500/50 transition">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    id="proof-upload"
-                    className="hidden"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        setProofImageName(e.target.files[0].name);
-                      }
-                    }}
-                  />
-                  <label htmlFor="proof-upload" className="cursor-pointer">
-                    <Camera className="mx-auto h-8 w-8 text-slate-500 mb-1" />
-                    {proofImageName ? (
-                      <p className="text-xs font-mono text-emerald-400">Attached: {proofImageName}</p>
-                    ) : (
-                      <>
-                        <p className="text-xs text-slate-300 font-semibold">Tap to take photo or choose file</p>
-                        <p className="text-[10px] text-slate-500 mt-0.5">Captures GPS & timestamp for audit</p>
-                      </>
-                    )}
-                  </label>
-                </div>
+                
+                {proofPreviewUrl ? (
+                  <div className="relative rounded-lg border border-slate-700 bg-slate-900/80 p-2.5 flex items-center gap-3">
+                    <img 
+                      src={proofPreviewUrl} 
+                      alt="Proof Preview" 
+                      className="h-16 w-16 rounded-md object-cover border border-slate-700 shrink-0" 
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-mono text-emerald-300 truncate font-semibold">
+                        {proofImageName}
+                      </p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">
+                        Ready to stream to Cloudinary CDN
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setProofFile(null);
+                        setProofImageName('');
+                        setProofPreviewUrl(null);
+                      }}
+                      className="rounded-lg p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition"
+                      title="Remove photo"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-dashed border-slate-700 bg-slate-800/40 p-4 text-center cursor-pointer hover:border-cyan-500/50 transition">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      id="proof-upload"
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          const file = e.target.files[0];
+                          setProofFile(file);
+                          setProofImageName(file.name);
+                          setProofPreviewUrl(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                    <label htmlFor="proof-upload" className="cursor-pointer block">
+                      <Camera className="mx-auto h-8 w-8 text-cyan-400 mb-1" />
+                      <p className="text-xs text-slate-200 font-semibold">Tap to capture or choose photo</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Automatically optimized & stored in Cloudinary</p>
+                    </label>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
                 <button
                   type="button"
-                  onClick={() => setCompletionModalTask(null)}
+                  disabled={submittingProof}
+                  onClick={() => {
+                    setCompletionModalTask(null);
+                    setProofFile(null);
+                    setProofPreviewUrl(null);
+                    setProofImageName('');
+                  }}
                   className="rounded-lg px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="rounded-lg bg-teal-600 px-5 py-2 text-xs font-bold text-white hover:bg-teal-500 transition shadow"
+                  disabled={submittingProof}
+                  className="rounded-lg bg-teal-600 px-5 py-2 text-xs font-bold text-white hover:bg-teal-500 transition shadow disabled:opacity-50 flex items-center gap-2"
                 >
-                  Confirm & Submit Proof
+                  {submittingProof ? (
+                    <>
+                      <span className="h-3.5 w-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                      <span>Uploading to Cloudinary...</span>
+                    </>
+                  ) : (
+                    <span>Confirm & Submit Proof</span>
+                  )}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Lightbox Modal for Viewing Cloudinary Photo Proof */}
+      {viewingPhotoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="relative w-full max-w-2xl rounded-2xl border border-slate-700 bg-[#0F172A] p-5 shadow-2xl overflow-hidden">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Camera className="h-4 w-4 text-emerald-400" />
+                  <h3 className="text-sm font-bold text-white font-mono">
+                    Cloudinary Verified Photo Proof
+                  </h3>
+                </div>
+                <p className="text-xs text-slate-400 mt-0.5 font-mono">
+                  Volunteer: {viewingPhotoModal.name} | Task: {viewingPhotoModal.taskTitle}
+                </p>
+              </div>
+              <button
+                onClick={() => setViewingPhotoModal(null)}
+                className="rounded-lg p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 transition"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="mt-4 flex flex-col items-center">
+              <div className="relative w-full max-h-[60vh] overflow-hidden rounded-xl border border-slate-800 bg-black flex items-center justify-center">
+                <img
+                  src={viewingPhotoModal.url}
+                  alt="On-site volunteer completion proof"
+                  className="max-h-[60vh] w-auto object-contain rounded-lg"
+                />
+              </div>
+
+              {viewingPhotoModal.notes && (
+                <div className="w-full mt-3 rounded-lg border border-slate-800 bg-slate-900/60 p-3">
+                  <p className="text-[11px] font-mono text-slate-400 uppercase font-semibold">Field Report:</p>
+                  <p className="text-xs text-slate-200 mt-1 italic leading-relaxed">
+                    "{viewingPhotoModal.notes}"
+                  </p>
+                  {viewingPhotoModal.completedAt && (
+                    <p className="text-[10px] text-slate-500 font-mono mt-1">
+                      Submitted at: {new Date(viewingPhotoModal.completedAt).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-4 flex justify-between items-center pt-2 border-t border-slate-800/80">
+              <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+                <CheckCircle2 className="h-3 w-3" />
+                Verified & Hosted on Cloudinary CDN
+              </span>
+              <a
+                href={viewingPhotoModal.url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs font-mono text-cyan-400 hover:text-cyan-300 underline"
+              >
+                Open Original in High-Res
+              </a>
+            </div>
           </div>
         </div>
       )}

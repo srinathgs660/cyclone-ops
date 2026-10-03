@@ -4,6 +4,21 @@ const VolunteerTask = require('../models/VolunteerTask');
 const { protect } = require('../middleware/auth');
 const { authorize } = require('../middleware/rbac');
 const { emitEvent } = require('../sockets/socketManager');
+const multer = require('multer');
+const { uploadBufferToCloudinary } = require('../config/cloudinary');
+
+// Multer in-memory storage buffer for instant streaming to Cloudinary
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB maximum image size
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype && file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files (JPEG, PNG, WebP) are allowed as proof of work'), false);
+    }
+  }
+});
 
 // Initial seed micro-tasks if collection is empty
 const INITIAL_TASKS = [
@@ -175,22 +190,64 @@ router.post('/:id/accept', protect, async (req, res, next) => {
 
 /**
  * POST /api/volunteer-tasks/:id/complete
- * Volunteer marks task completed with field verification notes
+ * Volunteer marks task completed with field verification notes and Cloudinary photo proof
  */
-router.post('/:id/complete', protect, async (req, res, next) => {
+router.post('/:id/complete', protect, upload.single('proofPhoto'), async (req, res, next) => {
   try {
-    const { proofNotes } = req.body;
+    const { proofNotes, proofPhotoBase64 } = req.body;
     const task = await VolunteerTask.findById(req.params.id);
     if (!task) return res.status(404).json({ success: false, message: 'Task not found' });
 
     const volunteerEntry = task.volunteersAssigned.find(v => v.userId?.toString() === req.user._id.toString());
-    if (volunteerEntry) {
-      volunteerEntry.status = 'COMPLETED';
-      volunteerEntry.completedAt = new Date();
-      volunteerEntry.proofNotes = proofNotes || 'Task completed successfully according to operational protocol.';
+    if (!volunteerEntry) {
+      return res.status(400).json({ success: false, message: 'You are not assigned to this micro-task' });
     }
 
-    // If all assigned have completed, close task
+    let photoUrl = null;
+    let photoPublicId = null;
+
+    // 1. Process Multipart File Upload via Multer Buffer
+    if (req.file && req.file.buffer) {
+      try {
+        const uploadResult = await uploadBufferToCloudinary(req.file.buffer, {
+          tags: ['volunteer_proof', `task_${task._id}`, `user_${req.user._id}`]
+        });
+        photoUrl = uploadResult.secure_url;
+        photoPublicId = uploadResult.public_id;
+      } catch (uploadErr) {
+        console.error('Cloudinary stream upload error:', uploadErr);
+      }
+    } 
+    // 2. Process Base64 fallback if sent via JSON
+    else if (proofPhotoBase64 && typeof proofPhotoBase64 === 'string' && proofPhotoBase64.startsWith('data:image/')) {
+      try {
+        const { cloudinary } = require('../config/cloudinary');
+        const uploadResult = await cloudinary.uploader.upload(proofPhotoBase64, {
+          folder: 'cyclone_ops/volunteer_proofs',
+          resource_type: 'image',
+          tags: ['volunteer_proof', `task_${task._id}`, `user_${req.user._id}`],
+          transformation: [
+            { quality: 'auto:good', fetch_format: 'auto' },
+            { width: 1600, height: 1600, crop: 'limit' }
+          ]
+        });
+        photoUrl = uploadResult.secure_url;
+        photoPublicId = uploadResult.public_id;
+      } catch (b64Err) {
+        console.error('Cloudinary base64 upload error:', b64Err);
+      }
+    }
+
+    volunteerEntry.status = 'COMPLETED';
+    volunteerEntry.completedAt = new Date();
+    volunteerEntry.proofNotes = proofNotes || 'Task completed successfully according to operational protocol.';
+    
+    if (photoUrl) {
+      volunteerEntry.proofPhotoUrl = photoUrl;
+      volunteerEntry.proofPhotoPublicId = photoPublicId;
+    }
+
+    // If all assigned volunteers have completed, close the task
     const allDone = task.volunteersAssigned.length > 0 && task.volunteersAssigned.every(v => v.status === 'COMPLETED');
     if (allDone) {
       task.status = 'COMPLETED';
@@ -203,13 +260,16 @@ router.post('/:id/complete', protect, async (req, res, next) => {
         taskId: task._id,
         volunteerName: req.user.name,
         taskTitle: task.title,
-        status: task.status
+        status: task.status,
+        proofPhotoUrl: photoUrl
       });
     } catch (e) {}
 
     res.json({
       success: true,
-      message: `Task '${task.title}' marked as completed. Operation verified!`,
+      message: photoUrl 
+        ? `Task '${task.title}' marked as completed. Photo proof verified and stored on Cloudinary!`
+        : `Task '${task.title}' marked as completed. Operational notes verified!`,
       data: task
     });
   } catch (err) {
