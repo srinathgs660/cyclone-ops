@@ -18,8 +18,10 @@ const CATEGORIES = [
 ];
 
 const VolunteerTaskBoard = () => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const { socket } = useSocket();
+
+  const getAuthToken = () => token || localStorage.getItem('eoc_token') || localStorage.getItem('token');
 
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -113,9 +115,9 @@ const VolunteerTaskBoard = () => {
 
     try {
       setSubmittingBroadcast(true);
-      const token = localStorage.getItem('token');
+      const authToken = getAuthToken();
       const res = await axios.post('/api/volunteer-tasks', newTaskForm, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${authToken}` }
       });
 
       if (res.data.success) {
@@ -141,13 +143,13 @@ const VolunteerTaskBoard = () => {
 
   const handleAcceptTask = async (taskId, taskTitle) => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
+      const authToken = getAuthToken();
+      if (!user && !authToken) {
         showNotification('Please sign in to accept volunteer assignments.', 'error');
         return;
       }
       const res = await axios.post(`/api/volunteer-tasks/${taskId}/accept`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${authToken}` }
       });
       if (res.data.success) {
         showNotification(`You joined the squad for "${taskTitle}"!`, 'success');
@@ -164,7 +166,7 @@ const VolunteerTaskBoard = () => {
 
     try {
       setSubmittingProof(true);
-      const token = localStorage.getItem('token');
+      const authToken = getAuthToken();
       const formData = new FormData();
       formData.append('proofNotes', proofNotes || `Task completed at ${new Date().toLocaleTimeString()} by ${user?.name}.`);
       if (proofFile) {
@@ -173,7 +175,7 @@ const VolunteerTaskBoard = () => {
 
       const res = await axios.post(`/api/volunteer-tasks/${completionModalTask._id}/complete`, formData, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'multipart/form-data'
         }
       });
@@ -218,12 +220,20 @@ const VolunteerTaskBoard = () => {
   // Check if current user is assigned to a specific task
   const isUserAssigned = (task) => {
     if (!user || !task.volunteersAssigned) return false;
-    return task.volunteersAssigned.some(v => v.userId === user._id || v.userId?._id === user._id);
+    const currentId = user._id?.toString() || user.id?.toString();
+    return task.volunteersAssigned.some(v => {
+      const vId = v.userId?._id?.toString() || v.userId?.toString();
+      return (vId && vId === currentId) || (user.name && v.name === user.name);
+    });
   };
 
   const isUserCompleted = (task) => {
     if (!user || !task.volunteersAssigned) return false;
-    const v = task.volunteersAssigned.find(a => a.userId === user._id || a.userId?._id === user._id);
+    const currentId = user._id?.toString() || user.id?.toString();
+    const v = task.volunteersAssigned.find(a => {
+      const aId = a.userId?._id?.toString() || a.userId?.toString();
+      return (aId && aId === currentId) || (user.name && a.name === user.name);
+    });
     return v && v.status === 'COMPLETED';
   };
 
