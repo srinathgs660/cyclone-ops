@@ -79,6 +79,64 @@ const teamIcon = createCustomIcon(`
   </div>
 `, 'team-marker', [28, 28]);
 
+/**
+ * Splits an array of [lat, lng] coordinates into separate segments if the path crosses
+ * the 180° antimeridian (International Date Line). Prevents Leaflet from drawing a 
+ * line across the entire world map.
+ */
+const splitAntimeridian = (points) => {
+  if (!Array.isArray(points) || points.length === 0) return [];
+  if (points.length === 1) return points;
+
+  const segments = [];
+  let currentSegment = [points[0]];
+
+  for (let i = 1; i < points.length; i++) {
+    const prev = points[i - 1];
+    const curr = points[i];
+    const [prevLat, prevLng] = prev;
+    const [currLat, currLng] = curr;
+    const lngDiff = currLng - prevLng;
+
+    if (Math.abs(lngDiff) > 180) {
+      if (lngDiff > 180) {
+        // Crossing westward across 180/-180 line (e.g. -179 to +179)
+        const d1 = -180 - prevLng;
+        const d2 = currLng - 180;
+        const total = d1 + d2;
+        const t = total !== 0 ? d1 / total : 0.5;
+        const crossLat = prevLat + (currLat - prevLat) * t;
+
+        currentSegment.push([crossLat, -180]);
+        segments.push(currentSegment);
+        currentSegment = [[crossLat, 180], curr];
+      } else {
+        // Crossing eastward across 180/-180 line (e.g. +179 to -179)
+        const d1 = 180 - prevLng;
+        const d2 = currLng - (-180);
+        const total = d1 + d2;
+        const t = total !== 0 ? d1 / total : 0.5;
+        const crossLat = prevLat + (currLat - prevLat) * t;
+
+        currentSegment.push([crossLat, 180]);
+        segments.push(currentSegment);
+        currentSegment = [[crossLat, -180], curr];
+      }
+    } else {
+      currentSegment.push(curr);
+    }
+  }
+
+  if (currentSegment.length > 0) {
+    segments.push(currentSegment);
+  }
+
+  const validSegments = segments.filter(seg => seg.length >= 2);
+  if (validSegments.length === 0) return [];
+  if (validSegments.length === 1) return validSegments[0];
+  return validSegments;
+};
+
 const CommandMap = ({
   cyclones = [],
   selectedCycloneId,
@@ -435,7 +493,7 @@ const CommandMap = ({
 
               {/* Past Solid Track */}
               <Polyline
-                positions={pastPositions}
+                positions={splitAntimeridian(pastPositions)}
                 pathOptions={{ color: isSelected ? '#38BDF8' : '#64748B', weight: isSelected ? 3 : 2, opacity: 0.7 }}
               />
 
@@ -443,7 +501,7 @@ const CommandMap = ({
               {layers.forecast && isSelected && c.forecastTrack && c.forecastTrack.length > 0 && (
                 <>
                   <Polyline
-                    positions={[[cLat, cLng], ...c.forecastTrack.map(f => [f.coordinates[1], f.coordinates[0]])]}
+                    positions={splitAntimeridian([[cLat, cLng], ...c.forecastTrack.map(f => [f.coordinates[1], f.coordinates[0]])])}
                     pathOptions={{ color: '#F43F5E', weight: 3, dashArray: '6, 6', opacity: 0.9 }}
                   />
 
@@ -507,7 +565,7 @@ const CommandMap = ({
                     {/* Landfall Approach Vector Line to High-Threat Stations */}
                     {(st.threatBadgeColor === 'rose' || st.threatBadgeColor === 'orange') && (
                       <Polyline
-                        positions={[[cLat, cLng], [st.coordinates[1], st.coordinates[0]]]}
+                        positions={splitAntimeridian([[cLat, cLng], [st.coordinates[1], st.coordinates[0]]])}
                         pathOptions={{ 
                           color: st.threatBadgeColor === 'rose' ? '#EF4444' : '#F97316', 
                           weight: st.threatBadgeColor === 'rose' ? 2 : 1.5, 
