@@ -305,6 +305,44 @@
   font-weight: 600;
 }
 
+.light-theme .bg-indigo-500\/30,
+.light-theme .bg-indigo-500\/25,
+.light-theme .bg-indigo-500\/20,
+.light-theme .bg-indigo-500\/15,
+.light-theme .bg-indigo-500\/10,
+.light-theme [class*="bg-indigo-500/"] {
+  background-color: #E0E7FF !important;
+  color: #3730A3 !important;
+  border-color: #818CF8 !important;
+}
+.light-theme .text-indigo-100,
+.light-theme .text-indigo-200,
+.light-theme .text-indigo-300,
+.light-theme .text-indigo-400,
+.light-theme [class*="text-indigo-"] {
+  color: #3730A3 !important;
+  font-weight: 700 !important;
+}
+
+.light-theme .bg-sky-500\/30,
+.light-theme .bg-sky-500\/25,
+.light-theme .bg-sky-500\/20,
+.light-theme .bg-sky-500\/15,
+.light-theme .bg-sky-500\/10,
+.light-theme [class*="bg-sky-500/"] {
+  background-color: #E0F2FE !important;
+  color: #0369A1 !important;
+  border-color: #7DD3FC !important;
+}
+.light-theme .text-sky-100,
+.light-theme .text-sky-200,
+.light-theme .text-sky-300,
+.light-theme .text-sky-400,
+.light-theme [class*="text-sky-"] {
+  color: #0369A1 !important;
+  font-weight: 700 !important;
+}
+
 /* Banner Gradients & Hero Headers Overrides for Light Mode */
 .light-theme .from-\[\#0F172A\],
 .light-theme .via-\[\#131D31\],

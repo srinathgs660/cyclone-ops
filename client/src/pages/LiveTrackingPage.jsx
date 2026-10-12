@@ -144,6 +144,7 @@ const LiveTrackingPage = () => {
 
   // Map interactive states
   const [layerFilter, setLayerFilter] = useState('all'); // all, citizen, teams, volunteers
+  const [tileStyle, setTileStyle] = useState('osm'); // 'osm' | 'satellite' | 'dark'
   const [clickMode, setClickMode] = useState(null); // null | 'citizen' | 'team' | 'volunteer'
   const [simulatingApproach, setSimulatingApproach] = useState(false);
   const simIntervalRef = useRef(null);
@@ -490,8 +491,8 @@ const LiveTrackingPage = () => {
             disabled={!selectedSession}
             className={`flex items-center gap-2 rounded-xl border px-3.5 py-2.5 text-xs font-bold uppercase font-mono transition shadow-lg disabled:opacity-50 ${
               simulatingApproach
-                ? 'border-amber-400 bg-amber-500/25 text-amber-200'
-                : 'border-indigo-500/40 bg-indigo-500/20 text-indigo-200 hover:bg-indigo-500/30'
+                ? 'border-amber-500/50 bg-amber-500/20 text-amber-300'
+                : 'border-blue-500/40 bg-blue-500/20 text-blue-300 hover:bg-blue-500/30'
             }`}
             title="Watch the assigned Response Team and Volunteer move live toward the Citizen SOS location"
           >
@@ -515,7 +516,7 @@ const LiveTrackingPage = () => {
           <button
             onClick={handleRaiseInstantSos}
             disabled={creatingTestSos}
-            className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 px-3.5 py-2.5 text-xs font-black uppercase font-mono text-white shadow-lg shadow-rose-950/60 hover:from-rose-500 hover:to-red-600 transition disabled:opacity-50"
+            className="flex items-center gap-1.5 rounded-xl border border-rose-500/40 bg-rose-500/20 px-3.5 py-2.5 text-xs font-black uppercase font-mono text-rose-300 shadow-lg hover:bg-rose-500/30 transition disabled:opacity-50"
           >
             <AlertOctagon className="h-4 w-4" />
             <span>{creatingTestSos ? 'Launching...' : '+ Raise Live SOS'}</span>
@@ -525,7 +526,7 @@ const LiveTrackingPage = () => {
 
       {/* STATUS BANNER */}
       {statusBanner && (
-        <div className="flex items-center justify-between rounded-xl border border-cyan-500/40 bg-cyan-950/30 px-4 py-2.5 text-xs text-cyan-200 font-mono">
+        <div className="flex items-center justify-between rounded-xl border border-cyan-500/40 bg-cyan-500/15 px-4 py-2.5 text-xs text-cyan-300 font-mono">
           <div className="flex items-center gap-2">
             <Activity className="h-4 w-4 text-cyan-400 shrink-0 animate-pulse" />
             <span>{statusBanner}</span>
@@ -603,7 +604,7 @@ const LiveTrackingPage = () => {
                   key={item.step}
                   className={`rounded-xl border p-3 transition-all ${
                     active
-                      ? 'border-emerald-500/40 bg-emerald-950/25 text-emerald-200'
+                      ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-300'
                       : 'border-slate-800 bg-slate-900/60 text-slate-400'
                   }`}
                 >
@@ -683,31 +684,63 @@ const LiveTrackingPage = () => {
             {/* Top-left floating route distance/ETA HUD pill so labels never overlap markers */}
             {selectedSession && (
               <div className="absolute top-3 left-14 z-[400] flex flex-wrap items-center gap-2 pointer-events-none">
-                <div className="rounded-lg border border-rose-500/50 bg-[#0F172A]/95 px-2.5 py-1 text-[11px] font-mono font-bold text-rose-300 shadow-lg backdrop-blur-md">
+                <div className="rounded-lg border border-rose-500/40 bg-rose-500/15 px-2.5 py-1 text-[11px] font-mono font-bold text-rose-300 shadow-lg backdrop-blur-md">
                   🚨 SOS: {selectedSession.reporterName}
                 </div>
-                <div className="rounded-lg border border-sky-500/50 bg-[#0F172A]/95 px-2.5 py-1 text-[11px] font-mono font-bold text-sky-300 shadow-lg backdrop-blur-md">
+                <div className="rounded-lg border border-blue-500/40 bg-blue-500/15 px-2.5 py-1 text-[11px] font-mono font-bold text-blue-300 shadow-lg backdrop-blur-md">
                   🚒 Team: {selectedSession.assignedTeam?.distanceKm} km (ETA {selectedSession.assignedTeam?.etaMinutes}m)
                 </div>
-                <div className="rounded-lg border border-emerald-500/50 bg-[#0F172A]/95 px-2.5 py-1 text-[11px] font-mono font-bold text-emerald-300 shadow-lg backdrop-blur-md">
+                <div className="rounded-lg border border-emerald-500/40 bg-emerald-500/15 px-2.5 py-1 text-[11px] font-mono font-bold text-emerald-300 shadow-lg backdrop-blur-md">
                   🦺 Volunteer: {selectedSession.assignedVolunteer?.distanceKm} km (ETA {selectedSession.assignedVolunteer?.etaMinutes}m)
                 </div>
               </div>
             )}
+
+            {/* Top-right Street / Satellite / Dark Map Mode Switcher */}
+            <div className="absolute top-3 right-3 z-[400] flex items-center gap-1 rounded-xl border border-slate-700 bg-[#0F172A]/95 p-1 shadow-xl backdrop-blur-md">
+              {[
+                { id: 'osm', label: 'Street' },
+                { id: 'satellite', label: 'Satellite' },
+                { id: 'dark', label: 'Dark' }
+              ].map((m) => (
+                <button
+                  key={m.id}
+                  onClick={() => setTileStyle(m.id)}
+                  className={`rounded-lg px-2.5 py-1 text-[11px] font-bold font-mono transition ${
+                    tileStyle === m.id
+                      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {m.label}
+                </button>
+              ))}
+            </div>
 
             <MapContainer
               center={citizenLatLng}
               zoom={14}
               style={{ height: '100%', width: '100%', background: '#0B1120' }}
             >
-              {/* High-Contrast Tactical Map Tiles (OpenStreetMap - 100% Free, No API Key, No Watermark) */}
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-                className="dark-map-tiles"
-                maxZoom={19}
-                minZoom={2}
-              />
+              {/* 100% Free, No API Key, No Watermark Map Tiles */}
+              {tileStyle === 'satellite' ? (
+                <TileLayer
+                  key="satellite"
+                  attribution="Tiles &copy; Esri"
+                  url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                  maxZoom={19}
+                  minZoom={2}
+                />
+              ) : (
+                <TileLayer
+                  key={tileStyle}
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  className={tileStyle === 'dark' ? 'tactical-dark-tiles' : ''}
+                  maxZoom={19}
+                  minZoom={2}
+                />
+              )}
 
               <MapViewUpdater center={citizenLatLng} />
               <MapClickPinMover

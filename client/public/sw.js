@@ -1,5 +1,5 @@
 // CycloneOps Emergency Operations - Lightweight PWA Service Worker
-const CACHE_NAME = 'cyclone-ops-v1';
+const CACHE_NAME = 'cyclone-ops-v4';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
