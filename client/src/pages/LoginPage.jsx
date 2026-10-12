@@ -34,7 +34,7 @@ const LoginPage = ({ defaultMode }) => {
   const [submitting, setSubmitting] = useState(false);
 
   const { login, register } = useAuth();
-  const { language, setLanguage, languages, t, isSpeaking, speakEmergencyWarning, stopVoiceAndSiren } = useLanguage();
+  const { language, setLanguage, supportedLanguages, t, isSpeaking, speakEmergencyWarning, stopVoiceBroadcast } = useLanguage();
   const { isLight, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
@@ -185,7 +185,7 @@ const LoginPage = ({ defaultMode }) => {
       <div className="w-full max-w-lg mb-4 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-800 bg-[#131D31]/95 px-3.5 py-2.5 shadow-xl">
         <div className="flex items-center gap-1.5 flex-wrap">
           <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
-          {languages.map((lang) => (
+          {(supportedLanguages || []).map((lang) => (
             <button
               key={lang.code}
               type="button"
@@ -204,7 +204,7 @@ const LoginPage = ({ defaultMode }) => {
         <div className="flex items-center gap-1.5">
           <button
             type="button"
-            onClick={() => isSpeaking ? stopVoiceAndSiren() : speakEmergencyWarning()}
+            onClick={() => isSpeaking ? stopVoiceBroadcast() : speakEmergencyWarning()}
             className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-bold font-mono transition ${
               isSpeaking
                 ? 'border-rose-500 bg-rose-600 text-white animate-pulse'
@@ -213,7 +213,7 @@ const LoginPage = ({ defaultMode }) => {
             title="Play Regional Audio Voice Siren Warning"
           >
             {isSpeaking ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
-            <span>{isSpeaking ? t('stopVoiceAlert', 'Stop Audio') : t('voiceWarningBtn', '🔊 Voice Siren')}</span>
+            <span>{isSpeaking ? t('stopVoiceBtn', 'Stop') : t('voiceSirenBtn', 'Voice Siren')}</span>
           </button>
 
           <button
@@ -234,7 +234,7 @@ const LoginPage = ({ defaultMode }) => {
             onClick={() => navigate('/welcome')}
             className="inline-flex items-center gap-1.5 mb-3 rounded-full border border-slate-700 bg-slate-800/80 px-3 py-1 text-[11px] font-mono text-cyan-400 hover:bg-slate-750 transition"
           >
-            {t('loginBackOverview', '← View Platform Overview & Animations')}
+            {t('loginBackBtn', '← View Platform Overview & Animations')}
           </button>
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl p-1 bg-gradient-to-br from-cyan-500/30 to-blue-600/30 border border-cyan-400/40 shadow-2xl shadow-cyan-900/40 backdrop-blur-md">
             <img src="/logo.png" alt="CycloneCommand Logo" className="h-full w-full object-contain rounded-2xl" />
@@ -259,7 +259,7 @@ const LoginPage = ({ defaultMode }) => {
             }`}
           >
             <LogIn className="h-4 w-4 text-white" />
-            <span>{t('signInTab', 'Sign In')}</span>
+            <span>{t('loginTabSignIn', 'Sign In')}</span>
           </button>
           <button
             type="button"
@@ -271,7 +271,7 @@ const LoginPage = ({ defaultMode }) => {
             }`}
           >
             <UserPlus className="h-4 w-4 text-white" />
-            <span>{t('signUpTab', 'Sign Up / Register')}</span>
+            <span>{t('loginTabSignUp', 'Sign Up / Register')}</span>
           </button>
         </div>
 
@@ -296,7 +296,7 @@ const LoginPage = ({ defaultMode }) => {
             <div>
               <form onSubmit={handleLogin} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">{t('emailIdentifier', 'Email Identifier')}</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('loginEmailLabel', 'Email Identifier')}</label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <input
@@ -311,7 +311,7 @@ const LoginPage = ({ defaultMode }) => {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">{t('passphrase', 'Passphrase')}</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('loginPassphraseLabel', 'Passphrase')}</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <input
@@ -330,7 +330,7 @@ const LoginPage = ({ defaultMode }) => {
                   disabled={submitting}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 text-xs font-extrabold uppercase tracking-wider text-white shadow-lg shadow-cyan-500/25 hover:from-cyan-400 hover:to-blue-500 transition-all disabled:opacity-50"
                 >
-                  {submitting ? t('authenticating', 'Authenticating...') : t('accessCommandBtn', 'Access Command System')}
+                  {submitting ? t('loginAuthenticating', 'Authenticating...') : t('loginSubmitBtn', 'Access Command System')}
                   <ArrowRight className="h-4 w-4 text-white" />
                 </button>
               </form>
@@ -343,7 +343,7 @@ const LoginPage = ({ defaultMode }) => {
               {/* Role Selection Grid */}
               <div>
                 <label className="block text-slate-300 font-semibold mb-2 font-mono uppercase text-[11px]">
-                  {t('selectRoleLabel', 'Select Operational Role')}
+                  {t('signupSelectRoleLabel', 'Select Operational Role')}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {roleCards.map((rc) => {
@@ -378,7 +378,7 @@ const LoginPage = ({ defaultMode }) => {
               {/* Personal Details */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">{t('fullNameLabel', 'Full Name')}</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('signupFullNameLabel', 'Full Name')}</label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <input
@@ -393,7 +393,7 @@ const LoginPage = ({ defaultMode }) => {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">{t('contactPhoneLabel', 'Contact Phone')}</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('signupPhoneLabel', 'Contact Phone')}</label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <input
@@ -410,8 +410,8 @@ const LoginPage = ({ defaultMode }) => {
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-slate-300 font-semibold">{t('emailAddressLabel', 'Email Address')}</label>
-                  <span className="text-[10px] text-slate-400 font-mono">Real / Permanent Email Required</span>
+                  <label className="block text-slate-300 font-semibold">{t('signupEmailLabel', 'Email Address')}</label>
+                  <span className="text-[10px] text-slate-400 font-mono">{t('signupRealEmailTag', 'Real / Permanent Email Required')}</span>
                 </div>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
@@ -431,7 +431,7 @@ const LoginPage = ({ defaultMode }) => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">{t('passwordLabel', 'Password')}</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('signupPasswordLabel', 'Password')}</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <input
@@ -447,7 +447,7 @@ const LoginPage = ({ defaultMode }) => {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">{t('confirmPasswordLabel', 'Confirm Password')}</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('signupConfirmPasswordLabel', 'Confirm Password')}</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <input
@@ -464,7 +464,7 @@ const LoginPage = ({ defaultMode }) => {
 
               {/* Coastal District Location */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">{t('coastalDistrictLabel', 'Assigned / Resident Coastal District')}</label>
+                <label className="block text-slate-300 font-semibold mb-1">{t('signupDistrictLabel', 'Assigned / Resident Coastal District')}</label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                   <select
@@ -484,7 +484,7 @@ const LoginPage = ({ defaultMode }) => {
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="block text-slate-300 font-semibold font-mono text-[11px] uppercase">
-                      {t('skillsLabel', 'Specialized Skills & Capabilities')}
+                      {t('signupSkillsLabel', 'Specialized Skills & Capabilities')}
                     </label>
                     <span className="text-[10px] text-cyan-400 font-mono">
                       {selectedSkills.length} Selected
@@ -517,18 +517,18 @@ const LoginPage = ({ defaultMode }) => {
                 disabled={submitting}
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-lg shadow-cyan-500/30 hover:from-cyan-400 hover:to-blue-500 transition-all disabled:opacity-50 mt-2"
               >
-                {submitting ? 'Registering...' : `${t('completeRegBtn', 'Complete Registration')} (${roleCards.find(r => r.role === regRole)?.title || 'Member'})`}
+                {submitting ? 'Registering...' : `${t('signupSubmitPrefix', 'Complete Registration as')} ${roleCards.find(r => r.role === regRole)?.title || 'Member'}`}
                 <ArrowRight className="h-4 w-4 text-white" />
               </button>
 
               <div className="text-center pt-2">
-                <span className="text-slate-400 text-xs">{t('alreadyAccount', 'Already have an account?')} </span>
+                <span className="text-slate-400 text-xs">{t('signupAlreadyAccount', 'Already have an account?')} </span>
                 <button
                   type="button"
                   onClick={() => setMode('login')}
                   className="text-cyan-400 font-bold hover:underline font-mono text-xs"
                 >
-                  {t('signInHere', 'Sign In here')}
+                  {t('signupSignInHere', 'Sign In here')}
                 </button>
               </div>
             </form>

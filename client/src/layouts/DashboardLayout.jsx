@@ -625,7 +625,7 @@ const DashboardLayout = () => {
                     aria-label="Select Regional Language"
                     className="bg-transparent text-[11px] font-bold text-white focus:outline-none cursor-pointer font-mono"
                   >
-                    {languages.map((lang) => (
+                    {(supportedLanguages || []).map((lang) => (
                       <option key={lang.code} value={lang.code} className="bg-slate-900 text-white">
                         {lang.nativeName} ({lang.name})
                       </option>
@@ -635,7 +635,7 @@ const DashboardLayout = () => {
 
                 {/* 1-Click Voice Siren Button in Hidden Top Bar Mode */}
                 <button
-                  onClick={() => isSpeaking ? stopVoiceAndSiren() : speakEmergencyWarning()}
+                  onClick={() => isSpeaking ? stopVoiceBroadcast() : speakEmergencyWarning()}
                   className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-mono font-bold transition ${
                     isSpeaking
                       ? 'border-rose-500 bg-rose-600 text-white animate-pulse'
@@ -644,7 +644,7 @@ const DashboardLayout = () => {
                   title="Broadcast Regional Audio Voice Siren & Evacuation Warning"
                 >
                   {isSpeaking ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
-                  <span>{isSpeaking ? t('stopVoiceAlert', 'Stop Audio') : t('voiceWarningBtn', '🔊 Voice Siren')}</span>
+                  <span>{isSpeaking ? t('stopVoiceBtn', 'Stop') : t('voiceSirenBtn', 'Voice Siren')}</span>
                 </button>
 
                 <button

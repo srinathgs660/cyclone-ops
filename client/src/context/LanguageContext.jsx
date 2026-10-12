@@ -896,9 +896,9 @@ export const LanguageProvider = ({ children }) => {
   }, []);
 
   const t = useCallback(
-    (key) => {
+    (key, fallback) => {
       const currentDict = TRANSLATIONS[language] || TRANSLATIONS.en;
-      return currentDict[key] || TRANSLATIONS.en[key] || key;
+      return currentDict[key] || TRANSLATIONS.en[key] || fallback || key;
     },
     [language]
   );
@@ -1091,12 +1091,14 @@ export const LanguageProvider = ({ children }) => {
         setLanguage,
         currentLanguageMeta,
         supportedLanguages: SUPPORTED_LANGUAGES,
+        languages: SUPPORTED_LANGUAGES,
         t,
         isSpeaking,
         includeSiren,
         setIncludeSiren,
         speakEmergencyWarning,
-        stopVoiceBroadcast
+        stopVoiceBroadcast,
+        stopVoiceAndSiren: stopVoiceBroadcast
       }}
     >
       {children}
