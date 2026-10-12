@@ -680,14 +680,33 @@ const LiveTrackingPage = () => {
 
           {/* Leaflet Map Container */}
           <div className="relative h-[500px] sm:h-[580px] w-full">
+            {/* Top-left floating route distance/ETA HUD pill so labels never overlap markers */}
+            {selectedSession && (
+              <div className="absolute top-3 left-14 z-[400] flex flex-wrap items-center gap-2 pointer-events-none">
+                <div className="rounded-lg border border-rose-500/50 bg-[#0F172A]/95 px-2.5 py-1 text-[11px] font-mono font-bold text-rose-300 shadow-lg backdrop-blur-md">
+                  🚨 SOS: {selectedSession.reporterName}
+                </div>
+                <div className="rounded-lg border border-sky-500/50 bg-[#0F172A]/95 px-2.5 py-1 text-[11px] font-mono font-bold text-sky-300 shadow-lg backdrop-blur-md">
+                  🚒 Team: {selectedSession.assignedTeam?.distanceKm} km (ETA {selectedSession.assignedTeam?.etaMinutes}m)
+                </div>
+                <div className="rounded-lg border border-emerald-500/50 bg-[#0F172A]/95 px-2.5 py-1 text-[11px] font-mono font-bold text-emerald-300 shadow-lg backdrop-blur-md">
+                  🦺 Volunteer: {selectedSession.assignedVolunteer?.distanceKm} km (ETA {selectedSession.assignedVolunteer?.etaMinutes}m)
+                </div>
+              </div>
+            )}
+
             <MapContainer
               center={citizenLatLng}
               zoom={14}
               style={{ height: '100%', width: '100%', background: '#0B1120' }}
             >
+              {/* High-Contrast Tactical Map Tiles (OpenStreetMap - 100% Free, No API Key, No Watermark) */}
               <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                className="dark-map-tiles"
+                maxZoom={19}
+                minZoom={2}
               />
 
               <MapViewUpdater center={citizenLatLng} />
@@ -717,7 +736,6 @@ const LiveTrackingPage = () => {
 
                     <Marker position={citizenLatLng} icon={createCitizenSosIcon()}>
                       <Tooltip
-                        permanent
                         direction="top"
                         offset={[0, -20]}
                         className="font-mono text-xs font-bold"
@@ -760,13 +778,13 @@ const LiveTrackingPage = () => {
                     <Polyline
                       positions={[teamLatLng, citizenLatLng]}
                       pathOptions={{
-                        color: '#0284c7',
+                        color: '#38bdf8',
                         weight: 4,
                         dashArray: '10, 8',
-                        opacity: 0.9
+                        opacity: 0.95
                       }}
                     >
-                      <Tooltip permanent direction="center">
+                      <Tooltip sticky>
                         🚒 Team Route: {selectedSession.assignedTeam?.distanceKm} km (ETA{' '}
                         {selectedSession.assignedTeam?.etaMinutes}m)
                       </Tooltip>
@@ -776,9 +794,9 @@ const LiveTrackingPage = () => {
                       position={teamLatLng}
                       icon={createResponseTeamIcon(true)}
                     >
-                      <Tooltip direction="bottom" offset={[0, 14]} permanent>
+                      <Tooltip direction="top" offset={[0, -18]}>
                         🚒 {selectedSession.assignedTeam?.name} (
-                        {selectedSession.assignedTeam?.status})
+                        {selectedSession.assignedTeam?.status}) • {selectedSession.assignedTeam?.distanceKm} km
                       </Tooltip>
                       <Popup>
                         <div className="space-y-1.5 text-xs font-sans min-w-[210px]">
@@ -825,13 +843,13 @@ const LiveTrackingPage = () => {
                     <Polyline
                       positions={[volunteerLatLng, citizenLatLng]}
                       pathOptions={{
-                        color: '#059669',
+                        color: '#10b981',
                         weight: 4,
                         dashArray: '8, 8',
-                        opacity: 0.9
+                        opacity: 0.95
                       }}
                     >
-                      <Tooltip permanent direction="center">
+                      <Tooltip sticky>
                         🦺 Volunteer Route: {selectedSession.assignedVolunteer?.distanceKm} km
                         (ETA {selectedSession.assignedVolunteer?.etaMinutes}m)
                       </Tooltip>
@@ -841,9 +859,9 @@ const LiveTrackingPage = () => {
                       position={volunteerLatLng}
                       icon={createVolunteerIcon(true)}
                     >
-                      <Tooltip direction="bottom" offset={[0, 14]} permanent>
+                      <Tooltip direction="bottom" offset={[0, 14]}>
                         🦺 Volunteer: {selectedSession.assignedVolunteer?.name} (
-                        {selectedSession.assignedVolunteer?.status})
+                        {selectedSession.assignedVolunteer?.status}) • {selectedSession.assignedVolunteer?.distanceKm} km
                       </Tooltip>
                       <Popup>
                         <div className="space-y-1.5 text-xs font-sans min-w-[200px]">
