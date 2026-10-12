@@ -615,7 +615,38 @@ const DashboardLayout = () => {
                   Operational Grid • Bay of Bengal
                 </span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Regional Language Selector in Hidden Top Bar Mode */}
+                <div className="flex items-center gap-1 rounded-lg border border-cyan-500/40 bg-slate-900/90 px-2 py-1">
+                  <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+                  <select
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value)}
+                    aria-label="Select Regional Language"
+                    className="bg-transparent text-[11px] font-bold text-white focus:outline-none cursor-pointer font-mono"
+                  >
+                    {languages.map((lang) => (
+                      <option key={lang.code} value={lang.code} className="bg-slate-900 text-white">
+                        {lang.nativeName} ({lang.name})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 1-Click Voice Siren Button in Hidden Top Bar Mode */}
+                <button
+                  onClick={() => isSpeaking ? stopVoiceAndSiren() : speakEmergencyWarning()}
+                  className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-mono font-bold transition ${
+                    isSpeaking
+                      ? 'border-rose-500 bg-rose-600 text-white animate-pulse'
+                      : 'border-amber-500/50 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25'
+                  }`}
+                  title="Broadcast Regional Audio Voice Siren & Evacuation Warning"
+                >
+                  {isSpeaking ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+                  <span>{isSpeaking ? t('stopVoiceAlert', 'Stop Audio') : t('voiceWarningBtn', '🔊 Voice Siren')}</span>
+                </button>
+
                 <button
                   onClick={() => syncRealtimeCyclones()}
                   disabled={isSyncing}
@@ -623,7 +654,7 @@ const DashboardLayout = () => {
                   title="Sync Real-Time Cyclones"
                 >
                   <RefreshCw className={`h-3 w-3 ${isSyncing ? 'animate-spin' : ''}`} />
-                  <span className="text-[11px]">{isSyncing ? 'Syncing...' : 'Sync Telemetry'}</span>
+                  <span className="text-[11px]">{isSyncing ? t('syncing', 'Syncing...') : t('syncTelemetry', 'Sync Telemetry')}</span>
                 </button>
                 <button
                   onClick={toggleTheme}
@@ -631,7 +662,7 @@ const DashboardLayout = () => {
                   title="Toggle Light/Dark Theme"
                 >
                   {isLight ? <Moon className="h-3.5 w-3.5 text-indigo-400" /> : <Sun className="h-3.5 w-3.5 text-amber-400" />}
-                  <span className="text-[11px] font-mono">{isLight ? 'Dark' : 'Light'}</span>
+                  <span className="text-[11px] font-mono">{isLight ? t('dark', 'Dark') : t('light', 'Light')}</span>
                 </button>
                 <button
                   onClick={toggleTopBar}
@@ -639,7 +670,7 @@ const DashboardLayout = () => {
                   title="Restore Top Bar"
                 >
                   <ChevronDown className="h-3.5 w-3.5" />
-                  <span>Show Top Bar</span>
+                  <span>{t('showTopBar', 'Show Top Bar')}</span>
                 </button>
               </div>
             </div>

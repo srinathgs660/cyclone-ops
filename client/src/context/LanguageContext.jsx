@@ -52,6 +52,50 @@ export const SUPPORTED_LANGUAGES = [
 
 export const TRANSLATIONS = {
   en: {
+    // Landing Page
+    landingSubBrand: 'Disaster Operations EOC',
+    landingCitizenSosBtn: 'Citizen SOS',
+    landingSignUpBtn: 'Sign Up',
+    landingSignInBtn: 'Sign In',
+    landingStatusPill: 'Active Command Telemetry • Bay of Bengal & Arabian Sea',
+    landingHeroTitle: 'Centralized Cyclone Tracking, Impact Prediction & Relief Operations',
+    landingHeroSubtitle:
+      'A mission-critical Disaster Operations Command System connecting government authorities, tactical rescue forces, shelter managers, and vulnerable citizens in real time.',
+    landingCtaCommand: 'Launch Command Center',
+    landingCtaVolunteer: 'Sign Up as Volunteer / Responder',
+    landingCtaCitizen: 'Public Citizen Emergency Portal',
+    landingMetricWind: 'Sustained Wind Speed',
+    landingMetricEvacuees: 'Coastal Evacuees',
+    landingMetricShelters: 'Active Safe Shelters',
+    landingMetricResponse: 'Avg Response Time',
+    landingArchTag: 'End-to-End Operational Architecture',
+    landingArchTitle: 'Disaster Intelligence Built for Emergency Operations',
+    landingRoleTag: 'Role-Based Access Control Architecture',
+    landingRoleTitle: '6 Specialized Stakeholder Roles',
+    landingRoleSubtitle:
+      'Each operational stakeholder is provisioned with tailored emergency workflows and strictly segmented telemetry.',
+    // Login & Sign Up Page
+    loginBackBtn: '← View Platform Overview & Animations',
+    loginTitle: 'CycloneCommand EOC',
+    loginSubtitle: 'National Disaster Operations Command & Multi-Agency Response Platform',
+    loginTabSignIn: 'Sign In',
+    loginTabSignUp: 'Sign Up / Register',
+    loginEmailLabel: 'Email Identifier',
+    loginPassphraseLabel: 'Passphrase',
+    loginSubmitBtn: 'Access Command System',
+    loginAuthenticating: 'Authenticating...',
+    signupSelectRoleLabel: 'Select Operational Role',
+    signupFullNameLabel: 'Full Name',
+    signupPhoneLabel: 'Contact Phone',
+    signupEmailLabel: 'Email Address',
+    signupRealEmailTag: 'Real / Permanent Email Required',
+    signupPasswordLabel: 'Password',
+    signupConfirmPasswordLabel: 'Confirm Password',
+    signupDistrictLabel: 'Assigned / Resident Coastal District',
+    signupSkillsLabel: 'Specialized Skills & Capabilities',
+    signupSubmitPrefix: 'Complete Registration as',
+    signupAlreadyAccount: 'Already have an account?',
+    signupSignInHere: 'Sign In here',
     // Header & Global Controls
     opsCenter: 'Cyclone Operations Center',
     liveDataConnected: 'LIVE DATA CONNECTED',
@@ -154,6 +198,50 @@ export const TRANSLATIONS = {
   },
 
   ta: {
+    // Landing Page
+    landingSubBrand: 'பேரிடர் கட்டுப்பாட்டு மையம்',
+    landingCitizenSosBtn: 'மக்கள் SOS',
+    landingSignUpBtn: 'பதிவு செய்',
+    landingSignInBtn: 'உள்நுழை',
+    landingStatusPill: 'நேரடி புயல் கண்காணிப்பு • வங்காள விரிகுடா & அரபிக்கடல்',
+    landingHeroTitle: 'மத்திய புயல் கண்காணிப்பு, பாதிப்பு முன்கணிப்பு & மீட்பு தளம்',
+    landingHeroSubtitle:
+      'அரசு அதிகாரிகள், தேசிய பேரிடர் மீட்புப் படை (NDRF), பாதுகாப்பு முகாம் நிர்வாகிகள் மற்றும் கடலோர மக்களை நிகழ்நேரத்தில் இணைக்கும் ஒருங்கிணைந்த கட்டுப்பாட்டு தளம்.',
+    landingCtaCommand: 'கட்டுப்பாட்டு மையத்தைத் திற',
+    landingCtaVolunteer: 'தன்னார்வலர் / மீட்புப் படையாக இணையுங்கள்',
+    landingCtaCitizen: 'மக்கள் அவசர உதவி மையம் (SOS)',
+    landingMetricWind: 'காற்றின் வேகம்',
+    landingMetricEvacuees: 'மீட்கப்பட்ட மக்கள்',
+    landingMetricShelters: 'பாதுகாப்பு முகாம்கள்',
+    landingMetricResponse: 'சராசரி மீட்பு நேரம்',
+    landingArchTag: 'முழுமையான பேரிடர் செயல்பாட்டு கட்டமைப்பு',
+    landingArchTitle: 'அவசர கால மீட்புப் பணிகளுக்கான நவீன தொழில்நுட்பம்',
+    landingRoleTag: 'பங்கு அடிப்படையிலான அணுகல் கட்டுப்பாடு',
+    landingRoleTitle: '6 சிறப்பு செயல்பாட்டுப் பிரிவுகள்',
+    landingRoleSubtitle:
+      'ஒவ்வொரு பிரிவினருக்கும் பிரத்யேக அவசர கால பணித்தளங்கள் மற்றும் நேரடி தகவல் பலகைகள்.',
+    // Login & Sign Up Page
+    loginBackBtn: '← முகப்புப் பக்கத்திற்குத் திரும்பு',
+    loginTitle: 'சைக்ளோன் கமாண்ட் (EOC)',
+    loginSubtitle: 'தேசிய பேரிடர் கட்டுப்பாட்டு மற்றும் பன்முக மீட்பு தளம்',
+    loginTabSignIn: 'உள்நுழை (Sign In)',
+    loginTabSignUp: 'புதிய கணக்கு பதிவு (Register)',
+    loginEmailLabel: 'மின்னஞ்சல் முகவரி (Email)',
+    loginPassphraseLabel: 'கடவுச்சொல் (Password)',
+    loginSubmitBtn: 'கட்டுப்பாட்டு தளத்தில் உள்நுழை',
+    loginAuthenticating: 'சரிபார்க்கப்படுகிறது...',
+    signupSelectRoleLabel: 'உங்கள் செயல்பாட்டுப் பங்கைத் தேர்ந்தெடுக்கவும்',
+    signupFullNameLabel: 'முழு பெயர்',
+    signupPhoneLabel: 'தொலைபேசி எண்',
+    signupEmailLabel: 'மின்னஞ்சல் முகவரி',
+    signupRealEmailTag: 'நிரந்தர மின்னஞ்சல் அவசியம்',
+    signupPasswordLabel: 'கடவுச்சொல்',
+    signupConfirmPasswordLabel: 'கடவுச்சொல் உறுதிப்படுத்தல்',
+    signupDistrictLabel: 'கடலோர மாவட்டம்',
+    signupSkillsLabel: 'சிறப்பு மீட்புத் திறன்கள்',
+    signupSubmitPrefix: 'பதிவை நிறைவு செய்:',
+    signupAlreadyAccount: 'ஏற்கனவே கணக்கு உள்ளதா?',
+    signupSignInHere: 'இங்கே உள்நுழையவும்',
     // Header & Global Controls
     opsCenter: 'புயல் கட்டுப்பாட்டு மையம்',
     liveDataConnected: 'நேரடி தகவல் இணைப்பு',
@@ -256,6 +344,50 @@ export const TRANSLATIONS = {
   },
 
   te: {
+    // Landing Page
+    landingSubBrand: 'విపత్తు కార్యకలాపాల కేంద్రం (EOC)',
+    landingCitizenSosBtn: 'పౌర SOS',
+    landingSignUpBtn: 'రిజిస్టర్',
+    landingSignInBtn: 'సైన్ ఇన్',
+    landingStatusPill: 'ప్రత్యక్ష తుఫాను టెలిమెట్రీ • బంగాళాఖాతం & అరేబియా సముద్రం',
+    landingHeroTitle: 'కేంద్రీకృత తుఫాను ట్రాకింగ్, ప్రభావ అంచనా & సహాయ కార్యకలాపాలు',
+    landingHeroSubtitle:
+      'ప్రభుత్వ అధికారులు, NDRF రెస్క్యూ బలగాలు, పునరావాస కేంద్రాల నిర్వాహకులు మరియు తీరప్రాంత ప్రజలను రియల్-టైమ్‌లో అనుసంధానించే కమాండ్ సిస్టమ్.',
+    landingCtaCommand: 'కమాండ్ సెంటర్ ప్రారంభించండి',
+    landingCtaVolunteer: 'వాలంటీర్ / రెస్పాండర్‌గా చేరండి',
+    landingCtaCitizen: 'పౌర అత్యవసర సహాయ పోర్టల్ (SOS)',
+    landingMetricWind: 'గాలి వేగం',
+    landingMetricEvacuees: 'తరలించిన ప్రజలు',
+    landingMetricShelters: 'సురక్షిత షెల్టర్లు',
+    landingMetricResponse: 'సగటు ప్రతిస్పందన సమయం',
+    landingArchTag: 'సమగ్ర విపత్తు నిర్వహణ నిర్మాణం',
+    landingArchTitle: 'అత్యవసర కార్యకలాపాల కోసం ఆధునిక విపత్తు మేధస్సు',
+    landingRoleTag: 'రోల్-బేస్డ్ యాక్సెస్ కంట్రోల్',
+    landingRoleTitle: '6 ప్రత్యేక భాగస్వామ్య పాత్రలు',
+    landingRoleSubtitle:
+      'ప్రతి విభాగానికి ప్రత్యేక అత్యవసర వర్క్‌ఫ్లోలు మరియు ప్రత్యక్ష సమాచార వ్యవస్థ.',
+    // Login & Sign Up Page
+    loginBackBtn: '← హోమ్ పేజీకి తిరిగి వెళ్ళండి',
+    loginTitle: 'సైక్లోన్ కమాండ్ (EOC)',
+    loginSubtitle: 'జాతీయ విపత్తు నిర్వహణ & బహుళ-ఏజెన్సీ రెస్క్యూ ప్లాట్‌ఫారమ్',
+    loginTabSignIn: 'సైన్ ఇన్ (Sign In)',
+    loginTabSignUp: 'సైన్ అప్ / రిజిస్టర్',
+    loginEmailLabel: 'ఇమెయిల్ చిరునామా',
+    loginPassphraseLabel: 'పాస్‌వర్డ్',
+    loginSubmitBtn: 'కమాండ్ సిస్టమ్‌లోకి ప్రవేశించండి',
+    loginAuthenticating: 'ధృవీకరించబడుతోంది...',
+    signupSelectRoleLabel: 'మీ కార్యాచరణ పాత్రను ఎంచుకోండి',
+    signupFullNameLabel: 'పూర్తి పేరు',
+    signupPhoneLabel: 'ఫోన్ నంబర్',
+    signupEmailLabel: 'ఇమెయిల్ చిరునామా',
+    signupRealEmailTag: 'శాశ్వత ఇమెయిల్ అవసరం',
+    signupPasswordLabel: 'పాస్‌వర్డ్',
+    signupConfirmPasswordLabel: 'పాస్‌వర్డ్ నిర్ధారించండి',
+    signupDistrictLabel: 'తీరప్రాంత జిల్లా',
+    signupSkillsLabel: 'ప్రత్యేక రెస్క్యూ నైపుణ్యాలు',
+    signupSubmitPrefix: 'రిజిస్ట్రేషన్ పూర్తి చేయండి:',
+    signupAlreadyAccount: 'ఇప్పటికే ఖాతా ఉందా?',
+    signupSignInHere: 'ఇక్కడ సైన్ ఇన్ చేయండి',
     // Header & Global Controls
     opsCenter: 'తుఫాను కార్యకలాపాల కేంద్రం',
     liveDataConnected: 'లైవ్ డేటా కనెక్ట్ చేయబడింది',
@@ -358,6 +490,50 @@ export const TRANSLATIONS = {
   },
 
   hi: {
+    // Landing Page
+    landingSubBrand: 'आपदा संचालन केंद्र (EOC)',
+    landingCitizenSosBtn: 'नागरिक SOS',
+    landingSignUpBtn: 'पंजीकरण (Sign Up)',
+    landingSignInBtn: 'लॉग इन (Sign In)',
+    landingStatusPill: 'सक्रिय कमांड टेलीमेट्री • बंगाल की खाड़ी और अरब सागर',
+    landingHeroTitle: 'केंद्रीकृत चक्रवात ट्रैकिंग, प्रभाव पूर्वानुमान और राहत संचालन',
+    landingHeroSubtitle:
+      'सरकारी अधिकारियों, एनडीआरएफ (NDRF) बचाव बलों, आश्रय प्रबंधकों और तटीय नागरिकों को वास्तविक समय में जोड़ने वाला आपदा कमांड सिस्टम।',
+    landingCtaCommand: 'कमांड सेंटर खोलें',
+    landingCtaVolunteer: 'स्वयंसेवक / बचावकर्मी के रूप में जुड़ें',
+    landingCtaCitizen: 'नागरिक आपातकालीन सहायता पोर्टल',
+    landingMetricWind: 'अधिकतम पवन गति',
+    landingMetricEvacuees: 'सुरक्षित निकाले गए नागरिक',
+    landingMetricShelters: 'सक्रिय सुरक्षित आश्रय गृह',
+    landingMetricResponse: 'औसत बचाव प्रतिक्रिया समय',
+    landingArchTag: 'संपूर्ण आपदा संचालन वास्तुकला',
+    landingArchTitle: 'आपातकालीन अभियानों के लिए निर्मित आपदा बुद्धिमत्ता',
+    landingRoleTag: 'भूमिका-आधारित पहुंच नियंत्रण (RBAC)',
+    landingRoleTitle: '6 विशेष परिचालन भूमिकाएं',
+    landingRoleSubtitle:
+      'प्रत्येक हितधारक को समर्पित आपातकालीन वर्कफ़्लो और सुरक्षित टेलीमेट्री प्रदान की जाती है।',
+    // Login & Sign Up Page
+    loginBackBtn: '← मुख्य पृष्ठ पर वापस जाएं',
+    loginTitle: 'साइक्लोन कमांड (EOC)',
+    loginSubtitle: 'राष्ट्रीय आपदा संचालन कमांड और बहु-एजेंसी प्रतिक्रिया मंच',
+    loginTabSignIn: 'लॉग इन (Sign In)',
+    loginTabSignUp: 'पंजीकरण करें (Register)',
+    loginEmailLabel: 'ईमेल आईडी',
+    loginPassphraseLabel: 'पासवर्ड',
+    loginSubmitBtn: 'कमांड सिस्टम में प्रवेश करें',
+    loginAuthenticating: 'सत्यापित किया जा रहा है...',
+    signupSelectRoleLabel: 'अपनी परिचालन भूमिका चुनें',
+    signupFullNameLabel: 'पूरा नाम',
+    signupPhoneLabel: 'संपर्क फ़ोन नंबर',
+    signupEmailLabel: 'ईमेल पता',
+    signupRealEmailTag: 'स्थायी ईमेल आवश्यक',
+    signupPasswordLabel: 'पासवर्ड',
+    signupConfirmPasswordLabel: 'पासवर्ड की पुष्टि करें',
+    signupDistrictLabel: 'तटीय जिला',
+    signupSkillsLabel: 'विशेष बचाव कौशल और क्षमताएं',
+    signupSubmitPrefix: 'पंजीकरण पूरा करें:',
+    signupAlreadyAccount: 'क्या आपका पहले से खाता है?',
+    signupSignInHere: 'यहाँ लॉग इन करें',
     // Header & Global Controls
     opsCenter: 'चक्रवात संचालन केंद्र',
     liveDataConnected: 'लाइव डेटा कनेक्टेड',
@@ -460,6 +636,50 @@ export const TRANSLATIONS = {
   },
 
   bn: {
+    // Landing Page
+    landingSubBrand: 'দুর্যোগ পরিচালনা কেন্দ্র (EOC)',
+    landingCitizenSosBtn: 'নাগরিক SOS',
+    landingSignUpBtn: 'রেজিস্টার (Sign Up)',
+    landingSignInBtn: 'সাইন ইন (Sign In)',
+    landingStatusPill: 'সক্রিয় কমান্ড টেলিমেট্রি • বঙ্গোপসাগর ও আরব সাগর',
+    landingHeroTitle: 'কেন্দ্রীয় ঘূর্ণিঝড় ট্র্যাকিং, প্রভাব পূর্বাভাস ও ত্রাণ পরিচালনা',
+    landingHeroSubtitle:
+      'সরকারি কর্তৃপক্ষ, এনডিআরএফ (NDRF) উদ্ধারকারী বাহিনী, আশ্রয়কেন্দ্র ব্যবস্থাপক এবং উপকূলীয় নাগরিকদের রিয়েল-টাইমে সংযুক্ত করার কমান্ড সিস্টেম।',
+    landingCtaCommand: 'কমান্ড সেন্টার খুলুন',
+    landingCtaVolunteer: 'স্বেচ্ছাসেবক / উদ্ধারকারী হিসেবে যোগ দিন',
+    landingCtaCitizen: 'নাগরিক জরুরি সহায়তা পোর্টাল (SOS)',
+    landingMetricWind: 'বাতাসের গতিবেগ',
+    landingMetricEvacuees: 'উদ্ধারকৃত উপকূলীয় মানুষ',
+    landingMetricShelters: 'সক্রিয় নিরাপদ আশ্রয়কেন্দ্র',
+    landingMetricResponse: 'গড় উদ্ধার সময়',
+    landingArchTag: 'সম্পূর্ণ দুর্যোগ পরিচালনা কাঠামো',
+    landingArchTitle: 'জরুরি অভিযানের জন্য নির্মিত দুর্যোগ বুদ্ধিমত্তা',
+    landingRoleTag: 'ভূমিকা-ভিত্তিক অ্যাক্সেস কন্ট্রোল (RBAC)',
+    landingRoleTitle: '৬টি বিশেষায়িত কার্যকরী ভূমিকা',
+    landingRoleSubtitle:
+      'প্রতিটি অংশীজনের জন্য নির্ধারিত জরুরি কর্মপ্রবাহ এবং রিয়েল-টাইম টেলিমেট্রি।',
+    // Login & Sign Up Page
+    loginBackBtn: '← মূল পৃষ্ঠায় ফিরে যান',
+    loginTitle: 'সাইক্লোন কমান্ড (EOC)',
+    loginSubtitle: 'জাতীয় দুর্যোগ পরিচালনা কমান্ড ও মাল্টি-এজেন্সি রেসপন্স প্ল্যাটফর্ম',
+    loginTabSignIn: 'সাইন ইন (Sign In)',
+    loginTabSignUp: 'নিবন্ধন করুন (Register)',
+    loginEmailLabel: 'ইমেল আইডি',
+    loginPassphraseLabel: 'পাসওয়ার্ড',
+    loginSubmitBtn: 'কমান্ড সিস্টেমে প্রবেশ করুন',
+    loginAuthenticating: 'যাচাই করা হচ্ছে...',
+    signupSelectRoleLabel: 'আপনার কার্যকরী ভূমিকা নির্বাচন করুন',
+    signupFullNameLabel: 'সম্পূর্ণ নাম',
+    signupPhoneLabel: 'ফোন নম্বর',
+    signupEmailLabel: 'ইমেল ঠিকানা',
+    signupRealEmailTag: 'স্থায়ী ইমেল আবশ্যক',
+    signupPasswordLabel: 'পাসওয়ার্ড',
+    signupConfirmPasswordLabel: 'পাসওয়ার্ড নিশ্চিত করুন',
+    signupDistrictLabel: 'উপকূলীয় জেলা',
+    signupSkillsLabel: 'বিশেষ উদ্ধার দক্ষতা ও সক্ষমতা',
+    signupSubmitPrefix: 'নিবন্ধন সম্পূর্ণ করুন:',
+    signupAlreadyAccount: 'ইতিমধ্যে একটি অ্যাকাউন্ট আছে?',
+    signupSignInHere: 'এখানে সাইন ইন করুন',
     // Header & Global Controls
     opsCenter: 'ঘূর্ণিঝড় পরিচালনা কেন্দ্র',
     liveDataConnected: 'লাইভ ডেটা সংযুক্ত',
@@ -562,6 +782,100 @@ export const TRANSLATIONS = {
   }
 };
 
+// Page-level phrase dictionary for automatic DOM translation across all 15 dashboard pages
+const PAGE_PHRASE_TRANSLATIONS = {
+  'Disaster Operations Command Center': {
+    ta: 'பேரிடர் செயல்பாட்டுக் கட்டுப்பாட்டு மையம்',
+    te: 'విపత్తు కార్యకలాపాల కమాండ్ సెంటర్',
+    hi: 'आपदा संचालन कमांड सेंटर',
+    bn: 'দুর্যোগ পরিচালনা কমান্ড সেন্টার'
+  },
+  'Real-time cyclone tracking, impact prediction, evacuation planning, and relief coordination': {
+    ta: 'நேரடி புயல் கண்காணிப்பு, பாதிப்பு முன்கணிப்பு, வெளியேற்றத் திட்டமிடல் மற்றும் நிவாரண ஒருங்கிணைப்பு',
+    te: 'రియల్-టైమ్ తుఫాను ట్రాకింగ్, ప్రభావ అంచనా, తరలింపు ప్రణాళిక మరియు సహాయ సమన్వయం',
+    hi: 'रीयल-टाइम चक्रवात ट्रैकिंग, प्रभाव पूर्वानुमान, निकासी योजना और राहत समन्वय',
+    bn: 'রিয়েল-টাইম ঘূর্ণিঝড় ট্র্যাকিং, প্রভাব পূর্বাভাস, স্থানান্তর পরিকল্পনা ও ত্রাণ সমন্বয়'
+  },
+  'Live Global Tropical Cyclone Tracking': {
+    ta: 'உலகளாவிய நேரடி புயல் கண்காணிப்பு தளம்',
+    te: 'ప్రత్యక్ష ప్రపంచ తుఫాను ట్రాకింగ్',
+    hi: 'लाइव ग्लोबल चक्रवात ट्रैकिंग',
+    bn: 'লাইভ গ্লোবাল ঘূর্ণিঝড় ট্র্যাকিং'
+  },
+  'Evacuation Planning': {
+    ta: 'வெளியேற்றத் திட்டமிடல்',
+    te: 'తరలింపు ప్రణాళిక',
+    hi: 'निकासी योजना',
+    bn: 'স্থানান্তর পরিকল্পনা'
+  },
+  'Manage evacuation routes and shelter capacity': {
+    ta: 'வெளியேற்ற வழித்தடங்கள் மற்றும் பாதுகாப்பு முகாம் கொள்ளளவை நிர்வகிக்கவும்',
+    te: 'తరలింపు మార్గాలు మరియు షెల్టర్ సామర్థ్యాన్ని నిర్వహించండి',
+    hi: 'निकासी मार्गों और आश्रय क्षमता का प्रबंधन करें',
+    bn: 'স্থানান্তর রুট এবং আশ্রয়কেন্দ্রের ধারণক্ষমতা পরিচালনা করুন'
+  },
+  'Evacuation Routes': {
+    ta: 'வெளியேற்ற வழித்தடங்கள்',
+    te: 'తరలింపు మార్గాలు',
+    hi: 'निकासी मार्ग',
+    bn: 'স্থানান্তর রুট'
+  },
+  'Safe Shelters': {
+    ta: 'பாதுகாப்பு முகாம்கள்',
+    te: 'సురక్షిత షెల్టర్లు',
+    hi: 'सुरक्षित आश्रय गृह',
+    bn: 'নিরাপদ আশ্রয়কেন্দ্র'
+  },
+  'Transport Resources': {
+    ta: 'போக்குவரத்து வாகனங்கள்',
+    te: 'రవాణా వనరులు',
+    hi: 'परिवहन संसाधन',
+    bn: 'পরিবহন সংস্থান'
+  },
+  'Full Corridor': {
+    ta: 'முழு வழித்தடம்',
+    te: 'పూర్తి కారిడార్',
+    hi: 'संपूर्ण कॉरिडोर',
+    bn: 'সম্পূর্ণ করিডোর'
+  },
+  'Add Route Corridor': {
+    ta: 'புதிய வழித்தடம் சேர்',
+    te: 'కొత్త మార్గం జోడించు',
+    hi: 'नया मार्ग जोड़ें',
+    bn: 'নতুন রুট যোগ করুন'
+  },
+  'Turn-by-Turn Navigation': {
+    ta: 'திருப்பம் வாரியான வழிகாட்டி',
+    te: 'టర్న్-బై-టర్న్ నావిగేషన్',
+    hi: 'मोड़-दर-मोड़ नेविगेशन',
+    bn: 'টার্ন-বাই-টার্ন নেভিগেশন'
+  },
+  'Emergency Shelters Management & Real-Time Capacity': {
+    ta: 'அவசர பாதுகாப்பு முகாம்கள் மற்றும் நேரடி கொள்ளளவு மேலாண்மை',
+    te: 'అత్యవసర పునరావాస కేంద్రాలు & రియల్-టైమ్ సామర్థ్య నిర్వహణ',
+    hi: 'आपातकालीन आश्रय गृह प्रबंधन और लाइव क्षमता',
+    bn: 'জরুরি আশ্রয়কেন্দ্র ব্যবস্থাপনা ও রিয়েল-টাইম ধারণক্ষমতা'
+  },
+  'Emergency Incident Management & Tactical Triage': {
+    ta: 'அவசர சம்பவ மேலாண்மை மற்றும் மீட்பு முன்னுரிமை',
+    te: 'అత్యవసర సంఘటనల నిర్వహణ & రెస్క్యూ ప్రాధాన్యత',
+    hi: 'आपातकालीन घटना प्रबंधन और सामरिक प्राथमिकता',
+    bn: 'জরুরি ঘটনা ব্যবস্থাপনা ও উদ্ধার অগ্রাধিকার'
+  },
+  'Volunteer Micro-Tasking Engine': {
+    ta: 'தன்னார்வலர் களப்பணி ஒருங்கிணைப்பு தளம்',
+    te: 'వాలంటీర్ మైక్రో-టాస్కింగ్ ఇంజిన్',
+    hi: 'स्वयंसेवक माइक्रो-टास्किंग इंजन',
+    bn: 'স্বেচ্ছাসেবক মাইক্রো-টাস্কিং ইঞ্জিন'
+  },
+  'Relief Inventory, Warehouse Depots & Distribution Optimization': {
+    ta: 'நிவாரணப் பொருட்கள் கிடங்கு மற்றும் விநியோக மேலாண்மை',
+    te: 'సహాయ సామగ్రి నిల్వలు, గిడ్డంగులు & పంపిణీ ఆప్టిమైజేషన్',
+    hi: 'राहत सामग्री भंडार, गोदाम डिपो और वितरण अनुकूलन',
+    bn: 'ত্রাণ ভাণ্ডার, গুদাম ডিপো ও বিতরণ অপ্টিমাইজেশন'
+  }
+};
+
 export const LanguageProvider = ({ children }) => {
   // Default is ALWAYS English ('en')
   const [language, setLanguageState] = useState(() => {
@@ -572,6 +886,7 @@ export const LanguageProvider = ({ children }) => {
   const [includeSiren, setIncludeSiren] = useState(true);
   const audioCtxRef = useRef(null);
   const sirenTimerRef = useRef(null);
+  const originalTextMapRef = useRef(new WeakMap());
 
   const setLanguage = useCallback((langCode) => {
     if (TRANSLATIONS[langCode]) {
@@ -587,6 +902,44 @@ export const LanguageProvider = ({ children }) => {
     },
     [language]
   );
+
+  // Reversible DOM phrase localization across all dashboard pages
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    const applyDomTranslations = () => {
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+      let node;
+      while ((node = walker.nextNode())) {
+        const parentTag = node.parentElement?.tagName;
+        if (parentTag === 'SCRIPT' || parentTag === 'STYLE' || parentTag === 'OPTION') continue;
+
+        if (!originalTextMapRef.current.has(node)) {
+          const trimmed = node.nodeValue?.trim();
+          if (trimmed && PAGE_PHRASE_TRANSLATIONS[trimmed]) {
+            originalTextMapRef.current.set(node, node.nodeValue);
+          }
+        }
+
+        const orig = originalTextMapRef.current.get(node);
+        if (orig) {
+          const trimmedOrig = orig.trim();
+          const entry = PAGE_PHRASE_TRANSLATIONS[trimmedOrig];
+          if (entry) {
+            if (language === 'en') {
+              if (node.nodeValue !== orig) node.nodeValue = orig;
+            } else if (entry[language]) {
+              if (node.nodeValue !== entry[language]) node.nodeValue = entry[language];
+            }
+          }
+        }
+      }
+    };
+
+    applyDomTranslations();
+    const timer = setTimeout(applyDomTranslations, 250);
+    return () => clearTimeout(timer);
+  }, [language]);
 
   // Synthesize a realistic 1.4-second Civil Defense Dual-Tone Emergency Siren via Web Audio API
   const playSirenTone = useCallback(() => {
@@ -608,7 +961,6 @@ export const LanguageProvider = ({ children }) => {
         osc2.type = 'triangle';
 
         const now = ctx.currentTime;
-        // Rising & falling civil defense wail
         osc1.frequency.setValueAtTime(440, now);
         osc1.frequency.linearRampToValueAtTime(880, now + 0.65);
         osc1.frequency.linearRampToValueAtTime(520, now + 1.3);
@@ -660,7 +1012,6 @@ export const LanguageProvider = ({ children }) => {
     setIsSpeaking(false);
   }, []);
 
-  // Speak custom or default emergency evacuation warning in the selected regional language
   const speakEmergencyWarning = useCallback(
     async ({ customText, langOverride, withSiren = includeSiren } = {}) => {
       if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
@@ -681,7 +1032,6 @@ export const LanguageProvider = ({ children }) => {
       const voices = window.speechSynthesis.getVoices() || [];
       const langPrefix = langMeta.bcp47.split('-')[0].toLowerCase();
 
-      // Find exact regional voice (e.g. ta-IN, te-IN, hi-IN, bn-IN, en-IN)
       const matchedVoice =
         voices.find((v) => v.lang && v.lang.toLowerCase() === langMeta.bcp47.toLowerCase()) ||
         voices.find((v) => v.lang && v.lang.toLowerCase().startsWith(langPrefix));
@@ -691,8 +1041,6 @@ export const LanguageProvider = ({ children }) => {
         voices.find((v) => v.lang && v.lang.toLowerCase().startsWith('en')) ||
         voices[0];
 
-      // If browser has native voice for Tamil/Telugu/Hindi/Bengali, use native script;
-      // otherwise use phonetic Indian script + English summary so speech is guaranteed on all devices!
       const textToSpeak =
         customText ||
         (matchedVoice
@@ -722,7 +1070,6 @@ export const LanguageProvider = ({ children }) => {
     [includeSiren, language, playSirenTone, stopVoiceBroadcast]
   );
 
-  // Preload voices in Chrome/Edge
   useEffect(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.getVoices();

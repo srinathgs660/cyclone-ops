@@ -1,18 +1,45 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-   Radio, ShieldAlert, Navigation, Home, LifeBuoy, Bell,
-   ArrowRight, Shield, Activity, Users, ChevronRight, Play,
-   PhoneCall, AlertTriangle, Eye, Compass, HeartPulse
+  Radio,
+  ShieldAlert,
+  Navigation,
+  Home,
+  LifeBuoy,
+  Bell,
+  ArrowRight,
+  Shield,
+  Activity,
+  Users,
+  ChevronRight,
+  Play,
+  PhoneCall,
+  AlertTriangle,
+  Eye,
+  Compass,
+  HeartPulse,
+  Globe,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Sun, Moon } from 'lucide-react';
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme, isLight } = useTheme();
   const { user } = useAuth();
+  const {
+    language,
+    setLanguage,
+    supportedLanguages,
+    t,
+    isSpeaking,
+    speakEmergencyWarning,
+    stopVoiceBroadcast
+  } = useLanguage();
 
   const handleAccessSystem = () => {
     if (user) {
@@ -37,8 +64,6 @@ const LandingPage = () => {
       navigate('/login');
     }
   };
-
-  const [activeTab, setActiveTab] = useState('features');
 
   const capabilities = [
     {
@@ -88,7 +113,7 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0B1120] text-slate-100 font-['Plus_Jakarta_Sans',sans-serif] selection:bg-cyan-500 selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#0B1120] text-slate-100 font-['Plus_Jakarta_Sans',sans-serif] selection:bg-blue-600 selection:text-white overflow-x-hidden">
       {/* Dynamic Animated Background Mesh */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
@@ -98,9 +123,9 @@ const LandingPage = () => {
       </div>
 
       {/* Top Floating Navbar */}
-      <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-[#0F172A]/85 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-[#0F172A]/90 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-3 shrink-0">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl overflow-hidden p-0.5 border border-cyan-500/40 bg-slate-900 shadow-lg shadow-cyan-900/30">
               <img src="/logo.png" alt="CycloneCommand Logo" className="h-full w-full object-contain rounded-lg" />
             </div>
@@ -109,12 +134,53 @@ const LandingPage = () => {
                 CycloneCommand
               </span>
               <span className="text-[10px] font-mono text-cyan-400 font-semibold tracking-widest uppercase">
-                Disaster Operations EOC
+                {t('landingSubBrand')}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end">
+            {/* Regional Language Selector (English Default + Tamil, Telugu, Hindi, Bengali) */}
+            <div
+              className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/90 px-2.5 py-1.5 text-xs shadow-sm"
+              title="Select Language (English, தமிழ், తెలుగు, हिन्दी, বাংলা)"
+            >
+              <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                aria-label="Select Language"
+                className="bg-transparent text-xs font-bold text-slate-200 focus:outline-none cursor-pointer font-mono"
+              >
+                {supportedLanguages.map((lang) => (
+                  <option key={lang.code} value={lang.code} className="bg-slate-900 text-white">
+                    {lang.code === 'en' ? 'English (EN)' : `${lang.nativeName} (${lang.name})`}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 1-Click Audio Voice Siren Button */}
+            <button
+              type="button"
+              onClick={() => (isSpeaking ? stopVoiceBroadcast() : speakEmergencyWarning({ withSiren: true }))}
+              className="flex items-center gap-1.5 rounded-lg border border-rose-500/50 bg-rose-600 px-3 py-1.5 text-xs font-mono font-bold text-white shadow hover:bg-rose-500 transition"
+              style={{ backgroundColor: '#E11D48', color: '#FFFFFF' }}
+              title="Play Automated Audio Voice Siren Warning"
+            >
+              {isSpeaking ? (
+                <>
+                  <VolumeX className="h-3.5 w-3.5" style={{ color: '#FFFFFF' }} />
+                  <span className="hidden md:inline" style={{ color: '#FFFFFF' }}>{t('stopVoiceBtn')}</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 className="h-3.5 w-3.5" style={{ color: '#FFFFFF' }} />
+                  <span className="hidden md:inline" style={{ color: '#FFFFFF' }}>🔊 {t('voiceSirenBtn')}</span>
+                </>
+              )}
+            </button>
+
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
@@ -130,7 +196,7 @@ const LandingPage = () => {
               className="hidden sm:flex items-center gap-1.5 rounded-lg border border-rose-500/40 bg-rose-500/15 px-3 py-1.5 text-xs font-bold text-rose-300 hover:bg-rose-500/25 transition"
             >
               <HeartPulse className="h-4 w-4 text-rose-400 animate-pulse" />
-              Citizen SOS
+              {t('landingCitizenSosBtn')}
             </button>
 
             <button
@@ -138,21 +204,49 @@ const LandingPage = () => {
               className="hidden sm:flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/15 px-3 py-1.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/25 transition"
             >
               <Users className="h-4 w-4 text-emerald-400" />
-              Sign Up
+              {t('landingSignUpBtn')}
             </button>
 
             <button
               onClick={handleAccessSystem}
-              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-cyan-500/25 hover:brightness-110 transition"
+              className="flex items-center gap-2 rounded-lg bg-blue-600 bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-cyan-500/25 hover:brightness-110 transition"
+              style={{ backgroundColor: '#2563EB', color: '#FFFFFF' }}
             >
-              Sign In <ArrowRight className="h-3.5 w-3.5" />
+              <span style={{ color: '#FFFFFF' }}>{t('landingSignInBtn')}</span>
+              <ArrowRight className="h-3.5 w-3.5" style={{ color: '#FFFFFF' }} />
             </button>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative z-10 pt-12 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+      <section className="relative z-10 pt-10 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+        {/* Prominent 5-Language Quick Switcher Bar for Fishermen & Coastal Citizens */}
+        <div className="mx-auto mb-6 inline-flex flex-wrap items-center justify-center gap-1.5 rounded-2xl border border-slate-700/80 bg-[#131D31]/95 p-1.5 shadow-lg">
+          <span className="px-2.5 py-1 text-[11px] font-mono font-bold text-slate-400 flex items-center gap-1">
+            <Globe className="h-3.5 w-3.5 text-cyan-400" />
+            Language:
+          </span>
+          {supportedLanguages.map((lang) => {
+            const active = language === lang.code;
+            return (
+              <button
+                key={lang.code}
+                type="button"
+                onClick={() => setLanguage(lang.code)}
+                className={`rounded-xl px-3 py-1 text-xs font-bold transition ${
+                  active
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                }`}
+                style={active ? { backgroundColor: '#2563EB', color: '#FFFFFF' } : undefined}
+              >
+                {lang.code === 'en' ? 'English' : `${lang.nativeName} (${lang.name})`}
+              </button>
+            );
+          })}
+        </div>
+
         {/* Prominent Platform Logo */}
         <div className="mx-auto mb-6 flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-3xl p-1.5 bg-gradient-to-tr from-cyan-500/30 via-blue-600/20 to-teal-400/30 shadow-2xl shadow-cyan-500/25 border border-cyan-400/40 backdrop-blur-md hover:scale-105 transition-transform duration-300">
           <img src="/logo.png" alt="CycloneCommand Official Logo" className="h-full w-full object-contain rounded-2xl drop-shadow-lg" />
@@ -161,26 +255,27 @@ const LandingPage = () => {
         {/* Status Pill */}
         <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3.5 py-1 text-xs font-mono text-cyan-300 mb-6 shadow-inner">
           <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
-          <span>Active Command Telemetry • Bay of Bengal & Arabian Sea</span>
+          <span>{t('landingStatusPill')}</span>
         </div>
 
         {/* Hero Title */}
-        <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-white font-mono max-w-4xl mx-auto leading-tight">
-          Centralized Cyclone Tracking, Impact Prediction & Relief Operations
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white font-mono max-w-4xl mx-auto leading-tight">
+          {t('landingHeroTitle')}
         </h1>
 
         <p className="mt-6 text-sm sm:text-lg text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
-          A mission-critical Disaster Operations Command System connecting government authorities, 
-          tactical rescue forces, shelter managers, and vulnerable citizens in real time.
+          {t('landingHeroSubtitle')}
         </p>
 
         {/* CTA Buttons */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <button
             onClick={handleAccessSystem}
-            className="flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3.5 text-sm font-bold text-white shadow-xl shadow-cyan-600/30 hover:scale-[1.02] transition"
+            className="flex items-center gap-2.5 rounded-xl bg-blue-600 bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3.5 text-sm font-bold text-white shadow-xl shadow-cyan-600/30 hover:scale-[1.02] transition"
+            style={{ backgroundColor: '#2563EB', color: '#FFFFFF' }}
           >
-            Launch Command Center <ArrowRight className="h-4 w-4" />
+            <span style={{ color: '#FFFFFF' }}>{t('landingCtaCommand')}</span>
+            <ArrowRight className="h-4 w-4" style={{ color: '#FFFFFF' }} />
           </button>
 
           <button
@@ -188,7 +283,7 @@ const LandingPage = () => {
             className="flex items-center gap-2.5 rounded-xl border border-emerald-500/50 bg-emerald-500/15 px-6 py-3.5 text-sm font-bold text-emerald-300 shadow-lg hover:bg-emerald-500/25 transition"
           >
             <Users className="h-4 w-4 text-emerald-400" />
-            Sign Up as Volunteer / Responder
+            {t('landingCtaVolunteer')}
           </button>
 
           <button
@@ -196,32 +291,32 @@ const LandingPage = () => {
             className="flex items-center gap-2.5 rounded-xl border border-rose-500/50 bg-rose-500/10 px-6 py-3.5 text-sm font-bold text-rose-300 shadow-lg hover:bg-rose-500/20 transition"
           >
             <PhoneCall className="h-4 w-4 text-rose-400" />
-            Public Citizen Emergency Portal
+            {t('landingCtaCitizen')}
           </button>
         </div>
 
         {/* Live Metrics Showcase */}
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
           <div className="rounded-xl border border-slate-800 bg-[#131D31]/90 p-4 shadow-xl text-left">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block">Sustained Wind Speed</span>
+            <span className="text-[10px] font-mono uppercase text-slate-400 block">{t('landingMetricWind')}</span>
             <span className="text-2xl font-black font-mono text-cyan-400 mt-1 block">175 km/h</span>
             <span className="text-[11px] text-rose-400 font-semibold">Category 3 / 4</span>
           </div>
 
           <div className="rounded-xl border border-slate-800 bg-[#131D31]/90 p-4 shadow-xl text-left">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block">Coastal Evacuees</span>
+            <span className="text-[10px] font-mono uppercase text-slate-400 block">{t('landingMetricEvacuees')}</span>
             <span className="text-2xl font-black font-mono text-emerald-400 mt-1 block">82,000+</span>
             <span className="text-[11px] text-slate-400 font-semibold">68.4% Completed</span>
           </div>
 
           <div className="rounded-xl border border-slate-800 bg-[#131D31]/90 p-4 shadow-xl text-left">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block">Active Safe Shelters</span>
+            <span className="text-[10px] font-mono uppercase text-slate-400 block">{t('landingMetricShelters')}</span>
             <span className="text-2xl font-black font-mono text-amber-300 mt-1 block">18 Units</span>
             <span className="text-[11px] text-slate-400 font-semibold">Automatic Overflow Reroute</span>
           </div>
 
           <div className="rounded-xl border border-slate-800 bg-[#131D31]/90 p-4 shadow-xl text-left">
-            <span className="text-[10px] font-mono uppercase text-slate-400 block">Avg Response Time</span>
+            <span className="text-[10px] font-mono uppercase text-slate-400 block">{t('landingMetricResponse')}</span>
             <span className="text-2xl font-black font-mono text-purple-400 mt-1 block">18 Mins</span>
             <span className="text-[11px] text-slate-400 font-semibold">Geospatial Auto-Dispatch</span>
           </div>
@@ -232,10 +327,10 @@ const LandingPage = () => {
       <section className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-800/80">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <span className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest block">
-            End-to-End Operational Architecture
+            {t('landingArchTag')}
           </span>
           <h2 className="text-2xl sm:text-4xl font-extrabold uppercase font-mono text-white mt-2">
-            Disaster Intelligence Built for Emergency Operations
+            {t('landingArchTitle')}
           </h2>
         </div>
 
@@ -262,13 +357,13 @@ const LandingPage = () => {
       <section className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-800/80">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <span className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest block">
-            Role-Based Access Control Architecture
+            {t('landingRoleTag')}
           </span>
           <h2 className="text-2xl sm:text-3xl font-extrabold uppercase font-mono text-white mt-2">
-            6 Specialized Stakeholder Roles
+            {t('landingRoleTitle')}
           </h2>
           <p className="mt-2 text-xs text-slate-400">
-            Each operational stakeholder is provisioned with tailored emergency workflows and strictly segmented telemetry.
+            {t('landingRoleSubtitle')}
           </p>
         </div>
 

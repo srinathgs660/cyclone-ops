@@ -3,9 +3,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Shield, Lock, Mail, ArrowRight, User, Phone, MapPin, 
   CheckCircle, Users, HeartHandshake, Package, Truck, AlertTriangle,
-  LogIn, UserPlus
+  LogIn, UserPlus, Globe, Volume2, VolumeX, Sun, Moon
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 
 const LoginPage = ({ defaultMode }) => {
   const location = useLocation();
@@ -32,6 +34,8 @@ const LoginPage = ({ defaultMode }) => {
   const [submitting, setSubmitting] = useState(false);
 
   const { login, register } = useAuth();
+  const { language, setLanguage, languages, t, isSpeaking, speakEmergencyWarning, stopVoiceAndSiren } = useLanguage();
+  const { isLight, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const districtsList = [
@@ -56,28 +60,28 @@ const LoginPage = ({ defaultMode }) => {
   const roleCards = [
     {
       role: 'citizen',
-      title: 'Public Citizen',
+      title: t('roleCitizen', 'Public Citizen'),
       desc: 'Access emergency SOS, real-time threat radar & safe shelter navigation',
       icon: User,
       color: 'from-blue-500/20 to-cyan-500/20 text-cyan-400 border-cyan-500/30'
     },
     {
       role: 'volunteer',
-      title: 'Community Volunteer',
+      title: t('roleVolunteer', 'Community Volunteer'),
       desc: 'Join response teams, shelter relief, ration supply & field assistance',
       icon: HeartHandshake,
       color: 'from-emerald-500/20 to-teal-500/20 text-emerald-400 border-emerald-500/30'
     },
     {
       role: 'coordinator',
-      title: 'Logistics Coordinator',
+      title: t('roleCoordinator', 'Logistics Coordinator'),
       desc: 'Manage warehouse inventory, relief convoy manifests & shelter supply chain',
       icon: Package,
       color: 'from-amber-500/20 to-orange-500/20 text-amber-400 border-amber-500/30'
     },
     {
       role: 'responder',
-      title: 'Emergency Responder',
+      title: t('roleResponder', 'Emergency Responder'),
       desc: 'Tactical search & rescue squads (NDRF / SDRF), amphibious boats & medical triage',
       icon: Shield,
       color: 'from-rose-500/20 to-red-500/20 text-rose-400 border-rose-500/30'
@@ -176,7 +180,53 @@ const LoginPage = ({ defaultMode }) => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0B1120] p-4 font-['Plus_Jakarta_Sans',sans-serif]">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#0B1120] p-4 font-['Plus_Jakarta_Sans',sans-serif]">
+      {/* Top Multilingual & Audio Voice Siren Control Bar */}
+      <div className="w-full max-w-lg mb-4 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-800 bg-[#131D31]/95 px-3.5 py-2.5 shadow-xl">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+          {languages.map((lang) => (
+            <button
+              key={lang.code}
+              type="button"
+              onClick={() => setLanguage(lang.code)}
+              className={`rounded-lg px-2 py-1 text-[11px] font-bold transition-all border ${
+                language === lang.code
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white border-cyan-400 shadow-sm'
+                  : 'bg-slate-900/90 text-slate-300 border-slate-700 hover:border-cyan-500/50 hover:text-white'
+              }`}
+            >
+              {lang.nativeName}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => isSpeaking ? stopVoiceAndSiren() : speakEmergencyWarning()}
+            className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-bold font-mono transition ${
+              isSpeaking
+                ? 'border-rose-500 bg-rose-600 text-white animate-pulse'
+                : 'border-amber-500/50 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25'
+            }`}
+            title="Play Regional Audio Voice Siren Warning"
+          >
+            {isSpeaking ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+            <span>{isSpeaking ? t('stopVoiceAlert', 'Stop Audio') : t('voiceWarningBtn', '🔊 Voice Siren')}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/80 p-1.5 text-slate-300 hover:text-white transition"
+            title="Toggle Light / Dark Mode"
+          >
+            {isLight ? <Moon className="h-3.5 w-3.5 text-indigo-400" /> : <Sun className="h-3.5 w-3.5 text-amber-400" />}
+          </button>
+        </div>
+      </div>
+
       <div className="w-full max-w-lg space-y-5">
         {/* Brand */}
         <div className="text-center">
@@ -184,16 +234,16 @@ const LoginPage = ({ defaultMode }) => {
             onClick={() => navigate('/welcome')}
             className="inline-flex items-center gap-1.5 mb-3 rounded-full border border-slate-700 bg-slate-800/80 px-3 py-1 text-[11px] font-mono text-cyan-400 hover:bg-slate-750 transition"
           >
-            ← View Platform Overview & Animations
+            {t('loginBackOverview', '← View Platform Overview & Animations')}
           </button>
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl p-1 bg-gradient-to-br from-cyan-500/30 to-blue-600/30 border border-cyan-400/40 shadow-2xl shadow-cyan-900/40 backdrop-blur-md">
             <img src="/logo.png" alt="CycloneCommand Logo" className="h-full w-full object-contain rounded-2xl" />
           </div>
           <h1 className="mt-3 text-2xl font-black uppercase tracking-wider text-white font-mono">
-            CycloneCommand EOC
+            {t('loginTitle', 'CycloneCommand EOC')}
           </h1>
           <p className="mt-1 text-xs text-slate-400">
-            National Disaster Operations Command & Multi-Agency Response Platform
+            {t('loginSubtitle', 'National Disaster Operations Command & Multi-Agency Response Platform')}
           </p>
         </div>
 
@@ -209,7 +259,7 @@ const LoginPage = ({ defaultMode }) => {
             }`}
           >
             <LogIn className="h-4 w-4 text-white" />
-            <span>Sign In</span>
+            <span>{t('signInTab', 'Sign In')}</span>
           </button>
           <button
             type="button"
@@ -221,7 +271,7 @@ const LoginPage = ({ defaultMode }) => {
             }`}
           >
             <UserPlus className="h-4 w-4 text-white" />
-            <span>Sign Up / Register</span>
+            <span>{t('signUpTab', 'Sign Up / Register')}</span>
           </button>
         </div>
 
@@ -246,7 +296,7 @@ const LoginPage = ({ defaultMode }) => {
             <div>
               <form onSubmit={handleLogin} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Email Identifier</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('emailIdentifier', 'Email Identifier')}</label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <input
@@ -261,7 +311,7 @@ const LoginPage = ({ defaultMode }) => {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Passphrase</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('passphrase', 'Passphrase')}</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <input
@@ -280,7 +330,7 @@ const LoginPage = ({ defaultMode }) => {
                   disabled={submitting}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 text-xs font-extrabold uppercase tracking-wider text-white shadow-lg shadow-cyan-500/25 hover:from-cyan-400 hover:to-blue-500 transition-all disabled:opacity-50"
                 >
-                  {submitting ? 'Authenticating...' : 'Access Command System'}
+                  {submitting ? t('authenticating', 'Authenticating...') : t('accessCommandBtn', 'Access Command System')}
                   <ArrowRight className="h-4 w-4 text-white" />
                 </button>
               </form>
@@ -293,7 +343,7 @@ const LoginPage = ({ defaultMode }) => {
               {/* Role Selection Grid */}
               <div>
                 <label className="block text-slate-300 font-semibold mb-2 font-mono uppercase text-[11px]">
-                  Select Operational Role
+                  {t('selectRoleLabel', 'Select Operational Role')}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {roleCards.map((rc) => {
@@ -328,7 +378,7 @@ const LoginPage = ({ defaultMode }) => {
               {/* Personal Details */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Full Name</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('fullNameLabel', 'Full Name')}</label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <input
@@ -343,7 +393,7 @@ const LoginPage = ({ defaultMode }) => {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Contact Phone</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('contactPhoneLabel', 'Contact Phone')}</label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <input
@@ -360,7 +410,7 @@ const LoginPage = ({ defaultMode }) => {
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-slate-300 font-semibold">Email Address</label>
+                  <label className="block text-slate-300 font-semibold">{t('emailAddressLabel', 'Email Address')}</label>
                   <span className="text-[10px] text-slate-400 font-mono">Real / Permanent Email Required</span>
                 </div>
                 <div className="relative">
@@ -381,7 +431,7 @@ const LoginPage = ({ defaultMode }) => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Password</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('passwordLabel', 'Password')}</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <input
@@ -397,7 +447,7 @@ const LoginPage = ({ defaultMode }) => {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Confirm Password</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('confirmPasswordLabel', 'Confirm Password')}</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <input
@@ -414,7 +464,7 @@ const LoginPage = ({ defaultMode }) => {
 
               {/* Coastal District Location */}
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Assigned / Resident Coastal District</label>
+                <label className="block text-slate-300 font-semibold mb-1">{t('coastalDistrictLabel', 'Assigned / Resident Coastal District')}</label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                   <select
@@ -434,7 +484,7 @@ const LoginPage = ({ defaultMode }) => {
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="block text-slate-300 font-semibold font-mono text-[11px] uppercase">
-                      Specialized Skills & Capabilities
+                      {t('skillsLabel', 'Specialized Skills & Capabilities')}
                     </label>
                     <span className="text-[10px] text-cyan-400 font-mono">
                       {selectedSkills.length} Selected
@@ -467,18 +517,18 @@ const LoginPage = ({ defaultMode }) => {
                 disabled={submitting}
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-lg shadow-cyan-500/30 hover:from-cyan-400 hover:to-blue-500 transition-all disabled:opacity-50 mt-2"
               >
-                {submitting ? 'Registering...' : `Complete Registration as ${roleCards.find(r => r.role === regRole)?.title || 'Member'}`}
+                {submitting ? 'Registering...' : `${t('completeRegBtn', 'Complete Registration')} (${roleCards.find(r => r.role === regRole)?.title || 'Member'})`}
                 <ArrowRight className="h-4 w-4 text-white" />
               </button>
 
               <div className="text-center pt-2">
-                <span className="text-slate-400 text-xs">Already have an account? </span>
+                <span className="text-slate-400 text-xs">{t('alreadyAccount', 'Already have an account?')} </span>
                 <button
                   type="button"
                   onClick={() => setMode('login')}
                   className="text-cyan-400 font-bold hover:underline font-mono text-xs"
                 >
-                  Sign In here
+                  {t('signInHere', 'Sign In here')}
                 </button>
               </div>
             </form>
@@ -486,7 +536,7 @@ const LoginPage = ({ defaultMode }) => {
         </div>
 
         <div className="text-center text-[11px] text-slate-500 font-mono">
-          Strictly for authorized disaster management personnel & registered citizens. Security logs active.
+          {t('securityFooter', 'Strictly for authorized disaster management personnel & registered citizens. Security logs active.')}
         </div>
       </div>
     </div>
