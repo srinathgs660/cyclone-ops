@@ -745,19 +745,19 @@ const EvacuationPlanning = () => {
   return (
     <div className="w-full space-y-5 font-['Plus_Jakarta_Sans',sans-serif]">
       {/* ================= MAIN CONTAINER CARD ================= */}
-      <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-sm light-adapt-box transition-all">
+      <div className="rounded-2xl border border-slate-800 bg-[#131D31] p-5 sm:p-7 shadow-xl transition-all">
         
         {/* Top Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl overflow-hidden p-0.5 border border-blue-200 bg-slate-900 shadow-sm">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl overflow-hidden p-0.5 border border-cyan-500/30 bg-slate-900 shadow-sm">
               <img src="/logo.png" alt="CycloneCommand Logo" className="h-full w-full object-contain rounded-lg" />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wider text-slate-900 font-mono flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wider text-white font-mono flex items-center gap-2">
                 Evacuation Planning
               </h1>
-              <p className="text-xs sm:text-sm text-slate-500 font-medium">
+              <p className="text-xs sm:text-sm text-slate-400 font-medium">
                 Manage evacuation routes and shelter capacity
               </p>
             </div>
@@ -767,17 +767,18 @@ const EvacuationPlanning = () => {
           <div className="flex items-center gap-2.5">
             <button
               onClick={handleResetView}
-              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition shadow-xs"
+              className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800/80 px-3 py-2 text-xs font-bold text-slate-200 hover:bg-slate-700 transition shadow-xs"
               title="Reset Map to Full Corridor"
             >
-              <Compass className="h-4 w-4 text-blue-600" />
+              <Compass className="h-4 w-4 text-cyan-400" />
               <span>Full Corridor</span>
             </button>
 
             {isAdmin && (
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-blue-500/20 hover:brightness-110 transition"
+                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-2 text-xs font-bold uppercase tracking-wider shadow-md shadow-blue-500/20 hover:brightness-110 transition"
+                style={{ color: '#ffffff' }}
               >
                 <Plus className="h-4 w-4" />
                 <span>Add Route Corridor</span>
@@ -786,20 +787,20 @@ const EvacuationPlanning = () => {
           </div>
         </div>
 
-        {/* Top 3 Navigation Tabs (Matching exact design of uploaded image) */}
+        {/* Top 3 Navigation Tabs */}
         <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 py-2">
           {/* Tab 1: Evacuation Routes */}
           <button
             onClick={() => setActiveTab('routes')}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition-all shadow-xs ${
               activeTab === 'routes'
-                ? 'border-2 border-blue-400 bg-blue-50 text-blue-600 shadow-sm shadow-blue-200/50'
-                : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                ? 'border-2 border-blue-500 bg-blue-500/15 text-blue-400 shadow-sm'
+                : 'border border-slate-700 bg-slate-900/80 text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
-            <Navigation className="h-4 w-4 text-blue-600" />
+            <Navigation className="h-4 w-4 text-blue-400" />
             <span>Evacuation Routes</span>
-            <span className="ml-1 rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-mono text-blue-700 font-bold">
+            <span className="ml-1 rounded-full bg-blue-500/20 border border-blue-500/30 px-2 py-0.5 text-[10px] font-mono text-blue-300 font-bold">
               {routes.length}
             </span>
           </button>
@@ -809,13 +810,13 @@ const EvacuationPlanning = () => {
             onClick={() => setActiveTab('shelters')}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition-all shadow-xs ${
               activeTab === 'shelters'
-                ? 'border-2 border-emerald-400 bg-emerald-50 text-emerald-700 shadow-sm shadow-emerald-200/50'
-                : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                ? 'border-2 border-emerald-500 bg-emerald-500/15 text-emerald-400 shadow-sm'
+                : 'border border-slate-700 bg-slate-900/80 text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
-            <ShieldCheck className="h-4 w-4 text-emerald-600" />
+            <ShieldCheck className="h-4 w-4 text-emerald-400" />
             <span>Safe Shelters</span>
-            <span className="ml-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-mono text-emerald-800 font-bold">
+            <span className="ml-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-mono text-emerald-300 font-bold">
               {SAFE_SHELTERS.length}
             </span>
           </button>
@@ -825,32 +826,32 @@ const EvacuationPlanning = () => {
             onClick={() => setActiveTab('transport')}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition-all shadow-xs ${
               activeTab === 'transport'
-                ? 'border-2 border-cyan-400 bg-cyan-50 text-cyan-700 shadow-sm shadow-cyan-200/50'
-                : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                ? 'border-2 border-cyan-500 bg-cyan-500/15 text-cyan-400 shadow-sm'
+                : 'border border-slate-700 bg-slate-900/80 text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
-            <Truck className="h-4 w-4 text-cyan-600" />
+            <Truck className="h-4 w-4 text-cyan-400" />
             <span>Transport Resources</span>
-            <span className="ml-1 rounded-full bg-cyan-100 px-2 py-0.5 text-[10px] font-mono text-cyan-800 font-bold">
+            <span className="ml-1 rounded-full bg-cyan-500/20 border border-cyan-500/30 px-2 py-0.5 text-[10px] font-mono text-cyan-300 font-bold">
               {TRANSPORT_FLEETS.length}
             </span>
           </button>
         </div>
 
         {/* Dynamic Flood Hazard Avoidance & Mobile Turn-by-Turn Control Bar */}
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 rounded-xl border border-blue-200/80 bg-gradient-to-r from-blue-50/90 via-indigo-50/40 to-slate-50 shadow-xs">
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 rounded-xl border border-blue-500/30 bg-slate-900/90 shadow-xs">
           <div className="flex items-center gap-2.5">
-            <div className={`h-3 w-3 rounded-full shrink-0 ${hazardAvoidance ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
+            <div className={`h-3 w-3 rounded-full shrink-0 ${hazardAvoidance ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`} />
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold font-mono text-slate-900">
+                <span className="text-xs font-bold font-mono text-white">
                   OSRM Real-Road & Flood-Aware Hazard Routing
                 </span>
-                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-300">
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
                   {hazardAvoidance ? 'UNAFFECTED HIGHWAYS ACTIVE' : 'DIRECT ROADS'}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-slate-400">
                 {hazardAvoidance
                   ? 'All corridors snapped to exact National/State Highways (NH-48, NH-38, SH-66, NH-332, NH-87) avoiding flooded coastal & causeway zones'
                   : 'Showing direct highway alignments without flood-causeway diversions'}
@@ -863,9 +864,10 @@ const EvacuationPlanning = () => {
               onClick={() => setHazardAvoidance(!hazardAvoidance)}
               className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition border ${
                 hazardAvoidance
-                  ? 'bg-emerald-600 text-white border-emerald-700 shadow-sm'
-                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+                  ? 'bg-emerald-600 border-emerald-500 shadow-sm'
+                  : 'bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700'
               }`}
+              style={hazardAvoidance ? { color: '#ffffff' } : undefined}
             >
               {hazardAvoidance ? '⚡ Hazard Bypass: ACTIVE' : 'Enable Avoidance'}
             </button>
@@ -875,7 +877,8 @@ const EvacuationPlanning = () => {
                 setCurrentStep(0);
                 setShowTurnByTurn(true);
               }}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold font-mono transition shadow-sm"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold font-mono transition shadow-sm"
+              style={{ color: '#ffffff' }}
             >
               <Compass className="h-3.5 w-3.5" />
               <span>Turn-by-Turn Navigation</span>
@@ -891,7 +894,7 @@ const EvacuationPlanning = () => {
             
             {/* Section Subheader based on Active Tab */}
             <div className="flex items-center justify-between px-1">
-              <h2 className="text-base sm:text-lg font-extrabold text-slate-900 font-mono tracking-tight">
+              <h2 className="text-base sm:text-lg font-extrabold text-white font-mono tracking-tight">
                 {activeTab === 'routes' && 'Evacuation Routes'}
                 {activeTab === 'shelters' && 'Verified Safe Shelters'}
                 {activeTab === 'transport' && 'Emergency Transport Fleets'}
@@ -914,8 +917,8 @@ const EvacuationPlanning = () => {
                       onClick={() => handleSelectRoute(route)}
                       className={`group rounded-xl border p-3.5 transition-all cursor-pointer shadow-xs ${
                         isSelected
-                          ? 'border-blue-500 bg-blue-50/40 ring-2 ring-blue-400/20'
-                          : 'border-slate-200/90 bg-white hover:border-slate-300 hover:bg-slate-50/60'
+                          ? 'border-blue-500 bg-slate-900 ring-2 ring-blue-500/25'
+                          : 'border-slate-800 bg-slate-900/75 hover:border-slate-700 hover:bg-slate-800/70'
                       }`}
                     >
                       <div className="flex items-center justify-between gap-3">
@@ -923,28 +926,28 @@ const EvacuationPlanning = () => {
                           {/* Waypoint Icon */}
                           <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition ${
                             isSelected
-                              ? 'bg-blue-600 text-white border-blue-600'
-                              : 'bg-slate-50 text-blue-600 border-slate-200 group-hover:border-blue-300'
-                          }`}>
+                              ? 'bg-blue-600 border-blue-500'
+                              : 'bg-slate-800 text-blue-400 border-slate-700 group-hover:border-blue-400'
+                          }`} style={isSelected ? { color: '#ffffff' } : undefined}>
                             <Navigation className="h-5 w-5" />
                           </div>
 
                           {/* Title & Route Points */}
                           <div className="min-w-0">
-                            <h3 className="text-sm font-extrabold text-slate-900 font-mono flex items-center gap-2">
+                            <h3 className="text-sm font-extrabold text-white font-mono flex items-center gap-2">
                               {route.title}
                               {isSelected && (
-                                <span className="inline-block h-2 w-2 rounded-full bg-blue-600 animate-ping" />
+                                <span className="inline-block h-2 w-2 rounded-full bg-blue-500 animate-ping" />
                               )}
                             </h3>
-                            <p className="text-xs text-slate-500 truncate mt-0.5">
-                              <span className="font-semibold text-slate-700">{route.from}</span>
+                            <p className="text-xs text-slate-400 truncate mt-0.5">
+                              <span className="font-semibold text-slate-200">{route.from}</span>
                               <span className="mx-1 text-slate-400">→</span>
-                              <span className="font-semibold text-slate-700">{route.to}</span>
+                              <span className="font-semibold text-slate-200">{route.to}</span>
                               <span className="ml-1.5 text-slate-400 font-mono">({route.distanceKm} km)</span>
                             </p>
                             {route.highway && (
-                              <p className="text-[10px] font-mono text-blue-600 font-semibold truncate mt-0.5">
+                              <p className="text-[10px] font-mono text-blue-400 font-semibold truncate mt-0.5">
                                 🛣️ {route.highway}
                               </p>
                             )}
@@ -955,10 +958,10 @@ const EvacuationPlanning = () => {
                         <div className="shrink-0 flex items-center gap-1.5">
                           <span className={`inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold font-mono tracking-wide border shadow-xs ${
                             route.status === 'Open'
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                              ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
                               : route.status === 'Partial'
-                              ? 'bg-amber-50 text-amber-700 border-amber-300'
-                              : 'bg-rose-50 text-rose-700 border-rose-300'
+                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                              : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
                           }`}>
                             {route.status}
                           </span>
@@ -971,7 +974,7 @@ const EvacuationPlanning = () => {
                                 e.stopPropagation();
                                 handleToggleRouteStatus(route.id);
                               }}
-                              className="rounded p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-800 transition"
+                              className="rounded p-1 text-slate-400 hover:bg-slate-700 hover:text-white transition"
                               title="Admin: Cycle status (Open/Partial/Blocked)"
                             >
                               <RotateCw className="h-3 w-3" />
@@ -982,28 +985,28 @@ const EvacuationPlanning = () => {
 
                       {/* Expanded Drawer on Selection */}
                       {isSelected && (
-                        <div className="mt-3 pt-3 border-t border-blue-200/60 text-xs space-y-2 text-slate-600">
+                        <div className="mt-3 pt-3 border-t border-slate-700/80 text-xs space-y-2 text-slate-300">
                           <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
-                            <div className="rounded-lg bg-white p-2 border border-slate-200">
+                            <div className="rounded-lg bg-slate-800/90 p-2 border border-slate-700">
                               <span className="text-slate-400 block text-[10px]">EST. TRANSIT</span>
-                              <strong className="text-slate-800">{route.estimatedTime}</strong>
+                              <strong className="text-white">{route.estimatedTime}</strong>
                             </div>
-                            <div className="rounded-lg bg-white p-2 border border-slate-200">
+                            <div className="rounded-lg bg-slate-800/90 p-2 border border-slate-700">
                               <span className="text-slate-400 block text-[10px]">CORRIDOR CAPACITY</span>
-                              <strong className="text-slate-800">{route.capacity}</strong>
+                              <strong className="text-white">{route.capacity}</strong>
                             </div>
                           </div>
 
-                          <div className="text-[11px] bg-slate-50 p-2 rounded-lg border border-slate-200 flex items-start gap-1.5">
+                          <div className="text-[11px] bg-slate-800/80 p-2 rounded-lg border border-slate-700 flex items-start gap-1.5 text-slate-200">
                             <AlertTriangle className={`h-3.5 w-3.5 shrink-0 mt-0.5 ${
-                              route.status === 'Open' ? 'text-blue-500' : route.status === 'Partial' ? 'text-amber-500' : 'text-rose-500'
+                              route.status === 'Open' ? 'text-blue-400' : route.status === 'Partial' ? 'text-amber-400' : 'text-rose-400'
                             }`} />
                             <span><strong>Road Intelligence:</strong> {route.bottleneck}</span>
                           </div>
 
-                          <div className="text-[11px] flex items-center justify-between text-slate-500 font-mono">
-                            <span>Relief Depot: <strong className="text-slate-700">{route.shelterDestination}</strong></span>
-                            <span className="text-blue-600 font-bold">Highlighted on Map ↑</span>
+                          <div className="text-[11px] flex items-center justify-between text-slate-400 font-mono">
+                            <span>Relief Depot: <strong className="text-slate-200">{route.shelterDestination}</strong></span>
+                            <span className="text-blue-400 font-bold">Highlighted on Map ↑</span>
                           </div>
                         </div>
                       )}
@@ -1022,21 +1025,21 @@ const EvacuationPlanning = () => {
                     <div
                       key={sh.id}
                       onClick={() => handleSelectShelter(sh)}
-                      className="rounded-xl border border-slate-200/90 bg-white p-3.5 hover:border-emerald-400 transition cursor-pointer shadow-xs"
+                      className="rounded-xl border border-slate-800 bg-slate-900/75 p-3.5 hover:border-emerald-500/60 transition cursor-pointer shadow-xs"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-2.5">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 font-bold">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-bold">
                             <ShieldCheck className="h-5 w-5" />
                           </div>
                           <div>
-                            <h3 className="text-sm font-bold text-slate-900 font-mono">{sh.name}</h3>
-                            <p className="text-xs text-slate-500">{sh.district} • {sh.distanceFromCoast}</p>
+                            <h3 className="text-sm font-bold text-white font-mono">{sh.name}</h3>
+                            <p className="text-xs text-slate-400">{sh.district} • {sh.distanceFromCoast}</p>
                           </div>
                         </div>
                         <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase border ${
-                          percent >= 90 ? 'bg-rose-50 text-rose-700 border-rose-300' :
-                          percent >= 60 ? 'bg-amber-50 text-amber-700 border-amber-300' : 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                          percent >= 90 ? 'bg-rose-500/20 text-rose-300 border-rose-500/40' :
+                          percent >= 60 ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
                         }`}>
                           {percent}% FULL
                         </span>
@@ -1044,11 +1047,11 @@ const EvacuationPlanning = () => {
 
                       {/* Capacity Progress Bar */}
                       <div className="mt-3">
-                        <div className="flex justify-between text-[11px] font-mono text-slate-600 mb-1">
+                        <div className="flex justify-between text-[11px] font-mono text-slate-300 mb-1">
                           <span>Occupancy</span>
                           <strong>{sh.occupied.toLocaleString()} / {sh.capacity.toLocaleString()} beds</strong>
                         </div>
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 border border-slate-200">
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800 border border-slate-700">
                           <div
                             className={`h-full transition-all duration-500 ${
                               percent >= 90 ? 'bg-rose-500' : percent >= 60 ? 'bg-amber-500' : 'bg-emerald-500'
@@ -1058,10 +1061,10 @@ const EvacuationPlanning = () => {
                         </div>
                       </div>
 
-                      <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-mono">
-                        <span>Water: <strong>{sh.supplies.water}</strong></span>
-                        <span>Food: <strong>{sh.supplies.food}</strong></span>
-                        <span className="text-emerald-600 font-bold hover:underline">Locate on Map →</span>
+                      <div className="mt-2.5 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                        <span>Water: <strong className="text-slate-200">{sh.supplies.water}</strong></span>
+                        <span>Food: <strong className="text-slate-200">{sh.supplies.food}</strong></span>
+                        <span className="text-emerald-400 font-bold hover:underline">Locate on Map →</span>
                       </div>
                     </div>
                   );
@@ -1075,37 +1078,37 @@ const EvacuationPlanning = () => {
                 {TRANSPORT_FLEETS.map((fl) => (
                   <div
                     key={fl.id}
-                    className="rounded-xl border border-slate-200/90 bg-white p-3.5 hover:border-cyan-400 transition shadow-xs"
+                    className="rounded-xl border border-slate-800 bg-slate-900/75 p-3.5 hover:border-cyan-500/60 transition shadow-xs"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center gap-2.5">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600 border border-cyan-200">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/40">
                           <Truck className="h-5 w-5" />
                         </div>
                         <div>
-                          <h3 className="text-sm font-bold text-slate-900 font-mono">{fl.name}</h3>
-                          <p className="text-xs text-slate-500">{fl.vehicleType}</p>
+                          <h3 className="text-sm font-bold text-white font-mono">{fl.name}</h3>
+                          <p className="text-xs text-slate-400">{fl.vehicleType}</p>
                         </div>
                       </div>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40">
                         {fl.status}
                       </span>
                     </div>
 
-                    <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-mono text-slate-600">
-                      <div className="p-2 rounded bg-slate-50 border border-slate-200">
+                    <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-mono text-slate-300">
+                      <div className="p-2 rounded bg-slate-800/80 border border-slate-700">
                         <span className="text-slate-400 block text-[10px]">CORRIDOR</span>
-                        <strong className="text-slate-800 truncate block">{fl.assignedRoute}</strong>
+                        <strong className="text-white truncate block">{fl.assignedRoute}</strong>
                       </div>
-                      <div className="p-2 rounded bg-slate-50 border border-slate-200">
+                      <div className="p-2 rounded bg-slate-800/80 border border-slate-700">
                         <span className="text-slate-400 block text-[10px]">EVAC CAPACITY</span>
-                        <strong className="text-slate-800">{fl.capacity} passengers</strong>
+                        <strong className="text-white">{fl.capacity} passengers</strong>
                       </div>
                     </div>
 
-                    <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-mono">
-                      <span>Fuel Reserve: <strong className="text-emerald-600">{fl.fuelLevel}</strong></span>
-                      <span>Commander: <strong className="text-slate-700">{fl.convoyCommander}</strong></span>
+                    <div className="mt-2.5 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                      <span>Fuel Reserve: <strong className="text-emerald-400">{fl.fuelLevel}</strong></span>
+                      <span>Commander: <strong className="text-slate-200">{fl.convoyCommander}</strong></span>
                     </div>
                   </div>
                 ))}
@@ -1114,7 +1117,7 @@ const EvacuationPlanning = () => {
           </div>
 
           {/* ================= RIGHT COLUMN: INTERACTIVE LEAFLET MAP (7 of 12 cols) ================= */}
-          <div className="lg:col-span-7 relative min-h-[580px] h-[640px] rounded-2xl overflow-hidden border border-slate-300 shadow-md">
+          <div className="lg:col-span-7 relative min-h-[580px] h-[640px] rounded-2xl overflow-hidden border border-slate-700 shadow-md">
             
             {/* Leaflet Map Container */}
             <MapContainer
@@ -1405,42 +1408,45 @@ const EvacuationPlanning = () => {
 
             {/* Top-Right Map Tile Mode Switcher */}
             {!showTurnByTurn && !showCreateModal && (
-              <div className="absolute top-3 right-3 z-[400] flex items-center rounded-xl bg-white/95 p-1 shadow-md border border-slate-200 text-xs font-mono">
+              <div className="absolute top-3 right-3 z-[400] flex items-center rounded-xl bg-[#0F172A]/95 p-1 shadow-md border border-slate-700 text-xs font-mono">
                 <button
                   onClick={() => setTileStyle('osm')}
                   className={`px-2.5 py-1 rounded-lg font-bold transition ${
-                    tileStyle === 'osm' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                    tileStyle === 'osm' ? 'bg-blue-600 shadow-xs' : 'text-slate-300 hover:text-white'
                   }`}
+                  style={tileStyle === 'osm' ? { color: '#ffffff' } : undefined}
                 >
                   Street
                 </button>
                 <button
                   onClick={() => setTileStyle('satellite')}
                   className={`px-2.5 py-1 rounded-lg font-bold transition ${
-                    tileStyle === 'satellite' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                    tileStyle === 'satellite' ? 'bg-blue-600 shadow-xs' : 'text-slate-300 hover:text-white'
                   }`}
+                  style={tileStyle === 'satellite' ? { color: '#ffffff' } : undefined}
                 >
                   Satellite
                 </button>
                 <button
                   onClick={() => setTileStyle('dark')}
                   className={`px-2.5 py-1 rounded-lg font-bold transition ${
-                    tileStyle === 'dark' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                    tileStyle === 'dark' ? 'bg-blue-600 shadow-xs' : 'text-slate-300 hover:text-white'
                   }`}
+                  style={tileStyle === 'dark' ? { color: '#ffffff' } : undefined}
                 >
                   Dark
                 </button>
               </div>
             )}
 
-            {/* ================= FLOATING MAP LEGEND (Matching Reference Image Exactly) ================= */}
+            {/* ================= FLOATING MAP LEGEND ================= */}
             {!showTurnByTurn && !showCreateModal && (
-              <div className="absolute bottom-4 right-4 z-[400] rounded-xl border border-slate-200/90 bg-white/95 p-3.5 shadow-xl backdrop-blur-sm font-['Plus_Jakarta_Sans',sans-serif] min-w-[190px]">
+              <div className="absolute bottom-4 right-4 z-[400] rounded-xl border border-slate-700 bg-[#0F172A]/95 p-3.5 shadow-xl backdrop-blur-sm font-['Plus_Jakarta_Sans',sans-serif] min-w-[190px]">
                 <div className="space-y-2 text-xs">
                   {/* Legend Item 1: Evacuation Route */}
                   <div className="flex items-center gap-2.5">
-                    <div className="w-6 h-0.5 bg-blue-600 rounded"></div>
-                    <span className="font-semibold text-slate-700">Evacuation Route</span>
+                    <div className="w-6 h-0.5 bg-blue-500 rounded"></div>
+                    <span className="font-semibold text-slate-200">Evacuation Route</span>
                   </div>
 
                   {/* Legend Item 2: Safe Shelter */}
@@ -1450,7 +1456,7 @@ const EvacuationPlanning = () => {
                         <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                       </svg>
                     </div>
-                    <span className="font-semibold text-slate-700">Safe Shelter</span>
+                    <span className="font-semibold text-slate-200">Safe Shelter</span>
                   </div>
 
                   {/* Legend Item 3: High Risk Zone */}
@@ -1458,13 +1464,13 @@ const EvacuationPlanning = () => {
                     <div className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-white shadow-xs font-bold text-[10px]">
                       ⚠️
                     </div>
-                    <span className="font-semibold text-slate-700">High Risk Zone</span>
+                    <span className="font-semibold text-slate-200">High Risk Zone</span>
                   </div>
 
                   {/* Legend Item 4: Blocked Route */}
                   <div className="flex items-center gap-2.5">
                     <div className="w-6 border-t-2 border-dashed border-rose-500"></div>
-                    <span className="font-semibold text-slate-700">Blocked / Flooded Road</span>
+                    <span className="font-semibold text-slate-200">Blocked / Flooded Road</span>
                   </div>
                 </div>
               </div>
@@ -1477,17 +1483,17 @@ const EvacuationPlanning = () => {
       {/* ================= ADMIN CREATE EVACUATION CORRIDOR MODAL ================= */}
       {showCreateModal && typeof document !== 'undefined' && createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 p-4 backdrop-blur-md">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-300 bg-white p-6 shadow-2xl text-slate-900">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-700 bg-[#0F172A] p-6 shadow-2xl text-slate-100">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
               <div className="flex items-center gap-2">
-                <Navigation className="h-5 w-5 text-blue-600" />
-                <h3 className="text-base font-extrabold uppercase tracking-wider text-slate-900 font-mono">
+                <Navigation className="h-5 w-5 text-blue-400" />
+                <h3 className="text-base font-extrabold uppercase tracking-wider text-white font-mono">
                   Launch New Evacuation Corridor (Admin)
                 </h3>
               </div>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-800 transition"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-white transition"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -1495,7 +1501,7 @@ const EvacuationPlanning = () => {
 
             <form onSubmit={handleCreatePlan} className="space-y-3.5 text-xs">
               <div>
-                <label className="block text-[11px] font-mono uppercase text-slate-700 font-bold mb-1">
+                <label className="block text-[11px] font-mono uppercase text-slate-300 font-bold mb-1">
                   Plan Operation Title *
                 </label>
                 <input
@@ -1504,13 +1510,13 @@ const EvacuationPlanning = () => {
                   placeholder="e.g. Operation Suraksha: Sector D Cuddalore Rapid Evac"
                   value={newPlan.title}
                   onChange={(e) => setNewPlan({ ...newPlan, title: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-500 font-mono"
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-white focus:outline-none focus:border-blue-500 font-mono"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-mono uppercase text-slate-700 font-bold mb-1">
+                  <label className="block text-[11px] font-mono uppercase text-slate-300 font-bold mb-1">
                     Origin Coastal City *
                   </label>
                   <input
@@ -1519,11 +1525,11 @@ const EvacuationPlanning = () => {
                     placeholder="e.g. Mahabalipuram"
                     value={newPlan.from}
                     onChange={(e) => setNewPlan({ ...newPlan, from: e.target.value })}
-                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-500 font-mono"
+                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-white focus:outline-none focus:border-blue-500 font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-mono uppercase text-slate-700 font-bold mb-1">
+                  <label className="block text-[11px] font-mono uppercase text-slate-300 font-bold mb-1">
                     Destination Safe Hub *
                   </label>
                   <input
@@ -1532,38 +1538,38 @@ const EvacuationPlanning = () => {
                     placeholder="e.g. Kanchipuram"
                     value={newPlan.to}
                     onChange={(e) => setNewPlan({ ...newPlan, to: e.target.value })}
-                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-500 font-mono"
+                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-white focus:outline-none focus:border-blue-500 font-mono"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-mono uppercase text-slate-700 font-bold mb-1">
+                  <label className="block text-[11px] font-mono uppercase text-slate-300 font-bold mb-1">
                     Corridor Distance (km)
                   </label>
                   <input
                     type="number"
                     value={newPlan.distanceKm}
                     onChange={(e) => setNewPlan({ ...newPlan, distanceKm: e.target.value })}
-                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-500 font-mono"
+                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-white focus:outline-none focus:border-blue-500 font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-mono uppercase text-slate-700 font-bold mb-1">
+                  <label className="block text-[11px] font-mono uppercase text-slate-300 font-bold mb-1">
                     Population to Evacuate
                   </label>
                   <input
                     type="number"
                     value={newPlan.populationRequiringEvacuation}
                     onChange={(e) => setNewPlan({ ...newPlan, populationRequiringEvacuation: e.target.value })}
-                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-500 font-mono"
+                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-white focus:outline-none focus:border-blue-500 font-mono"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-mono uppercase text-slate-700 font-bold mb-1">
+                <label className="block text-[11px] font-mono uppercase text-slate-300 font-bold mb-1">
                   Tactical Operational Directives
                 </label>
                 <textarea
@@ -1571,22 +1577,23 @@ const EvacuationPlanning = () => {
                   placeholder="Special instructions, designated assembly points, medical escorts..."
                   value={newPlan.notes}
                   onChange={(e) => setNewPlan({ ...newPlan, notes: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-500 font-mono"
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-white focus:outline-none focus:border-blue-500 font-mono"
                 />
               </div>
 
-              <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-200">
+              <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="rounded-xl border border-slate-300 px-4 py-2 font-bold text-slate-700 hover:bg-slate-100 transition"
+                  className="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 font-bold text-slate-200 hover:bg-slate-700 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={creating}
-                  className="rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-extrabold px-5 py-2 transition uppercase font-mono shadow-md disabled:opacity-50"
+                  className="rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 font-extrabold px-5 py-2 transition uppercase font-mono shadow-md disabled:opacity-50"
+                  style={{ color: '#ffffff' }}
                 >
                   {creating ? 'Routing via OSRM...' : 'Deploy Evacuation Corridor'}
                 </button>
