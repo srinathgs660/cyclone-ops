@@ -1632,31 +1632,31 @@ const EvacuationPlanning = () => {
             </div>
 
             {/* Current Maneuver Hero Card */}
-            <div className="mt-4 p-4 rounded-xl border-2 border-blue-500/50 bg-gradient-to-br from-blue-950/60 to-slate-900 shadow-lg shrink-0">
+            <div className="mt-4 p-4 rounded-xl border-2 border-blue-500/60 bg-slate-900 shadow-lg shrink-0">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-blue-400">
+                <span className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-blue-500">
                   Step {currentStep + 1} of {activeTurnByTurnSteps.length}
                 </span>
-                <span className="text-xs font-mono font-extrabold text-emerald-400">
+                <span className="text-xs font-mono font-extrabold text-emerald-500">
                   In {activeTurnByTurnSteps[currentStep]?.distance}
                 </span>
               </div>
 
-              <h4 className="text-sm sm:text-base font-bold text-white mt-1.5 leading-snug">
+              <h4 className="text-sm sm:text-base font-extrabold text-white mt-1.5 leading-snug">
                 {activeTurnByTurnSteps[currentStep]?.action}
               </h4>
 
-              <p className="text-xs text-slate-300 mt-1 bg-black/40 p-2 rounded-lg border border-slate-800">
+              <p className="text-xs font-semibold text-slate-200 mt-2 bg-slate-800 p-2.5 rounded-lg border border-slate-700">
                 💡 {activeTurnByTurnSteps[currentStep]?.advice}
               </p>
 
               {/* Voice Guidance Button */}
-              <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-800/80">
+              <div className="mt-3 flex items-center justify-between pt-2.5 border-t border-slate-700/80">
                 <button
                   onClick={() => speakCurrentStep(`${activeTurnByTurnSteps[currentStep]?.action}. In ${activeTurnByTurnSteps[currentStep]?.distance}. ${activeTurnByTurnSteps[currentStep]?.advice}`)}
-                  className="flex items-center gap-1.5 text-xs font-mono font-bold text-cyan-300 hover:text-cyan-200 transition"
+                  className="flex items-center gap-1.5 text-xs font-mono font-bold text-blue-500 hover:text-blue-400 transition"
                 >
-                  <Activity className="h-4 w-4 text-cyan-400" />
+                  <Activity className="h-4 w-4 text-blue-500" />
                   <span>{speaking ? '🔊 Speaking...' : '🔊 Read Direction Aloud'}</span>
                 </button>
 
@@ -1664,14 +1664,15 @@ const EvacuationPlanning = () => {
                   <button
                     disabled={currentStep === 0}
                     onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
-                    className="px-2.5 py-1 rounded bg-slate-800 text-xs font-mono text-slate-300 disabled:opacity-40"
+                    className="px-3 py-1 rounded-lg bg-slate-800 border border-slate-700 text-xs font-mono font-bold text-slate-200 hover:bg-slate-700 disabled:opacity-40"
                   >
                     Prev
                   </button>
                   <button
                     disabled={currentStep === activeTurnByTurnSteps.length - 1}
                     onClick={() => setCurrentStep(prev => Math.min(activeTurnByTurnSteps.length - 1, prev + 1))}
-                    className="px-3 py-1 rounded bg-blue-600 text-xs font-mono text-white font-bold disabled:opacity-40"
+                    className="px-3.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-mono font-bold shadow-xs disabled:opacity-40"
+                    style={{ color: '#ffffff' }}
                   >
                     Next Step →
                   </button>
