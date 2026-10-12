@@ -17,6 +17,14 @@ const initSocket = (server) => {
       console.log('[Socket Room Joined]: Client ' + socket.id + ' joined room ' + room);
     });
 
+    // Live GPS telemetry relay for Citizen SOS, Response Team, and Volunteer
+    socket.on('tracking:live_ping', (payload) => {
+      io.emit('tracking:live_ping', {
+        ...payload,
+        updatedAt: new Date()
+      });
+    });
+
     socket.on('disconnect', () => {
       console.log('[Socket Disconnected]: Client ID:', socket.id);
     });

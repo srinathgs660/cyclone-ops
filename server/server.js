@@ -50,6 +50,7 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/registry', require('./routes/registryRoutes'));
 app.use('/api/volunteer-tasks', require('./routes/volunteerTaskRoutes'));
 app.use('/api/sitrep', require('./routes/sitrepRoutes'));
+app.use('/api/live-tracking', require('./routes/liveTrackingRoutes'));
 
 // Error handling
 app.use(errorHandler);

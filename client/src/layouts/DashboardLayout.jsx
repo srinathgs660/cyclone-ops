@@ -92,6 +92,7 @@ const DashboardLayout = () => {
       items: [
         { label: 'Emergency Alerts', to: '/dashboard/alerts', icon: Bell, allowedRoles: ['admin', 'officer'] },
         { label: 'Citizen SOS Portal', to: '/dashboard/citizen', icon: PhoneCall, highlight: true, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
+        { label: 'Live Rescue Tracking', to: '/dashboard/live-tracking', icon: NavigationIcon, highlight: true, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
       ]
     },
     {

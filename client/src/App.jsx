@@ -21,6 +21,7 @@ import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/LoginPage';
 import SafeRegistryPage from './pages/SafeRegistryPage';
 import VolunteerTaskBoard from './pages/VolunteerTaskBoard';
+import LiveTrackingPage from './pages/LiveTrackingPage';
 
 const getDefaultDashboardForRole = (role) => {
   switch (role) {
@@ -124,6 +125,7 @@ function AppRoutes() {
           } 
         />
         <Route path="citizen" element={<CitizenPortal />} />
+        <Route path="live-tracking" element={<LiveTrackingPage />} />
         <Route path="safe-registry" element={<SafeRegistryPage />} />
         <Route 
           path="volunteer-tasks" 
@@ -176,6 +178,7 @@ function AppRoutes() {
       <Route path="/teams" element={<Navigate to="/dashboard/teams" replace />} />
       <Route path="/relief" element={<Navigate to="/dashboard/relief" replace />} />
       <Route path="/citizen" element={<Navigate to="/dashboard/citizen" replace />} />
+      <Route path="/live-tracking" element={<Navigate to="/dashboard/live-tracking" replace />} />
       <Route path="/safe-registry" element={<Navigate to="/dashboard/safe-registry" replace />} />
       <Route path="/volunteer-tasks" element={<Navigate to="/dashboard/volunteer-tasks" replace />} />
       <Route path="/alerts" element={<Navigate to="/dashboard/alerts" replace />} />

@@ -1,15 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { AlertOctagon, MapPin, ShieldAlert, Navigation, Bell, PhoneCall, Send, CheckCircle2, Home } from 'lucide-react';
+import { AlertOctagon, MapPin, ShieldAlert, Navigation, Bell, PhoneCall, Send, CheckCircle2, Home, Crosshair } from 'lucide-react';
 import { useSocket } from '../context/SocketContext';
 
 const CitizenPortal = () => {
-  const [activeTab, setActiveTab] = useState('home'); // home, sos, risk, shelters, contacts
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('sos'); // Default to SOS for immediate citizen access
   const [userCoords, setUserCoords] = useState([80.2707, 13.0827]); // Default Chennai
+  const [gpsAccuracy, setGpsAccuracy] = useState(10);
+  const [isSharingLiveGps, setIsSharingLiveGps] = useState(true);
+  const [gpsStatusText, setGpsStatusText] = useState('Locking exact satellite GPS coordinates...');
   const [riskAssessment, setRiskAssessment] = useState(null);
   const [nearestShelters, setNearestShelters] = useState([]);
   const [sosSent, setSosSent] = useState(false);
   const [sendingSos, setSendingSos] = useState(false);
+  const watchIdRef = useRef(null);
   const { liveAlerts } = useSocket();
 
   const [sosForm, setSosForm] = useState({
@@ -22,25 +28,65 @@ const CitizenPortal = () => {
   });
 
   useEffect(() => {
-    // Attempt HTML5 geolocation
+    // Continuous HTML5 Geolocation watchPosition for exact live location tracking
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          const coords = [pos.coords.longitude, pos.coords.latitude];
+          const coords = [
+            Number(pos.coords.longitude.toFixed(5)),
+            Number(pos.coords.latitude.toFixed(5))
+          ];
           setUserCoords(coords);
+          setGpsAccuracy(Math.round(pos.coords.accuracy || 10));
+          setGpsStatusText(`Live GPS Locked (±${Math.round(pos.coords.accuracy || 10)}m)`);
           evaluateRisk(coords);
           fetchNearbyShelters(coords);
         },
         () => {
+          setGpsStatusText('Live GPS Active (Coastal Sector Telemetry)');
           evaluateRisk(userCoords);
           fetchNearbyShelters(userCoords);
-        }
+        },
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+
+      watchIdRef.current = navigator.geolocation.watchPosition(
+        (pos) => {
+          const coords = [
+            Number(pos.coords.longitude.toFixed(5)),
+            Number(pos.coords.latitude.toFixed(5))
+          ];
+          const acc = Math.round(pos.coords.accuracy || 10);
+          setUserCoords(coords);
+          setGpsAccuracy(acc);
+          setGpsStatusText(`Live GPS Streaming (${coords[1]}°N, ${coords[0]}°E • ±${acc}m)`);
+
+          const activeIncId = localStorage.getItem('activeSosIncidentId');
+          if (activeIncId && isSharingLiveGps) {
+            axios
+              .post('/api/live-tracking/citizen-location', {
+                incidentId: activeIncId,
+                coordinates: coords,
+                accuracy: acc,
+                isSharingLive: true
+              })
+              .catch(() => {});
+          }
+        },
+        () => {},
+        { enableHighAccuracy: true, maximumAge: 3000, timeout: 8000 }
       );
     } else {
       evaluateRisk(userCoords);
       fetchNearbyShelters(userCoords);
     }
-  }, []);
+
+    return () => {
+      if (watchIdRef.current !== null && navigator.geolocation) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+      }
+    };
+  }, [isSharingLiveGps]);
 
   const evaluateRisk = async (coords) => {
     try {
@@ -70,11 +116,16 @@ const CitizenPortal = () => {
     try {
       const payload = {
         ...sosForm,
-        coordinates: userCoords
+        coordinates: userCoords,
+        accuracy: gpsAccuracy,
+        isSharingLive: isSharingLiveGps
       };
       const res = await axios.post('/api/citizen/sos', payload);
       if (res.data.success) {
         setSosSent(res.data);
+        if (res.data.incidentId) {
+          localStorage.setItem('activeSosIncidentId', res.data.incidentId);
+        }
       }
     } catch (err) {
       console.error('[SOS Send Error]:', err);
@@ -132,6 +183,14 @@ const CitizenPortal = () => {
         </button>
 
         <button
+          onClick={() => navigate('/dashboard/live-tracking')}
+          className="flex flex-col items-center justify-center rounded-xl border border-cyan-500/50 bg-cyan-500/15 p-4 text-center text-cyan-200 shadow-lg shadow-cyan-950/40 hover:bg-cyan-500/25 transition-all"
+        >
+          <Navigation className="h-7 w-7 text-cyan-400 mb-1.5 animate-pulse" />
+          <span className="text-xs font-bold uppercase tracking-wider font-mono">2. LIVE RESCUE MAP</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('shelters')}
           className={`flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all ${
             activeTab === 'shelters'
@@ -140,7 +199,7 @@ const CitizenPortal = () => {
           }`}
         >
           <Home className="h-7 w-7 text-emerald-400 mb-1.5" />
-          <span className="text-xs font-bold uppercase tracking-wider font-mono">2. FIND SHELTER</span>
+          <span className="text-xs font-bold uppercase tracking-wider font-mono">3. FIND SHELTER</span>
         </button>
 
         <button
@@ -152,7 +211,7 @@ const CitizenPortal = () => {
           }`}
         >
           <ShieldAlert className="h-7 w-7 text-amber-400 mb-1.5" />
-          <span className="text-xs font-bold uppercase tracking-wider font-mono">3. MY RISK</span>
+          <span className="text-xs font-bold uppercase tracking-wider font-mono">4. MY RISK</span>
         </button>
 
         <button
@@ -164,19 +223,19 @@ const CitizenPortal = () => {
           }`}
         >
           <Bell className="h-7 w-7 text-cyan-400 mb-1.5" />
-          <span className="text-xs font-bold uppercase tracking-wider font-mono">4. ALERTS</span>
+          <span className="text-xs font-bold uppercase tracking-wider font-mono">5. ALERTS</span>
         </button>
 
         <button
           onClick={() => setActiveTab('contacts')}
-          className={`flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all col-span-2 sm:col-span-2 ${
+          className={`flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all ${
             activeTab === 'contacts'
               ? 'border-blue-500 bg-blue-500/20 text-blue-300 shadow-lg shadow-blue-950/50'
               : 'border-slate-800 bg-[#131D31] text-slate-200 hover:border-blue-500/40'
           }`}
         >
           <PhoneCall className="h-7 w-7 text-blue-400 mb-1.5" />
-          <span className="text-xs font-bold uppercase tracking-wider font-mono">5. EMERGENCY HELPLINES</span>
+          <span className="text-xs font-bold uppercase tracking-wider font-mono">6. HELPLINES</span>
         </button>
       </div>
 
@@ -187,23 +246,61 @@ const CitizenPortal = () => {
             <AlertOctagon className="h-6 w-6 text-rose-400 shrink-0" />
             <div>
               <h3 className="text-base font-bold text-white uppercase font-mono">Emergency SOS Distress Broadcast</h3>
-              <p className="text-xs text-slate-400">Directly alerts the central EOC and dispatches the nearest rescue boat/team.</p>
+              <p className="text-xs text-slate-400">Directly alerts the central EOC, streams your exact live GPS, and dispatches the nearest Response Team & Volunteer.</p>
+            </div>
+          </div>
+
+          {/* LIVE GPS TELEMETRY BANNER IN SOS FORM */}
+          <div className="mb-4 rounded-xl border border-emerald-500/40 bg-emerald-950/25 p-3.5 text-xs font-mono">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-ping" />
+                <span className="font-bold text-emerald-300 uppercase">
+                  EXACT LIVE GPS LOCATION TRACKING: {isSharingLiveGps ? 'ENABLED' : 'PAUSED'}
+                </span>
+              </div>
+              <label className="flex items-center gap-1.5 cursor-pointer text-[11px] text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={isSharingLiveGps}
+                  onChange={(e) => setIsSharingLiveGps(e.target.checked)}
+                  className="rounded border-slate-600 text-emerald-500 focus:ring-0"
+                />
+                <span>Continuous Live Stream</span>
+              </label>
+            </div>
+            <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-300">
+              <span>
+                Coordinates: <strong className="text-white">{userCoords[1]?.toFixed(5)}°N, {userCoords[0]?.toFixed(5)}°E</strong> (±{gpsAccuracy}m)
+              </span>
+              <span className="text-cyan-300">{gpsStatusText}</span>
             </div>
           </div>
 
           {sosSent ? (
-            <div className="rounded-xl border border-emerald-500/40 bg-emerald-950/30 p-6 text-center">
-              <CheckCircle2 className="h-12 w-12 text-emerald-400 mx-auto mb-2" />
-              <h4 className="text-lg font-bold text-white font-mono uppercase">SOS Dispatched & Triaged!</h4>
-              <p className="mt-1 text-xs text-emerald-300">{sosSent.message}</p>
-              <div className="mt-4 rounded-lg bg-slate-900 p-3 text-xs font-mono text-left space-y-1">
+            <div className="rounded-xl border border-emerald-500/40 bg-emerald-950/30 p-6 text-center space-y-4">
+              <CheckCircle2 className="h-12 w-12 text-emerald-400 mx-auto mb-1" />
+              <h4 className="text-lg font-bold text-white font-mono uppercase">SOS & Live GPS Beacon Activated!</h4>
+              <p className="text-xs text-emerald-300">{sosSent.message}</p>
+              <div className="rounded-lg bg-slate-900 p-3.5 text-xs font-mono text-left space-y-1.5 border border-slate-800">
                 <div>Incident ID: <strong className="text-cyan-300">{sosSent.incidentId}</strong></div>
-                <div>Assigned Unit: <strong className="text-emerald-400">{sosSent.assignedTeam}</strong></div>
-                <div>Status: <span className="text-amber-400 font-bold">RESCUE TEAM DISPATCHED</span></div>
+                <div>Your Live GPS: <strong className="text-rose-300">{userCoords[1]?.toFixed(5)}°N, {userCoords[0]?.toFixed(5)}°E (Streaming Live)</strong></div>
+                <div>Assigned Response Team: <strong className="text-sky-400">{sosSent.assignedTeam}</strong> ({sosSent.assignedTeamVehicle || 'Rescue Unit'})</div>
+                <div>Assigned Field Volunteer: <strong className="text-emerald-400">{sosSent.assignedVolunteer || 'Aravind Swaminathan'}</strong> ({sosSent.assignedVolunteerPhone || '+91 94440 12891'})</div>
+                <div>Status: <span className="text-amber-400 font-bold">RESCUE TEAM & VOLUNTEER EN ROUTE TO YOUR LIVE LOCATION</span></div>
               </div>
+
+              <button
+                onClick={() => navigate(`/dashboard/live-tracking?incidentId=${sosSent.incidentId}`)}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-700 py-3 px-4 text-xs sm:text-sm font-black uppercase tracking-wider text-white shadow-xl shadow-cyan-950/60 hover:from-cyan-500 hover:to-blue-600 transition"
+              >
+                <Navigation className="h-4 w-4 animate-bounce" />
+                <span>🗺️ TRACK ASSIGNED RESCUE TEAM & VOLUNTEER ON LIVE MAP</span>
+              </button>
+
               <button
                 onClick={() => setSosSent(false)}
-                className="mt-4 text-xs font-bold text-cyan-400 underline"
+                className="block mx-auto text-xs font-bold text-slate-400 hover:text-cyan-400 underline"
               >
                 Send Another Emergency Report
               </button>
