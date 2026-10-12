@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
+import { fetchOSRMRoadRoute } from '../utils/osrmRouting';
 
 // Custom Leaflet DivIcons for Citizen SOS, Response Team, and Volunteer
 const createCitizenSosIcon = () =>
@@ -425,6 +426,34 @@ const LiveTrackingPage = () => {
   const volunteerCoords = selectedSession?.assignedVolunteer?.coordinates || [80.2625, 13.0745];
   const volunteerLatLng = [volunteerCoords[1], volunteerCoords[0]];
 
+  // Street-level road paths fetched via OSRM
+  const [teamRoadPath, setTeamRoadPath] = useState(null);
+  const [volunteerRoadPath, setVolunteerRoadPath] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const [teamRoute, volRoute] = await Promise.all([
+        fetchOSRMRoadRoute([teamLatLng, citizenLatLng]),
+        fetchOSRMRoadRoute([volunteerLatLng, citizenLatLng])
+      ]);
+      if (!cancelled) {
+        setTeamRoadPath(teamRoute?.coordinates?.length > 1 ? teamRoute.coordinates : [teamLatLng, citizenLatLng]);
+        setVolunteerRoadPath(volRoute?.coordinates?.length > 1 ? volRoute.coordinates : [volunteerLatLng, citizenLatLng]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    citizenLatLng[0],
+    citizenLatLng[1],
+    teamLatLng[0],
+    teamLatLng[1],
+    volunteerLatLng[0],
+    volunteerLatLng[1]
+  ]);
+
   // Rescue progress stage calculation (1 to 4)
   const getRescueStage = () => {
     if (!selectedSession) return 1;
@@ -809,16 +838,18 @@ const LiveTrackingPage = () => {
                 (layerFilter === 'all' || layerFilter === 'teams') && (
                   <>
                     <Polyline
-                      positions={[teamLatLng, citizenLatLng]}
+                      positions={teamRoadPath || [teamLatLng, citizenLatLng]}
                       pathOptions={{
                         color: '#38bdf8',
-                        weight: 4,
+                        weight: 4.5,
                         dashArray: '10, 8',
-                        opacity: 0.95
+                        opacity: 0.95,
+                        lineCap: 'round',
+                        lineJoin: 'round'
                       }}
                     >
                       <Tooltip sticky>
-                        🚒 Team Route: {selectedSession.assignedTeam?.distanceKm} km (ETA{' '}
+                        🚒 Team Road Route: {selectedSession.assignedTeam?.distanceKm} km (ETA{' '}
                         {selectedSession.assignedTeam?.etaMinutes}m)
                       </Tooltip>
                     </Polyline>
@@ -874,16 +905,18 @@ const LiveTrackingPage = () => {
                 (layerFilter === 'all' || layerFilter === 'volunteers') && (
                   <>
                     <Polyline
-                      positions={[volunteerLatLng, citizenLatLng]}
+                      positions={volunteerRoadPath || [volunteerLatLng, citizenLatLng]}
                       pathOptions={{
                         color: '#10b981',
-                        weight: 4,
+                        weight: 4.5,
                         dashArray: '8, 8',
-                        opacity: 0.95
+                        opacity: 0.95,
+                        lineCap: 'round',
+                        lineJoin: 'round'
                       }}
                     >
                       <Tooltip sticky>
-                        🦺 Volunteer Route: {selectedSession.assignedVolunteer?.distanceKm} km
+                        🦺 Volunteer Road Route: {selectedSession.assignedVolunteer?.distanceKm} km
                         (ETA {selectedSession.assignedVolunteer?.etaMinutes}m)
                       </Tooltip>
                     </Polyline>
