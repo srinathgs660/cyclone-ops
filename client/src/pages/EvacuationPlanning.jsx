@@ -1404,67 +1404,71 @@ const EvacuationPlanning = () => {
             </MapContainer>
 
             {/* Top-Right Map Tile Mode Switcher */}
-            <div className="absolute top-3 right-3 z-[1000] flex items-center rounded-xl bg-white/95 p-1 shadow-md border border-slate-200 text-xs font-mono">
-              <button
-                onClick={() => setTileStyle('osm')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition ${
-                  tileStyle === 'osm' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Street
-              </button>
-              <button
-                onClick={() => setTileStyle('satellite')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition ${
-                  tileStyle === 'satellite' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Satellite
-              </button>
-              <button
-                onClick={() => setTileStyle('dark')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition ${
-                  tileStyle === 'dark' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Dark
-              </button>
-            </div>
+            {!showTurnByTurn && !showCreateModal && (
+              <div className="absolute top-3 right-3 z-[400] flex items-center rounded-xl bg-white/95 p-1 shadow-md border border-slate-200 text-xs font-mono">
+                <button
+                  onClick={() => setTileStyle('osm')}
+                  className={`px-2.5 py-1 rounded-lg font-bold transition ${
+                    tileStyle === 'osm' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Street
+                </button>
+                <button
+                  onClick={() => setTileStyle('satellite')}
+                  className={`px-2.5 py-1 rounded-lg font-bold transition ${
+                    tileStyle === 'satellite' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Satellite
+                </button>
+                <button
+                  onClick={() => setTileStyle('dark')}
+                  className={`px-2.5 py-1 rounded-lg font-bold transition ${
+                    tileStyle === 'dark' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Dark
+                </button>
+              </div>
+            )}
 
             {/* ================= FLOATING MAP LEGEND (Matching Reference Image Exactly) ================= */}
-            <div className="absolute bottom-4 right-4 z-[1000] rounded-xl border border-slate-200/90 bg-white/95 p-3.5 shadow-xl backdrop-blur-sm font-['Plus_Jakarta_Sans',sans-serif] min-w-[190px]">
-              <div className="space-y-2 text-xs">
-                {/* Legend Item 1: Evacuation Route */}
-                <div className="flex items-center gap-2.5">
-                  <div className="w-6 h-0.5 bg-blue-600 rounded"></div>
-                  <span className="font-semibold text-slate-700">Evacuation Route</span>
-                </div>
-
-                {/* Legend Item 2: Safe Shelter */}
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white shadow-xs">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                    </svg>
+            {!showTurnByTurn && !showCreateModal && (
+              <div className="absolute bottom-4 right-4 z-[400] rounded-xl border border-slate-200/90 bg-white/95 p-3.5 shadow-xl backdrop-blur-sm font-['Plus_Jakarta_Sans',sans-serif] min-w-[190px]">
+                <div className="space-y-2 text-xs">
+                  {/* Legend Item 1: Evacuation Route */}
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-6 h-0.5 bg-blue-600 rounded"></div>
+                    <span className="font-semibold text-slate-700">Evacuation Route</span>
                   </div>
-                  <span className="font-semibold text-slate-700">Safe Shelter</span>
-                </div>
 
-                {/* Legend Item 3: High Risk Zone */}
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-white shadow-xs font-bold text-[10px]">
-                    ⚠️
+                  {/* Legend Item 2: Safe Shelter */}
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white shadow-xs">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                      </svg>
+                    </div>
+                    <span className="font-semibold text-slate-700">Safe Shelter</span>
                   </div>
-                  <span className="font-semibold text-slate-700">High Risk Zone</span>
-                </div>
 
-                {/* Legend Item 4: Blocked Route */}
-                <div className="flex items-center gap-2.5">
-                  <div className="w-6 border-t-2 border-dashed border-rose-500"></div>
-                  <span className="font-semibold text-slate-700">Blocked / Flooded Road</span>
+                  {/* Legend Item 3: High Risk Zone */}
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-white shadow-xs font-bold text-[10px]">
+                      ⚠️
+                    </div>
+                    <span className="font-semibold text-slate-700">High Risk Zone</span>
+                  </div>
+
+                  {/* Legend Item 4: Blocked Route */}
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-6 border-t-2 border-dashed border-rose-500"></div>
+                    <span className="font-semibold text-slate-700">Blocked / Flooded Road</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
           </div>
         </div>
@@ -1595,7 +1599,7 @@ const EvacuationPlanning = () => {
 
       {/* ================= TURN-BY-TURN MOBILE NAVIGATION MODAL ================= */}
       {showTurnByTurn && createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in">
           <div className="relative w-full max-w-lg rounded-2xl border border-slate-700 bg-[#0F172A] p-5 sm:p-6 shadow-2xl text-slate-100 flex flex-col max-h-[90vh]">
             
             {/* Modal Header */}
