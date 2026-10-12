@@ -360,10 +360,42 @@
   border-color: #E2E8F0 !important;
 }
 
-.light-theme .bg-gradient-to-r,
-.light-theme .bg-gradient-to-b {
+.light-theme div.bg-gradient-to-r,
+.light-theme div.bg-gradient-to-b {
   background-image: none !important;
   background-color: #FFFFFF !important;
+}
+
+/* Preserve crisp white text on solid & gradient action buttons in Light Mode */
+.light-theme button.bg-blue-600,
+.light-theme button.bg-blue-600 *,
+.light-theme button.bg-emerald-600,
+.light-theme button.bg-emerald-600 *,
+.light-theme button.bg-rose-600,
+.light-theme button.bg-rose-600 *,
+.light-theme button.from-blue-600,
+.light-theme button.from-blue-600 *,
+.light-theme button.from-blue-500,
+.light-theme button.from-blue-500 *,
+.light-theme button.from-cyan-600,
+.light-theme button.from-cyan-600 *,
+.light-theme button.from-rose-600,
+.light-theme button.from-rose-600 *,
+.light-theme button.from-emerald-600,
+.light-theme button.from-emerald-600 * {
+  color: #FFFFFF !important;
+}
+
+/* High-Contrast Text Selection Highlight across Dark & Light Themes */
+::selection {
+  background-color: #0284C7 !important;
+  color: #FFFFFF !important;
+}
+
+.light-theme ::selection,
+.light-theme *::selection {
+  background-color: #2563EB !important;
+  color: #FFFFFF !important;
 }
 
 /* Specific Page Overrides: Citizen Emergency Portal Hero Card */

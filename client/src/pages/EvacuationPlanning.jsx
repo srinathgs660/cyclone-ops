@@ -777,11 +777,15 @@ const EvacuationPlanning = () => {
             {isAdmin && (
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-2 text-xs font-bold uppercase tracking-wider shadow-md shadow-blue-500/20 hover:brightness-110 transition"
-                style={{ color: '#ffffff' }}
+                className="flex items-center gap-1.5 rounded-xl bg-blue-600 bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-blue-500/20 hover:brightness-110 transition"
+                style={{
+                  backgroundColor: '#2563EB',
+                  backgroundImage: 'linear-gradient(to right, #2563EB, #0891B2)',
+                  color: '#FFFFFF'
+                }}
               >
-                <Plus className="h-4 w-4" />
-                <span>Add Route Corridor</span>
+                <Plus className="h-4 w-4" style={{ color: '#FFFFFF' }} />
+                <span style={{ color: '#FFFFFF' }}>Add Route Corridor</span>
               </button>
             )}
           </div>
@@ -1592,8 +1596,12 @@ const EvacuationPlanning = () => {
                 <button
                   type="submit"
                   disabled={creating}
-                  className="rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 font-extrabold px-5 py-2 transition uppercase font-mono shadow-md disabled:opacity-50"
-                  style={{ color: '#ffffff' }}
+                  className="rounded-xl bg-blue-600 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 font-extrabold px-5 py-2 transition uppercase font-mono text-white shadow-md disabled:opacity-50"
+                  style={{
+                    backgroundColor: '#2563EB',
+                    backgroundImage: 'linear-gradient(to right, #2563EB, #0891B2)',
+                    color: '#FFFFFF'
+                  }}
                 >
                   {creating ? 'Routing via OSRM...' : 'Deploy Evacuation Corridor'}
                 </button>
