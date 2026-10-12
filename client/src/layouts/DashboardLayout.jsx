@@ -5,7 +5,7 @@ import {
   LifeBuoy, Truck, Bell, FileText, BarChart3, Users,
   Settings, LogOut, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Menu,
   Flame, CheckCircle2, Shield, User, HelpCircle, PhoneCall, RefreshCw,
-  WifiOff, HeartHandshake, ClipboardCheck, LocateFixed
+  WifiOff, HeartHandshake, ClipboardCheck, LocateFixed, Volume2, VolumeX, Globe
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
@@ -13,6 +13,7 @@ import AlertBanner from '../components/AlertBanner';
 import OfflineVaultModal from '../components/OfflineVaultModal';
 
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Sun, Moon } from 'lucide-react';
 
 const DashboardLayout = () => {
@@ -56,6 +57,15 @@ const DashboardLayout = () => {
     syncStatusMessage 
   } = useSocket();
   const { theme, toggleTheme, isLight } = useTheme();
+  const {
+    language,
+    setLanguage,
+    supportedLanguages,
+    t,
+    isSpeaking,
+    speakEmergencyWarning,
+    stopVoiceBroadcast
+  } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -63,49 +73,49 @@ const DashboardLayout = () => {
 
   const allNavSections = [
     {
-      title: 'DISASTER OPS',
+      title: t('secDisasterOps'),
       items: [
-        { label: 'Command Center', to: '/dashboard', icon: Compass, allowedRoles: ['admin', 'officer', 'responder', 'coordinator'] },
-        { label: 'Cyclone Tracking', to: '/dashboard/cyclones', icon: Radio, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
-        { label: 'Impact Assessment', to: '/dashboard/risk', icon: ShieldAlert, allowedRoles: ['admin', 'officer'] },
+        { label: t('navCommandCenter'), to: '/dashboard', icon: Compass, allowedRoles: ['admin', 'officer', 'responder', 'coordinator'] },
+        { label: t('navCycloneTracking'), to: '/dashboard/cyclones', icon: Radio, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
+        { label: t('navImpactAssessment'), to: '/dashboard/risk', icon: ShieldAlert, allowedRoles: ['admin', 'officer'] },
       ]
     },
     {
-      title: 'RESPONSE & SAFETY',
+      title: t('secResponseSafety'),
       items: [
-        { label: 'Evacuation Planning', to: '/dashboard/evacuation', icon: NavigationIcon, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
-        { label: 'Shelters Management', to: '/dashboard/shelters', icon: Home, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
-        { label: 'Safe Persons Registry', to: '/dashboard/safe-registry', icon: HeartHandshake, highlight: true, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
-        { label: 'Volunteer Task Board', to: '/dashboard/volunteer-tasks', icon: ClipboardCheck, allowedRoles: ['admin', 'officer', 'coordinator', 'responder', 'volunteer'] },
-        { label: 'Incident Triage', to: '/dashboard/incidents', icon: AlertTriangle, allowedRoles: ['admin', 'officer', 'responder'] },
-        { label: 'Response Teams', to: '/dashboard/teams', icon: LifeBuoy, allowedRoles: ['admin', 'officer', 'responder'] },
+        { label: t('navEvacuationPlanning'), to: '/dashboard/evacuation', icon: NavigationIcon, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
+        { label: t('navSheltersManagement'), to: '/dashboard/shelters', icon: Home, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
+        { label: t('navSafeRegistry'), to: '/dashboard/safe-registry', icon: HeartHandshake, highlight: true, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
+        { label: t('navVolunteerTasks'), to: '/dashboard/volunteer-tasks', icon: ClipboardCheck, allowedRoles: ['admin', 'officer', 'coordinator', 'responder', 'volunteer'] },
+        { label: t('navIncidentTriage'), to: '/dashboard/incidents', icon: AlertTriangle, allowedRoles: ['admin', 'officer', 'responder'] },
+        { label: t('navResponseTeams'), to: '/dashboard/teams', icon: LifeBuoy, allowedRoles: ['admin', 'officer', 'responder'] },
       ]
     },
     {
-      title: 'RELIEF & LOGISTICS',
+      title: t('secReliefLogistics'),
       items: [
-        { label: 'Relief & Inventory', to: '/dashboard/relief', icon: Truck, allowedRoles: ['admin', 'officer', 'coordinator'] },
+        { label: t('navReliefInventory'), to: '/dashboard/relief', icon: Truck, allowedRoles: ['admin', 'officer', 'coordinator'] },
       ]
     },
     {
-      title: 'COMMUNICATION',
+      title: t('secCommunication'),
       items: [
-        { label: 'Emergency Alerts', to: '/dashboard/alerts', icon: Bell, allowedRoles: ['admin', 'officer'] },
-        { label: 'Citizen SOS Portal', to: '/dashboard/citizen', icon: PhoneCall, highlight: true, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
-        { label: 'Live Rescue Tracking', to: '/dashboard/live-tracking', icon: LocateFixed, highlight: true, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
+        { label: t('navEmergencyAlerts'), to: '/dashboard/alerts', icon: Bell, allowedRoles: ['admin', 'officer'] },
+        { label: t('navCitizenPortal'), to: '/dashboard/citizen', icon: PhoneCall, highlight: true, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
+        { label: t('navLiveTracking'), to: '/dashboard/live-tracking', icon: LocateFixed, highlight: true, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
       ]
     },
     {
-      title: 'ANALYTICS',
+      title: t('secAnalytics'),
       items: [
-        { label: 'Analytics & Forecast', to: '/dashboard/analytics', icon: BarChart3, allowedRoles: ['admin', 'officer'] },
-        { label: 'Operational Reports', to: '/dashboard/reports', icon: FileText, allowedRoles: ['admin', 'officer', 'coordinator'] },
+        { label: t('navAnalyticsForecast'), to: '/dashboard/analytics', icon: BarChart3, allowedRoles: ['admin', 'officer'] },
+        { label: t('navOperationalReports'), to: '/dashboard/reports', icon: FileText, allowedRoles: ['admin', 'officer', 'coordinator'] },
       ]
     },
     {
-      title: 'ADMINISTRATION',
+      title: t('secAdministration'),
       items: [
-        { label: 'Personnel & Approvals', to: '/dashboard/admin', icon: Users, allowedRoles: ['admin', 'officer'] },
+        { label: t('navPersonnelApprovals'), to: '/dashboard/admin', icon: Users, allowedRoles: ['admin', 'officer'] },
       ]
     }
   ];
@@ -403,7 +413,7 @@ const DashboardLayout = () => {
 
               {/* Desktop Operations Center Badge */}
               <div className="hidden md:flex items-center gap-2 rounded-lg border border-slate-700/80 bg-slate-800/80 px-3 py-1.5 text-xs text-slate-200 shadow-sm shrink-0">
-                <span className="text-cyan-400 font-bold font-mono">Cyclone Operations Center</span>
+                <span className="text-cyan-400 font-bold font-mono">{t('opsCenter')}</span>
               </div>
 
               {/* Live Data Connection Indicator */}
@@ -413,7 +423,7 @@ const DashboardLayout = () => {
                   title="Live Telemetry Stream Connected (Socket.IO & Meteorological Gateway)"
                 >
                   <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-                  <span className="font-bold">LIVE DATA CONNECTED</span>
+                  <span className="font-bold">{t('liveDataConnected')}</span>
                 </div>
               ) : (
                 <button
@@ -422,17 +432,58 @@ const DashboardLayout = () => {
                   title="Connection interrupted. Click to reconnect to telemetry gateway."
                 >
                   <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-                  <span className="font-bold">RECONNECT GATEWAY</span>
+                  <span className="font-bold">{t('reconnectGateway')}</span>
                 </button>
               )}
             </div>
 
-            {/* Right section: last updated, refresh, theme, notifications, profile */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              <div className="hidden xl:flex flex-col text-right text-xs">
-                <span className="text-[10px] text-slate-500 font-mono uppercase">Last Updated</span>
+            {/* Right section: language selector, voice siren, last updated, refresh, theme, notifications, profile */}
+            <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+              <div className="hidden 2xl:flex flex-col text-right text-xs">
+                <span className="text-[10px] text-slate-500 font-mono uppercase">{t('lastUpdated')}</span>
                 <span className="font-mono text-slate-300 font-semibold">{lastUpdated.toLocaleTimeString()}</span>
               </div>
+
+              {/* Regional Multilingual Selector (English Kept as Default + Tamil, Telugu, Hindi, Bengali) */}
+              <div className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/90 px-2 py-1 text-xs shadow-sm shrink-0" title="Regional Language Selector (English, Tamil, Telugu, Hindi, Bengali)">
+                <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+                <select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                  aria-label="Select Regional Language"
+                  className="bg-transparent text-xs font-bold text-slate-200 focus:outline-none cursor-pointer font-mono pr-1"
+                >
+                  {supportedLanguages.map((lang) => (
+                    <option key={lang.code} value={lang.code} className="bg-slate-900 text-white">
+                      {lang.code === 'en' ? 'English (EN)' : `${lang.nativeName} (${lang.name})`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Automated Regional Audio Voice Siren Warning Button */}
+              <button
+                onClick={() => (isSpeaking ? stopVoiceBroadcast() : speakEmergencyWarning({ withSiren: true }))}
+                className={`flex items-center justify-center h-9 px-2.5 sm:px-3 py-1.5 rounded-lg border font-mono font-bold text-xs transition shadow-sm shrink-0 ${
+                  isSpeaking
+                    ? 'border-rose-500 bg-rose-600 text-white animate-pulse'
+                    : 'border-rose-500/40 bg-rose-500/15 text-rose-300 hover:bg-rose-500/25'
+                }`}
+                style={isSpeaking ? { backgroundColor: '#E11D48', color: '#FFFFFF' } : undefined}
+                title="Automated Audio Voice Siren Warning in Selected Regional Language"
+              >
+                {isSpeaking ? (
+                  <>
+                    <VolumeX className="h-4 w-4 shrink-0" />
+                    <span className="hidden sm:inline ml-1.5">{t('stopVoiceBtn')}</span>
+                  </>
+                ) : (
+                  <>
+                    <Volume2 className="h-4 w-4 shrink-0 text-rose-400" />
+                    <span className="hidden sm:inline ml-1.5">{t('voiceSirenBtn')}</span>
+                  </>
+                )}
+              </button>
 
               {/* On-Demand Real-Time Satellite Refresh */}
               <button
@@ -442,7 +493,7 @@ const DashboardLayout = () => {
                 title="Fetch latest real-time cyclone telemetry from IMD, NOAA & NASA satellites"
               >
                 <RefreshCw className={`h-4 w-4 shrink-0 ${isSyncing ? 'animate-spin text-cyan-400' : 'text-cyan-300'}`} />
-                <span className="hidden md:inline font-mono font-bold text-xs ml-1.5">{isSyncing ? 'SYNCING...' : 'REFRESH'}</span>
+                <span className="hidden lg:inline font-mono font-bold text-xs ml-1.5">{isSyncing ? t('syncing') : t('refresh')}</span>
               </button>
 
               {/* Dark / Light Theme Toggle */}
@@ -454,12 +505,12 @@ const DashboardLayout = () => {
                 {isLight ? (
                   <>
                     <Moon className="h-4 w-4 text-indigo-400 shrink-0" />
-                    <span className="hidden md:inline font-mono text-[11px] ml-1.5">Dark</span>
+                    <span className="hidden lg:inline font-mono text-[11px] ml-1.5">Dark</span>
                   </>
                 ) : (
                   <>
                     <Sun className="h-4 w-4 text-amber-400 shrink-0" />
-                    <span className="hidden md:inline font-mono text-[11px] ml-1.5">Light</span>
+                    <span className="hidden lg:inline font-mono text-[11px] ml-1.5">Light</span>
                   </>
                 )}
               </button>
@@ -475,8 +526,8 @@ const DashboardLayout = () => {
                 title="Offline-First 'Grid-Down' Vault: Shelters, Family QR Passport, SOS Queue, Radio Frequencies"
               >
                 <WifiOff className={`h-4 w-4 shrink-0 ${!isOnline ? 'text-rose-400' : 'text-amber-400'}`} />
-                <span className="hidden md:inline font-mono font-bold text-xs ml-1.5">
-                  {!isOnline ? 'GRID DOWN' : 'OFFLINE'}
+                <span className="hidden lg:inline font-mono font-bold text-xs ml-1.5">
+                  {!isOnline ? t('gridDown') : t('offline')}
                 </span>
               </button>
 

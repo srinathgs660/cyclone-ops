@@ -192,18 +192,21 @@ function AppRoutes() {
 }
 
 import { ThemeProvider } from './context/ThemeContext';
+import { LanguageProvider } from './context/LanguageContext';
 
 function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
-        <AuthProvider>
-          <SocketProvider>
-            <SimulationProvider>
-              <AppRoutes />
-            </SimulationProvider>
-          </SocketProvider>
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <SocketProvider>
+              <SimulationProvider>
+                <AppRoutes />
+              </SimulationProvider>
+            </SocketProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

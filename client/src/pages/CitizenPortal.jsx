@@ -1,8 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { AlertOctagon, MapPin, ShieldAlert, Navigation, Bell, PhoneCall, Send, CheckCircle2, Home, Crosshair } from 'lucide-react';
+import {
+  AlertOctagon,
+  MapPin,
+  ShieldAlert,
+  Navigation,
+  Bell,
+  PhoneCall,
+  Send,
+  CheckCircle2,
+  Home,
+  Crosshair,
+  Volume2,
+  VolumeX,
+  Globe,
+  Radio
+} from 'lucide-react';
 import { useSocket } from '../context/SocketContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const CitizenPortal = () => {
   const navigate = useNavigate();
@@ -17,6 +33,19 @@ const CitizenPortal = () => {
   const [sendingSos, setSendingSos] = useState(false);
   const watchIdRef = useRef(null);
   const { liveAlerts } = useSocket();
+
+  const {
+    language,
+    setLanguage,
+    currentLanguageMeta,
+    supportedLanguages,
+    t,
+    isSpeaking,
+    includeSiren,
+    setIncludeSiren,
+    speakEmergencyWarning,
+    stopVoiceBroadcast
+  } = useLanguage();
 
   const [sosForm, setSosForm] = useState({
     fullName: '',
@@ -135,26 +164,26 @@ const CitizenPortal = () => {
   };
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 pb-12">
+    <div className="mx-auto max-w-2xl space-y-5 pb-12">
       {/* Citizen Header */}
       <div className="rounded-2xl border border-rose-500/40 bg-gradient-to-b from-rose-950/80 via-slate-900 to-slate-900 p-6 text-center shadow-2xl">
         <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl p-1 bg-slate-900 border border-rose-500/40 shadow-xl">
           <img src="/logo.png" alt="Cyclone Emergency Logo" className="h-full w-full object-contain rounded-xl" />
         </div>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold text-rose-300 font-mono border border-rose-500/40 animate-pulse">
-          🚨 CITIZEN EMERGENCY PORTAL
+          {t('portalBadge')}
         </span>
-        <h2 className="mt-3 text-2xl font-black tracking-tight text-white uppercase font-mono">
-          Cyclone Emergency Assistance
+        <h2 className="mt-3 text-xl sm:text-2xl font-black tracking-tight text-white uppercase font-mono">
+          {t('portalTitle')}
         </h2>
         <p className="mt-1 text-xs text-slate-300">
-          Immediate life-safety rescue, real-time localized threat level, and verified shelter navigation.
+          {t('portalSubtitle')}
         </p>
 
         {/* Current Risk Snapshot (Always a prominent, high-contrast dark box) */}
         {riskAssessment && (
           <div className="citizen-black-threat-box mt-4 inline-flex flex-wrap items-center justify-center gap-2.5 rounded-xl px-4 py-2 text-xs font-mono">
-            <span className="threat-box-text">Your Local Threat:</span>
+            <span className="threat-box-text">{t('localThreatLabel')}</span>
             <span className={`font-black uppercase px-2.5 py-0.5 rounded text-xs shadow-sm ${
               riskAssessment.riskLevel === 'CRITICAL' ? 'bg-rose-600 text-white' :
               riskAssessment.riskLevel === 'HIGH' ? 'bg-amber-400 text-slate-950' : 'bg-emerald-500 text-slate-950'
@@ -162,10 +191,153 @@ const CitizenPortal = () => {
               {riskAssessment.riskLevel}
             </span>
             <span className="threat-box-text">
-              • Cyclone Eye: <strong className="threat-box-highlight">{riskAssessment.cycloneDistanceKm} km</strong>
+              • {t('cycloneEyeLabel')} <strong className="threat-box-highlight">{riskAssessment.cycloneDistanceKm} km</strong>
             </span>
           </div>
         )}
+      </div>
+
+      {/* ================= REGIONAL MULTILINGUAL VOICE SIREN & ACCESSIBILITY PANEL ================= */}
+      <div className="rounded-2xl border border-cyan-500/40 bg-[#131D31] p-5 shadow-xl space-y-4">
+        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-800 pb-3">
+          <div className="space-y-1">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/20 px-2.5 py-0.5 text-[10px] font-bold text-cyan-300 font-mono border border-cyan-500/40">
+              <Radio className="h-3 w-3 animate-pulse" />
+              {t('voicePanelBadge')}
+            </span>
+            <h3 className="text-sm sm:text-base font-extrabold text-white font-mono">
+              {t('voicePanelTitle')}
+            </h3>
+            <p className="text-xs text-slate-400">
+              {t('voicePanelDesc')}
+            </p>
+          </div>
+
+          <label className="flex items-center gap-1.5 text-[11px] font-mono text-slate-300 cursor-pointer shrink-0 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-700">
+            <input
+              type="checkbox"
+              checked={includeSiren}
+              onChange={(e) => setIncludeSiren(e.target.checked)}
+              className="rounded border-slate-600 text-rose-500 focus:ring-0"
+            />
+            <span>🚨 {t('sirenIncludeLabel')}</span>
+          </label>
+        </div>
+
+        {/* 5 Touch-Friendly Language Selector Pills (English Default + Tamil, Telugu, Hindi, Bengali) */}
+        <div>
+          <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-2">
+            <span className="flex items-center gap-1.5 font-bold text-slate-300">
+              <Globe className="h-3.5 w-3.5 text-cyan-400" />
+              SELECT INTERFACE & VOICE WARNING LANGUAGE:
+            </span>
+            <span className="text-cyan-400 font-bold">{currentLanguageMeta.regionTag}</span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            {supportedLanguages.map((lang) => {
+              const isSelected = language === lang.code;
+              return (
+                <button
+                  key={lang.code}
+                  type="button"
+                  onClick={() => {
+                    setLanguage(lang.code);
+                    if (isSpeaking) {
+                      speakEmergencyWarning({ langOverride: lang.code, withSiren: false });
+                    }
+                  }}
+                  className={`flex flex-col items-center justify-center rounded-xl border px-3 py-2.5 text-center transition-all ${
+                    isSelected
+                      ? 'border-blue-500 bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                      : 'border-slate-700 bg-slate-900/90 text-slate-200 hover:border-cyan-500/50 hover:bg-slate-800'
+                  }`}
+                  style={
+                    isSelected
+                      ? { backgroundColor: '#2563EB', color: '#FFFFFF', borderColor: '#3B82F6' }
+                      : undefined
+                  }
+                >
+                  <span
+                    className="text-sm font-extrabold tracking-tight"
+                    style={isSelected ? { color: '#FFFFFF' } : undefined}
+                  >
+                    {lang.nativeName}
+                  </span>
+                  <span
+                    className={`text-[10px] font-mono mt-0.5 ${
+                      isSelected ? 'text-blue-100' : 'text-slate-400'
+                    }`}
+                    style={isSelected ? { color: '#DBEAFE' } : undefined}
+                  >
+                    {lang.code === 'en' ? 'English (Default)' : lang.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Audio Siren & Voice Broadcast Controls */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() =>
+              isSpeaking
+                ? stopVoiceBroadcast()
+                : speakEmergencyWarning({ withSiren: includeSiren })
+            }
+            className={`flex-1 flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs sm:text-sm font-black uppercase tracking-wider font-mono shadow-lg transition ${
+              isSpeaking
+                ? 'bg-rose-600 hover:bg-rose-700 text-white animate-pulse'
+                : 'bg-blue-600 hover:bg-blue-700 text-white'
+            }`}
+            style={{
+              backgroundColor: isSpeaking ? '#E11D48' : '#2563EB',
+              color: '#FFFFFF'
+            }}
+          >
+            {isSpeaking ? (
+              <>
+                <VolumeX className="h-5 w-5 shrink-0" style={{ color: '#FFFFFF' }} />
+                <span style={{ color: '#FFFFFF' }}>{t('stopVoiceWarning')}</span>
+              </>
+            ) : (
+              <>
+                <Volume2 className="h-5 w-5 shrink-0" style={{ color: '#FFFFFF' }} />
+                <span style={{ color: '#FFFFFF' }}>{t('playVoiceWarning')}</span>
+              </>
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              const nearest = nearestShelters[0]?.shelter?.name || 'Marina Coastal Community Safe Center';
+              const dist = nearestShelters[0]?.distanceKm || '1.4';
+              speakEmergencyWarning({
+                customText: `${t('voiceWarningNative')} Nearest verified cyclone shelter is ${nearest}, located ${dist} kilometers away.`,
+                withSiren: false
+              });
+            }}
+            className="flex items-center justify-center gap-1.5 rounded-xl border border-emerald-500/50 bg-emerald-600 px-3.5 py-3 text-xs font-bold font-mono text-white hover:bg-emerald-500 transition shadow-sm"
+            style={{ backgroundColor: '#059669', color: '#FFFFFF' }}
+          >
+            <Volume2 className="h-4 w-4 shrink-0" style={{ color: '#FFFFFF' }} />
+            <span style={{ color: '#FFFFFF' }}>{t('readShelterVoice')}</span>
+          </button>
+        </div>
+
+        {/* Live Localized Voice Broadcast Script Box */}
+        <div className="rounded-xl border border-slate-700 bg-slate-900 p-3.5 text-xs space-y-1.5">
+          <div className="flex items-center justify-between text-[10px] font-mono text-cyan-400 font-bold uppercase">
+            <span>{t('liveVoiceScriptLabel')}</span>
+            <span>{isSpeaking ? '🔊 BROADCASTING AUDIO...' : `BCP-47: ${currentLanguageMeta.bcp47}`}</span>
+          </div>
+          <p className="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">
+            “{t('voiceWarningNative')}”
+          </p>
+        </div>
       </div>
 
       {/* Touch-Friendly Action Navigation Grid */}
@@ -179,7 +351,7 @@ const CitizenPortal = () => {
           }`}
         >
           <AlertOctagon className="h-7 w-7 text-rose-400 mb-1.5 animate-bounce" />
-          <span className="text-xs font-bold uppercase tracking-wider font-mono">1. SEND SOS</span>
+          <span className="text-xs font-bold uppercase tracking-wider font-mono">{t('tab1Sos')}</span>
         </button>
 
         <button
@@ -187,7 +359,7 @@ const CitizenPortal = () => {
           className="flex flex-col items-center justify-center rounded-xl border border-cyan-500/50 bg-cyan-500/15 p-4 text-center text-cyan-200 shadow-lg shadow-cyan-950/40 hover:bg-cyan-500/25 transition-all"
         >
           <Navigation className="h-7 w-7 text-cyan-400 mb-1.5 animate-pulse" />
-          <span className="text-xs font-bold uppercase tracking-wider font-mono">2. LIVE RESCUE MAP</span>
+          <span className="text-xs font-bold uppercase tracking-wider font-mono">{t('tab2LiveMap')}</span>
         </button>
 
         <button
@@ -199,7 +371,7 @@ const CitizenPortal = () => {
           }`}
         >
           <Home className="h-7 w-7 text-emerald-400 mb-1.5" />
-          <span className="text-xs font-bold uppercase tracking-wider font-mono">3. FIND SHELTER</span>
+          <span className="text-xs font-bold uppercase tracking-wider font-mono">{t('tab3Shelter')}</span>
         </button>
 
         <button
@@ -211,7 +383,7 @@ const CitizenPortal = () => {
           }`}
         >
           <ShieldAlert className="h-7 w-7 text-amber-400 mb-1.5" />
-          <span className="text-xs font-bold uppercase tracking-wider font-mono">4. MY RISK</span>
+          <span className="text-xs font-bold uppercase tracking-wider font-mono">{t('tab4Risk')}</span>
         </button>
 
         <button
@@ -223,7 +395,7 @@ const CitizenPortal = () => {
           }`}
         >
           <Bell className="h-7 w-7 text-cyan-400 mb-1.5" />
-          <span className="text-xs font-bold uppercase tracking-wider font-mono">5. ALERTS</span>
+          <span className="text-xs font-bold uppercase tracking-wider font-mono">{t('tab5Alerts')}</span>
         </button>
 
         <button
@@ -235,7 +407,7 @@ const CitizenPortal = () => {
           }`}
         >
           <PhoneCall className="h-7 w-7 text-blue-400 mb-1.5" />
-          <span className="text-xs font-bold uppercase tracking-wider font-mono">6. HELPLINES</span>
+          <span className="text-xs font-bold uppercase tracking-wider font-mono">{t('tab6Helplines')}</span>
         </button>
       </div>
 
@@ -245,8 +417,8 @@ const CitizenPortal = () => {
           <div className="flex items-center gap-3 border-b border-slate-800 pb-3 mb-4">
             <AlertOctagon className="h-6 w-6 text-rose-400 shrink-0" />
             <div>
-              <h3 className="text-base font-bold text-white uppercase font-mono">Emergency SOS Distress Broadcast</h3>
-              <p className="text-xs text-slate-400">Directly alerts the central EOC, streams your exact live GPS, and dispatches the nearest Response Team & Volunteer.</p>
+              <h3 className="text-base font-bold text-white uppercase font-mono">{t('sosHeaderTitle')}</h3>
+              <p className="text-xs text-slate-400">{t('sosHeaderDesc')}</p>
             </div>
           </div>
 
@@ -256,7 +428,7 @@ const CitizenPortal = () => {
               <div className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-ping" />
                 <span className="font-bold text-emerald-300 uppercase">
-                  EXACT LIVE GPS LOCATION TRACKING: {isSharingLiveGps ? 'ENABLED' : 'PAUSED'}
+                  {isSharingLiveGps ? t('gpsTrackingEnabled') : t('gpsTrackingPaused')}
                 </span>
               </div>
               <label className="flex items-center gap-1.5 cursor-pointer text-[11px] text-slate-300">
@@ -266,12 +438,12 @@ const CitizenPortal = () => {
                   onChange={(e) => setIsSharingLiveGps(e.target.checked)}
                   className="rounded border-slate-600 text-emerald-500 focus:ring-0"
                 />
-                <span>Continuous Live Stream</span>
+                <span>{t('continuousLiveStream')}</span>
               </label>
             </div>
             <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-300">
               <span>
-                Coordinates: <strong className="text-white">{userCoords[1]?.toFixed(5)}°N, {userCoords[0]?.toFixed(5)}°E</strong> (±{gpsAccuracy}m)
+                {t('coordinatesLabel')} <strong className="text-white">{userCoords[1]?.toFixed(5)}°N, {userCoords[0]?.toFixed(5)}°E</strong> (±{gpsAccuracy}m)
               </span>
               <span className="text-cyan-300">{gpsStatusText}</span>
             </div>
@@ -292,10 +464,11 @@ const CitizenPortal = () => {
 
               <button
                 onClick={() => navigate(`/dashboard/live-tracking?incidentId=${sosSent.incidentId}`)}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-700 py-3 px-4 text-xs sm:text-sm font-black uppercase tracking-wider text-white shadow-xl shadow-cyan-950/60 hover:from-cyan-500 hover:to-blue-600 transition"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-600 bg-gradient-to-r from-cyan-600 to-blue-700 py-3 px-4 text-xs sm:text-sm font-black uppercase tracking-wider text-white shadow-xl shadow-cyan-950/60 hover:from-cyan-500 hover:to-blue-600 transition"
+                style={{ backgroundColor: '#2563EB', color: '#FFFFFF' }}
               >
-                <Navigation className="h-4 w-4 animate-bounce" />
-                <span>🗺️ TRACK ASSIGNED RESCUE TEAM & VOLUNTEER ON LIVE MAP</span>
+                <Navigation className="h-4 w-4 animate-bounce" style={{ color: '#FFFFFF' }} />
+                <span style={{ color: '#FFFFFF' }}>🗺️ TRACK ASSIGNED RESCUE TEAM & VOLUNTEER ON LIVE MAP</span>
               </button>
 
               <button
@@ -309,11 +482,11 @@ const CitizenPortal = () => {
             <form onSubmit={handleSendSos} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Your Full Name</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('fullNameLabel')}</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Priya Sundaram"
+                    placeholder={t('fullNamePlaceholder')}
                     value={sosForm.fullName}
                     onChange={(e) => setSosForm({ ...sosForm, fullName: e.target.value })}
                     className="w-full rounded-lg border border-slate-700 bg-slate-900 p-2.5 text-white focus:border-rose-500 focus:outline-none"
@@ -321,11 +494,11 @@ const CitizenPortal = () => {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Contact Phone Number</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('phoneLabel')}</label>
                   <input
                     type="tel"
                     required
-                    placeholder="e.g. +91 98401 23456"
+                    placeholder={t('phonePlaceholder')}
                     value={sosForm.contactPhone}
                     onChange={(e) => setSosForm({ ...sosForm, contactPhone: e.target.value })}
                     className="w-full rounded-lg border border-slate-700 bg-slate-900 p-2.5 text-white focus:border-rose-500 focus:outline-none"
@@ -335,23 +508,23 @@ const CitizenPortal = () => {
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Emergency Nature</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('emergencyNatureLabel')}</label>
                   <select
                     value={sosForm.emergencyType}
                     onChange={(e) => setSosForm({ ...sosForm, emergencyType: e.target.value })}
                     className="w-full rounded-lg border border-slate-700 bg-slate-900 p-2.5 text-white focus:border-rose-500 focus:outline-none"
                   >
-                    <option value="Trapped Civilians">Trapped Civilians (Rising Waters / Roof)</option>
-                    <option value="Medical Emergency">Critical Medical Emergency</option>
-                    <option value="Severe Flooding">Rapid Ground Flooding</option>
-                    <option value="Building Collapse / Structural Risk">Building Damage / Wall Collapse</option>
-                    <option value="Missing Person">Missing Person</option>
-                    <option value="Food/Water Crisis">Infant Food / Drinking Water Crisis</option>
+                    <option value="Trapped Civilians">{t('optTrapped')}</option>
+                    <option value="Medical Emergency">{t('optMedical')}</option>
+                    <option value="Severe Flooding">{t('optFlooding')}</option>
+                    <option value="Building Collapse / Structural Risk">{t('optCollapse')}</option>
+                    <option value="Missing Person">{t('optMissing')}</option>
+                    <option value="Food/Water Crisis">{t('optFoodWater')}</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Number of People Trapped / Affected</label>
+                  <label className="block text-slate-300 font-semibold mb-1">{t('peopleCountLabel')}</label>
                   <input
                     type="number"
                     min="1"
@@ -365,11 +538,11 @@ const CitizenPortal = () => {
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Current Physical Location / Landmark</label>
+                <label className="block text-slate-300 font-semibold mb-1">{t('locationLandmarkLabel')}</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. 2nd Street, Near Lighthouse, Marina Beach Lowlands"
+                  placeholder={t('locationPlaceholder')}
                   value={sosForm.address}
                   onChange={(e) => setSosForm({ ...sosForm, address: e.target.value })}
                   className="w-full rounded-lg border border-slate-700 bg-slate-900 p-2.5 text-white focus:border-rose-500 focus:outline-none"
@@ -377,10 +550,10 @@ const CitizenPortal = () => {
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Situation Description</label>
+                <label className="block text-slate-300 font-semibold mb-1">{t('situationDescLabel')}</label>
                 <textarea
                   rows="3"
-                  placeholder="Water level height, children/elderly present, roof access, landmarks..."
+                  placeholder={t('situationPlaceholder')}
                   value={sosForm.description}
                   onChange={(e) => setSosForm({ ...sosForm, description: e.target.value })}
                   className="w-full rounded-lg border border-slate-700 bg-slate-900 p-2.5 text-white focus:border-rose-500 focus:outline-none"
@@ -390,9 +563,10 @@ const CitizenPortal = () => {
               <button
                 type="submit"
                 disabled={sendingSos}
-                className="w-full rounded-xl bg-gradient-to-r from-rose-600 to-red-700 py-3 text-sm font-black uppercase tracking-wider text-white shadow-xl shadow-rose-950/60 hover:from-rose-500 hover:to-red-600 transition disabled:opacity-50"
+                className="w-full rounded-xl bg-rose-600 bg-gradient-to-r from-rose-600 to-red-700 py-3 text-sm font-black uppercase tracking-wider text-white shadow-xl shadow-rose-950/60 hover:from-rose-500 hover:to-red-600 transition disabled:opacity-50"
+                style={{ backgroundColor: '#E11D48', color: '#FFFFFF' }}
               >
-                {sendingSos ? 'TRANSMITTING DISTRESS SIGNAL...' : '🚨 TRANSMIT IMMEDIATE SOS DISTRESS CALL'}
+                {sendingSos ? t('submittingSosBtn') : t('submitSosBtn')}
               </button>
             </form>
           )}
@@ -403,8 +577,8 @@ const CitizenPortal = () => {
       {activeTab === 'shelters' && (
         <div className="rounded-2xl border border-slate-800 bg-[#131D31] p-6 shadow-2xl space-y-4">
           <div className="border-b border-slate-800 pb-3">
-            <h3 className="text-base font-bold text-white uppercase font-mono">Closest Verified Emergency Shelters</h3>
-            <p className="text-xs text-slate-400">Sorted by live geospatial distance from your detected GPS position.</p>
+            <h3 className="text-base font-bold text-white uppercase font-mono">{t('sheltersTitle')}</h3>
+            <p className="text-xs text-slate-400">{t('sheltersSubtitle')}</p>
           </div>
 
           <div className="space-y-3">
@@ -431,7 +605,7 @@ const CitizenPortal = () => {
                   rel="noreferrer"
                   className="mt-3 block text-center rounded-lg bg-emerald-500/20 border border-emerald-500/40 py-2 font-bold uppercase text-emerald-300 hover:bg-emerald-500/30 transition"
                 >
-                  Navigate to this Shelter
+                  {t('navigateShelterBtn')}
                 </a>
               </div>
             ))}
@@ -443,27 +617,27 @@ const CitizenPortal = () => {
       {activeTab === 'risk' && riskAssessment && (
         <div className="rounded-2xl border border-slate-800 bg-[#131D31] p-6 shadow-2xl space-y-4">
           <div className="border-b border-slate-800 pb-3">
-            <h3 className="text-base font-bold text-white uppercase font-mono">Personalized Risk Calculation</h3>
+            <h3 className="text-base font-bold text-white uppercase font-mono">{t('riskTitle')}</h3>
             <p className="text-xs text-slate-400">Computed for coordinates {userCoords[1]?.toFixed(3)}°N, {userCoords[0]?.toFixed(3)}°E</p>
           </div>
 
           <div className="rounded-xl border border-amber-500/30 bg-amber-950/20 p-4 text-xs space-y-2 font-mono">
             <div className="flex justify-between">
-              <span className="text-slate-400">Active Cyclone:</span>
+              <span className="text-slate-400">{t('activeCycloneLabel')}</span>
               <strong className="text-white">{riskAssessment.activeCycloneName}</strong>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Distance from Eye:</span>
+              <span className="text-slate-400">{t('distanceFromEyeLabel')}</span>
               <strong className="text-amber-300">{riskAssessment.cycloneDistanceKm} km</strong>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Threat Classification:</span>
+              <span className="text-slate-400">{t('threatClassLabel')}</span>
               <strong className="text-rose-400 uppercase font-black">{riskAssessment.riskLevel}</strong>
             </div>
           </div>
 
           <div className="rounded-xl border border-cyan-500/30 bg-cyan-950/20 p-4">
-            <h5 className="font-bold text-cyan-300 font-mono text-xs uppercase mb-1">Official Directive:</h5>
+            <h5 className="font-bold text-cyan-300 font-mono text-xs uppercase mb-1">{t('officialDirectiveLabel')}</h5>
             <p className="text-xs text-slate-200">{riskAssessment.recommendation}</p>
           </div>
         </div>
@@ -473,8 +647,8 @@ const CitizenPortal = () => {
       {activeTab === 'alerts' && (
         <div className="rounded-2xl border border-slate-800 bg-[#131D31] p-6 shadow-2xl space-y-3">
           <div className="border-b border-slate-800 pb-3">
-            <h3 className="text-base font-bold text-white uppercase font-mono">Official Broadcast Alerts</h3>
-            <p className="text-xs text-slate-400">Authorized alerts issued by Disaster Operations Center.</p>
+            <h3 className="text-base font-bold text-white uppercase font-mono">{t('alertsTitle')}</h3>
+            <p className="text-xs text-slate-400">{t('alertsSubtitle')}</p>
           </div>
 
           {liveAlerts.length === 0 ? (
@@ -497,8 +671,8 @@ const CitizenPortal = () => {
       {activeTab === 'contacts' && (
         <div className="rounded-2xl border border-slate-800 bg-[#131D31] p-6 shadow-2xl space-y-3">
           <div className="border-b border-slate-800 pb-3">
-            <h3 className="text-base font-bold text-white uppercase font-mono">Emergency 24/7 Helplines</h3>
-            <p className="text-xs text-slate-400">Direct toll-free lines to central control rooms.</p>
+            <h3 className="text-base font-bold text-white uppercase font-mono">{t('helplinesTitle')}</h3>
+            <p className="text-xs text-slate-400">{t('helplinesSubtitle')}</p>
           </div>
 
           <div className="space-y-2.5 text-xs font-mono">

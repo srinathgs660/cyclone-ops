@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Bell, Send, AlertOctagon, CheckCircle2, Radio, Globe } from 'lucide-react';
+import { Bell, Send, AlertOctagon, CheckCircle2, Radio, Globe, Volume2, VolumeX } from 'lucide-react';
 import { useSocket } from '../context/SocketContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const AlertCenter = () => {
   const [alerts, setAlerts] = useState([]);
@@ -12,6 +13,15 @@ const AlertCenter = () => {
   const [description, setDescription] = useState('');
   const [regions, setRegions] = useState('Chennai, Thiruvallur, Chengalpattu');
   const { lastUpdated } = useSocket();
+  const {
+    language,
+    setLanguage,
+    currentLanguageMeta,
+    supportedLanguages,
+    isSpeaking,
+    speakEmergencyWarning,
+    stopVoiceBroadcast
+  } = useLanguage();
 
   useEffect(() => {
     fetchAlerts();
@@ -67,17 +77,41 @@ const AlertCenter = () => {
           <div className="flex items-center gap-2">
             <Bell className="h-5 w-5 text-rose-400" />
             <h2 className="text-xl font-extrabold uppercase tracking-wider text-white font-mono">
-              Emergency Broadcast Center & Public Notifications
+              Emergency Broadcast Center & Multilingual Voice Sirens
             </h2>
           </div>
           <p className="mt-1 text-xs text-slate-400">
-            Issue multi-channel official warning sirens, push alerts, and regional evacuation mandates
+            Issue multi-channel official warning sirens, push alerts, and regional voice broadcasts (English, தமிழ், తెలుగు, हिन्दी, বাংলা)
           </p>
         </div>
 
-        <span className="text-xs font-mono text-cyan-300">
-          Active Broadcasts: <strong>{alerts.length}</strong>
-        </span>
+        <div className="flex flex-wrap items-center gap-2.5">
+          {supportedLanguages.map((lang) => (
+            <button
+              key={lang.code}
+              type="button"
+              onClick={() => setLanguage(lang.code)}
+              className={`rounded-lg border px-2.5 py-1 text-xs font-mono font-bold transition ${
+                language === lang.code
+                  ? 'border-blue-500 bg-blue-600 text-white'
+                  : 'border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700'
+              }`}
+              style={language === lang.code ? { backgroundColor: '#2563EB', color: '#FFFFFF' } : undefined}
+            >
+              {lang.code === 'en' ? 'English' : lang.nativeName}
+            </button>
+          ))}
+
+          <button
+            type="button"
+            onClick={() => (isSpeaking ? stopVoiceBroadcast() : speakEmergencyWarning({ withSiren: true }))}
+            className="flex items-center gap-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 px-3 py-1.5 text-xs font-mono font-bold text-white shadow transition"
+            style={{ backgroundColor: '#E11D48', color: '#FFFFFF' }}
+          >
+            {isSpeaking ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+            <span>{isSpeaking ? 'Stop Siren' : `🔊 Test Voice Siren (${currentLanguageMeta.nativeName})`}</span>
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
