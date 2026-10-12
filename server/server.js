@@ -28,7 +28,8 @@ app.get('/api/health', (req, res) => {
     status: 'OPERATIONAL',
     system: 'Cyclone Disaster Operations Command Center',
     timestamp: new Date(),
-    liveDataConnected: true
+    liveDataConnected: true,
+    supportedLanguages: ['en', 'ta', 'te', 'hi', 'bn']
   });
 });
 
