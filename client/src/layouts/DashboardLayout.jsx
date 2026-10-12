@@ -5,7 +5,7 @@ import {
   LifeBuoy, Truck, Bell, FileText, BarChart3, Users,
   Settings, LogOut, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Menu,
   Flame, CheckCircle2, Shield, User, HelpCircle, PhoneCall, RefreshCw,
-  WifiOff, HeartHandshake, ClipboardCheck
+  WifiOff, HeartHandshake, ClipboardCheck, LocateFixed
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
@@ -92,7 +92,7 @@ const DashboardLayout = () => {
       items: [
         { label: 'Emergency Alerts', to: '/dashboard/alerts', icon: Bell, allowedRoles: ['admin', 'officer'] },
         { label: 'Citizen SOS Portal', to: '/dashboard/citizen', icon: PhoneCall, highlight: true, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
-        { label: 'Live Rescue Tracking', to: '/dashboard/live-tracking', icon: NavigationIcon, highlight: true, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
+        { label: 'Live Rescue Tracking', to: '/dashboard/live-tracking', icon: LocateFixed, highlight: true, allowedRoles: ['admin', 'officer', 'responder', 'coordinator', 'volunteer', 'citizen'] },
       ]
     },
     {
@@ -172,18 +172,26 @@ const DashboardLayout = () => {
     <div className="flex h-screen w-full overflow-hidden bg-[#0B1120] text-slate-100 font-['Plus_Jakarta_Sans',sans-serif]">
       {/* SIDEBAR (Desktop) */}
       <aside
-        className={`hidden md:flex flex-col border-r border-slate-800 bg-[#0F172A] transition-all duration-300 ${
-          collapsed ? 'w-20' : 'w-64'
+        className={`hidden md:flex flex-col border-r border-slate-800 bg-[#0F172A] transition-all duration-300 shrink-0 ${
+          collapsed ? 'w-[84px]' : 'w-64'
         }`}
       >
         {/* Brand Header */}
-        <div className="flex h-16 items-center justify-between border-b border-slate-800 px-4">
-          <div 
+        <div
+          className={`flex h-16 items-center border-b border-slate-800 ${
+            collapsed ? 'justify-between px-2.5 gap-1.5' : 'justify-between px-4'
+          }`}
+        >
+          <div
             onClick={handleHomeNavigation}
-            className="flex items-center gap-3 overflow-hidden cursor-pointer hover:opacity-90 transition"
+            className="flex items-center gap-3 cursor-pointer hover:opacity-90 transition min-w-0"
             title="Go to Home"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl overflow-hidden p-0.5 border border-cyan-500/30 bg-slate-900 shadow-lg shadow-cyan-900/30">
+            <div
+              className={`flex shrink-0 items-center justify-center rounded-xl overflow-hidden p-0.5 border border-cyan-500/30 bg-slate-900 shadow-lg shadow-cyan-900/30 ${
+                collapsed ? 'h-9 w-9' : 'h-10 w-10'
+              }`}
+            >
               <img src="/logo.png" alt="CycloneCommand Logo" className="h-full w-full object-contain rounded-lg" />
             </div>
             {!collapsed && (
@@ -195,22 +203,31 @@ const DashboardLayout = () => {
           </div>
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition"
+            title={collapsed ? 'Expand Navigation Sidebar' : 'Collapse Navigation Sidebar'}
+            className={`flex shrink-0 items-center justify-center rounded-lg border border-slate-700/70 bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white transition ${
+              collapsed ? 'h-7 w-7' : 'h-8 w-8'
+            }`}
           >
             {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </button>
         </div>
 
         {/* Navigation links */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+        <div
+          className={`flex-1 overflow-y-auto py-4 ${
+            collapsed ? 'px-2 space-y-2.5' : 'px-3 space-y-6'
+          }`}
+        >
           {navSections.map((sec, sIdx) => (
             <div key={sIdx}>
-              {!collapsed && (
+              {!collapsed ? (
                 <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono">
                   {sec.title}
                 </p>
+              ) : (
+                sIdx > 0 && <div className="mx-auto my-2 h-px w-9 bg-slate-800" />
               )}
-              <div className="space-y-1">
+              <div className={collapsed ? 'space-y-2 flex flex-col items-center' : 'space-y-1'}>
                 {sec.items.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.to;
@@ -220,16 +237,20 @@ const DashboardLayout = () => {
                       key={item.to}
                       to={item.to}
                       title={collapsed ? item.label : ''}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
+                      className={`flex items-center transition-all ${
+                        collapsed
+                          ? 'h-11 w-11 justify-center rounded-xl'
+                          : 'gap-3 rounded-lg px-3 py-2 text-xs font-semibold'
+                      } ${
                         isActive
                           ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-md shadow-cyan-950/20'
                           : item.highlight
                           ? 'bg-rose-500/10 text-rose-300 border border-rose-500/20 hover:bg-rose-500/20'
-                          : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-200'
+                          : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-200 border border-transparent'
                       }`}
                     >
-                      <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-cyan-400' : ''}`} />
-                      {!collapsed && <span>{item.label}</span>}
+                      <Icon className={`${collapsed ? 'h-5 w-5' : 'h-4 w-4'} shrink-0 ${isActive ? 'text-cyan-400' : ''}`} />
+                      {!collapsed && <span className="truncate">{item.label}</span>}
                     </NavLink>
                   );
                 })}
@@ -265,10 +286,16 @@ const DashboardLayout = () => {
               </button>
             </div>
           ) : (
-            <div className="flex justify-center">
+            <div className="flex flex-col items-center gap-2.5">
+              <div
+                title={`${user?.name || 'Authorized User'} (${userRole.toUpperCase()})`}
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 font-bold font-mono text-sm shadow"
+              >
+                {user?.name?.[0]?.toUpperCase() || 'U'}
+              </div>
               <button
                 onClick={logout}
-                className="h-8 w-8 rounded-lg bg-slate-800 text-slate-400 hover:bg-rose-500/20 hover:text-rose-300 border border-slate-700 flex items-center justify-center transition"
+                className="h-9 w-9 rounded-xl bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/20 flex items-center justify-center transition"
                 title="Sign Out"
               >
                 <LogOut className="h-4 w-4" />
