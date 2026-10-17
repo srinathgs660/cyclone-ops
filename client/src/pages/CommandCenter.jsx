@@ -91,7 +91,7 @@ const CommandCenter = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 pt-1 sm:pt-0">
           <span className="rounded-lg border border-slate-700 bg-slate-800/80 px-3 py-1 text-xs font-mono text-slate-300">
             Readiness: <strong className="text-emerald-400">LEVEL-1 RED</strong>
           </span>

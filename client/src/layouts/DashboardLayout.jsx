@@ -408,7 +408,7 @@ const DashboardLayout = () => {
                 className="flex md:hidden items-center gap-2 cursor-pointer shrink-0"
               >
                 <img src="/logo.png" alt="Logo" className="h-7 w-7 object-contain" />
-                <span className="text-xs font-bold text-white font-mono tracking-tight whitespace-nowrap">CYCLONE OPS</span>
+                <span className="hidden sm:inline text-xs font-bold text-white font-mono tracking-tight whitespace-nowrap">CYCLONE OPS</span>
               </div>
 
               {/* Desktop Operations Center Badge */}
@@ -440,7 +440,7 @@ const DashboardLayout = () => {
             {/* Right section: language selector, voice siren, toolbar, profile */}
             <div className="flex items-center gap-1 sm:gap-2 shrink-0">
               {/* Regional Multilingual Selector */}
-              <div className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/90 px-2 py-1.5 text-xs shadow-sm shrink-0" title="Regional Language Selector (English, Tamil, Telugu, Hindi, Bengali)">
+              <div className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/90 px-1.5 py-1 sm:px-2 sm:py-1.5 text-xs shadow-sm shrink-0" title="Regional Language Selector (English, Tamil, Telugu, Hindi, Bengali)">
                 <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
                 <select
                   value={language}
@@ -450,7 +450,7 @@ const DashboardLayout = () => {
                 >
                   {supportedLanguages.map((lang) => (
                     <option key={lang.code} value={lang.code} className="bg-slate-900 text-white">
-                      {lang.code === 'en' ? 'English (EN)' : `${lang.nativeName}`}
+                      {lang.nativeName}
                     </option>
                   ))}
                 </select>
@@ -459,7 +459,7 @@ const DashboardLayout = () => {
               {/* Automated Audio Voice Siren Warning Button */}
               <button
                 onClick={() => (isSpeaking ? stopVoiceBroadcast() : speakEmergencyWarning({ withSiren: true }))}
-                className={`flex items-center justify-center h-9 px-2 sm:px-2.5 rounded-lg border font-mono font-bold text-xs transition shadow-sm shrink-0 ${
+                className={`flex items-center justify-center h-8 w-8 sm:h-9 sm:w-auto px-1 sm:px-2.5 rounded-lg border font-mono font-bold text-xs transition shadow-sm shrink-0 ${
                   isSpeaking
                     ? 'border-rose-500 bg-rose-600 text-white animate-pulse'
                     : 'border-rose-500/40 bg-rose-500/15 text-rose-300 hover:bg-rose-500/25'
@@ -486,7 +486,7 @@ const DashboardLayout = () => {
                 <button
                   onClick={() => syncRealtimeCyclones()}
                   disabled={isSyncing}
-                  className="flex items-center justify-center h-9 w-9 rounded-lg border border-cyan-500/40 bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500/25 hover:border-cyan-400 transition shadow-sm disabled:opacity-50 shrink-0"
+                  className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg border border-cyan-500/40 bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500/25 hover:border-cyan-400 transition shadow-sm disabled:opacity-50 shrink-0"
                   title="Fetch latest real-time cyclone telemetry from IMD, NOAA & NASA satellites"
                 >
                   <RefreshCw className={`h-4 w-4 shrink-0 ${isSyncing ? 'animate-spin text-cyan-400' : 'text-cyan-300'}`} />
@@ -495,7 +495,7 @@ const DashboardLayout = () => {
                 {/* Dark / Light Theme Toggle */}
                 <button
                   onClick={toggleTheme}
-                  className="flex items-center justify-center h-9 w-9 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-750 hover:text-white transition shadow shrink-0"
+                  className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-750 hover:text-white transition shadow shrink-0"
                   title={`Switch to ${isLight ? 'Dark' : 'Light'} Mode`}
                 >
                   {isLight ? <Moon className="h-4 w-4 text-indigo-400 shrink-0" /> : <Sun className="h-4 w-4 text-amber-400 shrink-0" />}
@@ -504,7 +504,7 @@ const DashboardLayout = () => {
                 {/* Offline-First "Grid-Down" Mode Vault */}
                 <button
                   onClick={() => setOfflineVaultOpen(true)}
-                  className={`flex items-center justify-center h-9 w-9 rounded-lg border transition shadow-sm shrink-0 ${
+                  className={`hidden sm:flex items-center justify-center h-9 w-9 rounded-lg border transition shadow-sm shrink-0 ${
                     !isOnline
                       ? 'border-rose-500 bg-rose-500/25 text-rose-300 animate-pulse'
                       : 'border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-750 hover:text-white'
@@ -518,7 +518,7 @@ const DashboardLayout = () => {
                 <div className="relative shrink-0">
                   <button
                     onClick={() => setNotificationsOpen(!notificationsOpen)}
-                    className="relative flex items-center justify-center h-9 w-9 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 transition"
+                    className="relative flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 transition"
                     title="Emergency Notifications"
                   >
                     <Bell className="h-4 w-4 shrink-0" />

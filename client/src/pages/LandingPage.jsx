@@ -134,7 +134,7 @@ const LandingPage = () => {
               <span className="text-xs sm:text-sm font-extrabold tracking-wider text-white font-mono uppercase block leading-tight">
                 CycloneCommand
               </span>
-              <span className="text-[9px] sm:text-[10px] font-mono text-cyan-400 font-semibold tracking-widest uppercase block">
+              <span className="hidden sm:block text-[10px] font-mono text-cyan-400 font-semibold tracking-widest uppercase">
                 {t('landingSubBrand')}
               </span>
             </div>
@@ -144,7 +144,7 @@ const LandingPage = () => {
           <div className="flex items-center gap-1.5 sm:gap-2.5 flex-nowrap shrink-0">
             {/* Regional Language Selector */}
             <div
-              className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/90 px-2 py-1 sm:px-2.5 sm:py-1.5 text-xs shadow-sm shrink-0"
+              className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/90 px-1.5 py-1 sm:px-2.5 sm:py-1.5 text-xs shadow-sm shrink-0"
               title="Select Language (English, தமிழ், తెలుగు, हिन्दी, বাংলা)"
             >
               <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
@@ -156,7 +156,7 @@ const LandingPage = () => {
               >
                 {supportedLanguages.map((lang) => (
                   <option key={lang.code} value={lang.code} className="bg-slate-900 text-white">
-                    {lang.code === 'en' ? 'English (EN)' : `${lang.nativeName}`}
+                    {lang.nativeName}
                   </option>
                 ))}
               </select>
@@ -187,10 +187,10 @@ const LandingPage = () => {
               )}
             </button>
 
-            {/* Theme Toggle */}
+            {/* Theme Toggle - Desktop/Tablet */}
             <button
               onClick={toggleTheme}
-              className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 rounded-lg border border-slate-700 bg-slate-800/80 text-xs text-slate-300 hover:bg-slate-700 transition shrink-0"
+              className="hidden sm:flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 rounded-lg border border-slate-700 bg-slate-800/80 text-xs text-slate-300 hover:bg-slate-700 transition shrink-0"
               title={`Switch to ${isLight ? 'Dark' : 'Light'} Mode`}
             >
               {isLight ? <Moon className="h-4 w-4 text-indigo-400" /> : <Sun className="h-4 w-4 text-amber-400" />}
@@ -208,11 +208,11 @@ const LandingPage = () => {
             {/* Sign In Button */}
             <button
               onClick={handleAccessSystem}
-              className="flex items-center gap-1.5 rounded-lg bg-blue-600 bg-gradient-to-r from-cyan-500 to-blue-600 px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold text-white shadow-md hover:brightness-110 transition shrink-0 whitespace-nowrap"
+              className="flex items-center gap-1 rounded-lg bg-blue-600 bg-gradient-to-r from-cyan-500 to-blue-600 px-2.5 sm:px-4 py-1 sm:py-2 text-xs font-bold text-white shadow-md hover:brightness-110 transition shrink-0 whitespace-nowrap"
               style={{ backgroundColor: '#2563EB', color: '#FFFFFF' }}
             >
               <span style={{ color: '#FFFFFF' }}>{t('landingSignInBtn')}</span>
-              <ArrowRight className="h-3.5 w-3.5 shrink-0" style={{ color: '#FFFFFF' }} />
+              <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" style={{ color: '#FFFFFF' }} />
             </button>
           </div>
         </div>
@@ -220,32 +220,8 @@ const LandingPage = () => {
 
       {/* Hero Section */}
       <section className="relative z-10 pt-6 sm:pt-10 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        {/* Sleek, Single-Row Regional Language Selector Bar */}
-        <div className="mx-auto mb-6 inline-flex max-w-full items-center justify-center gap-1 overflow-x-auto rounded-full border border-slate-700/80 bg-[#131D31]/95 py-1 px-2.5 shadow-lg">
-          <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0 ml-1" />
-          <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider shrink-0 mr-1">Region:</span>
-          {supportedLanguages.map((lang) => {
-            const active = language === lang.code;
-            return (
-              <button
-                key={lang.code}
-                type="button"
-                onClick={() => setLanguage(lang.code)}
-                className={`rounded-full px-2.5 py-0.5 text-xs font-bold transition shrink-0 ${
-                  active
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                }`}
-                style={active ? { backgroundColor: '#2563EB', color: '#FFFFFF' } : undefined}
-              >
-                {lang.code === 'en' ? 'English' : `${lang.nativeName}`}
-              </button>
-            );
-          })}
-        </div>
-
         {/* Prominent Platform Logo */}
-        <div className="mx-auto mb-6 flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-3xl p-1.5 bg-gradient-to-tr from-cyan-500/30 via-blue-600/20 to-teal-400/30 shadow-2xl shadow-cyan-500/25 border border-cyan-400/40 backdrop-blur-md hover:scale-105 transition-transform duration-300">
+        <div className="mx-auto mb-6 flex h-20 w-20 sm:h-28 sm:w-28 items-center justify-center rounded-3xl p-1.5 bg-gradient-to-tr from-cyan-500/30 via-blue-600/20 to-teal-400/30 shadow-2xl shadow-cyan-500/25 border border-cyan-400/40 backdrop-blur-md hover:scale-105 transition-transform duration-300">
           <img src="/logo.png" alt="CycloneCommand Official Logo" className="h-full w-full object-contain rounded-2xl drop-shadow-lg" />
         </div>
 
