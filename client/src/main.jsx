@@ -4,8 +4,7 @@ import axios from 'axios';
 import App from './App.jsx';
 import './index.css';
 
-const apiBase = import.meta.env.VITE_API_URL
-  || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' ? 'https://cyclone-ops.onrender.com' : '');
+const apiBase = import.meta.env.VITE_API_URL || '';
 
 if (apiBase) {
   axios.defaults.baseURL = apiBase.replace(/\/+$/, '');

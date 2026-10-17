@@ -1,83 +1,156 @@
-# 🌪️ Cyclone Disaster Operations Command Center (EOC)
-### Real-Time Cyclone Tracking, Impact Prediction, Evacuation Planning & Multi-Agency Relief Coordination Platform
+# 🌪️ Centralized Cyclone Disaster Operations Command Center (EOC)
 
-> A production-grade **Disaster Operations Command System** built on the **MERN Stack** (MongoDB Atlas, Express.js, React.js + Tailwind CSS, Node.js + Socket.IO) designed for disaster management authorities (NDMA, NDRF, SDMAs, IMD) to monitor cyclones, assess multi-criteria risks, coordinate evacuations, triage life-threatening incidents, optimize relief logistics, and protect affected citizens.
+### Real-Time Cyclone Telemetry Tracking, Multi-Criteria Risk Assessment, Evacuation Routing, Multi-Agency Strike Triage & Citizen SOS Platform
 
----
-
-## 🔑 All 6 Stakeholder Accounts & Credentials
-
-The system provides 6 pre-seeded role accounts with strictly differentiated, role-based navigation and permissions:
-
-| # | Operational Role | Email Identifier | Password | Access Scope & Allowed Modules |
-| :-: | :--- | :--- | :--- | :--- |
-| **1** | **EOC Chief Commander (Admin)** | `admin@cycloneops.gov` | `password123` | **Full Platform Access**: Command Center, Cyclone Tracking, Impact Assessment, Evacuation Planning, Shelters, Incidents, Response Teams, Relief & Inventory, Alerts, Analytics, Reports, and Administration (`/dashboard/admin`) with full personnel management & strike team assembly. |
-| **2** | **Operations Lead (Officer)** | `officer@cycloneops.gov` | `password123` | **Operational Command Deck**: Command Center, Cyclone Tracking, Impact Assessment, Evacuation Planning, Shelters, Incidents, Response Teams, Relief & Inventory, Emergency Alerts, Analytics, Reports, Citizen SOS. *(Excludes System Administration)* |
-| **3** | **NDRF Field Responder (Responder)** | `responder@cycloneops.gov` | `password123` | **Tactical Field Rescue**: Command Center, Incident Triage (dispatch status, rescue assignments), Response Teams (squad roster, vehicle readiness), Shelters Management, Evacuation Planning, Cyclone Tracking, Citizen SOS Alerts. |
-| **4** | **Logistics Coordinator (Coordinator)** | `coordinator@cycloneops.gov` | `password123` | **Supply Chain & Depots**: Command Center, Relief & Inventory (stockpile burn rates, depot manifests, supply convoys), Shelters Management (rations & supply levels), Evacuation Corridors, Cyclone Tracking, Operational Reports, Citizen SOS. |
-| **5** | **Community Volunteer (Volunteer)** | `volunteer@cycloneops.gov` | `password123` | **Community Assistance**: Citizen SOS Portal (field needs verification, community relief requests), Shelters Management (open facility occupancy & bed availability), Evacuation Planning (safe routes, road status), Cyclone Tracking. |
-| **6** | **Public Resident (Citizen)** | `citizen@cycloneops.gov` | `password123` | **Public Safety & SOS**: Citizen SOS Portal (1-touch emergency SOS broadcast with GPS coordinates, emergency helplines), Cyclone Radar Tracking, Safe Evacuation Routes & Roadblock Alerts, Nearest Open Shelter Finder. |
+> A production-grade, full-stack **Disaster Operations Command & Emergency Management System** built on the **MERN Stack** (MongoDB Atlas, Express.js, React.js + Tailwind CSS, Node.js + Socket.IO) designed for emergency management authorities (NDMA, NDRF, SDMAs, District Disaster Management Authorities, and Meteorological Agencies) to monitor cyclonic storms, calculate spatial vulnerability, coordinate evacuations, triage life-threatening incidents, dispatch specialized strike forces, manage relief stockpiles, and empower affected citizens.
 
 ---
 
-## 🛡️ Role-Based Access Control (RBAC) & Navigation Breakdown
-
-Each stakeholder has a dedicated, tailored navigation menu and strict route-level protection:
+## 🏗️ System Architecture & Technology Stack
 
 ```
-┌─────────────────────────────┬───────────┬─────────────┬───────────────┬─────────────────┬─────────────┬───────────┐
-│ Module / Route              │   Admin   │   Officer   │   Responder   │   Coordinator   │  Volunteer  │  Citizen  │
-├─────────────────────────────┼───────────┼─────────────┼───────────────┼─────────────────┼─────────────┼───────────┤
-│ Command Center (/dashboard) │     ✅    │      ✅     │       ✅      │        ✅       │      ❌     │     ❌    │
-│ Cyclone Tracking (/cyclones)│     ✅    │      ✅     │       ✅      │        ✅       │      ✅     │     ✅    │
-│ Impact Assessment (/risk)   │     ✅    │      ✅     │       ❌      │        ❌       │      ❌     │     ❌    │
-│ Evacuation (/evacuation)    │     ✅    │      ✅     │       ✅      │        ✅       │      ✅     │     ✅    │
-│ Shelters (/shelters)        │     ✅    │      ✅     │       ✅      │        ✅       │      ✅     │     ✅    │
-│ Incident Triage (/incidents)│     ✅    │      ✅     │       ✅      │        ❌       │      ❌     │     ❌    │
-│ Response Teams (/teams)     │     ✅    │      ✅     │       ✅      │        ❌       │      ❌     │     ❌    │
-│ Relief Inventory (/relief)  │     ✅    │      ✅     │       ❌      │        ✅       │      ❌     │     ❌    │
-│ Citizen SOS Portal (/citizen│     ✅    │      ✅     │       ✅      │        ✅       │      ✅     │     ✅    │
-│ Emergency Alerts (/alerts)  │     ✅    │      ✅     │       ❌      │        ❌       │      ❌     │     ❌    │
-│ Analytics (/analytics)      │     ✅    │      ✅     │       ❌      │        ❌       │      ❌     │     ❌    │
-│ Operational Reports(/report)│     ✅    │      ✅     │       ❌      │        ✅       │      ❌     │     ❌    │
-│ Administration (/admin)     │     ✅    │      ❌     │       ❌      │        ❌       │      ❌     │     ❌    │
-└─────────────────────────────┴───────────┴─────────────┴───────────────┴─────────────────┴─────────────┴───────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                 PRESENTATION LAYER                                     │
+│  React 18  •  Tailwind CSS  •  Lucide Icons  •  Leaflet GIS & RainViewer Doppler Radar │
+│  PWA Service Worker (Offline Cache)  •  Multilingual Audio Alert Engine (Acoustic Siren)│
+└───────────────────────────────────────────┬────────────────────────────────────────────┘
+                                            │ HTTP / REST & WebSockets (Socket.IO)
+┌───────────────────────────────────────────▼────────────────────────────────────────────┐
+│                             APPLICATION & INTEGRATION LAYER                            │
+│  Node.js & Express.js  •  Socket.IO Gateway  •  JWT Auth Middleware (HMAC-SHA256)      │
+│  External Feeds: NOAA NHC  •  NASA EONET  •  UN GDACS  •  Cloudinary Photo Proofs      │
+└───────────────────────────────────────────┬────────────────────────────────────────────┘
+                                            │ Mongoose ODM & Geospatial Queries
+┌───────────────────────────────────────────▼────────────────────────────────────────────┐
+│                                   PERSISTENCE LAYER                                    │
+│  MongoDB Atlas: 2dsphere GeoJSON Indexes (Shelters, Incidents, Convoys, Zones)         │
+│  Bcrypt Salted Credentials  •  Audit Logs  •  Statutory PDF Generation (PDFKit)        │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
-
-> **Automatic Route Protection:** If a citizen or volunteer attempts to manually enter an operational URL (e.g. `/dashboard` or `/dashboard/risk` or `/dashboard/admin`), the `ProtectedRoute` component intercepts the request and automatically redirects them to `/dashboard/citizen`.
 
 ---
 
-## 🚀 Deployment Guide (Vercel & Remote Hosting)
+## 🌟 Comprehensive Feature Catalog (From First to Last)
 
-This repository is optimized for quick, production-ready deployment on **Vercel** for the client and any Node.js hosting platform (Render, Railway, Fly.io, or AWS) for the server.
+### 1. 🌐 Multilingual Regional Localization & Acoustic Warning Siren
+* **Multi-Language Selector:** Instantaneous in-browser switching across **English**, **Tamil (தமிழ்)**, **Telugu (తెలుగు)**, **Hindi (हिन्दी)**, and **Bengali (বাংলা)** across all public and operational screens.
+* **Emergency Acoustic Siren:** Built-in web audio synthesis engine generating real-time disaster warning siren tones directly from the browser to alert coastal residents and control room personnel.
 
-### Option A: Deploying Frontend to Vercel
+### 2. 🚨 Public Landing Page & Citizen Information Gateway
+* **Interactive Mission Portal:** High-impact landing page presenting real-time operational status, active storm advisories, emergency helplines, and quick navigation into stakeholder portals.
+* **Emergency Ticker:** Live ticker summarizing real-time storm bulletins and active regional warning signals (Signal No. 1 through 11).
 
-1. **Push your repository** to GitHub, GitLab, or Bitbucket.
-2. In the **[Vercel Dashboard](https://vercel.com/dashboard)**:
-   * Click **"Add New Project"** and import this repository.
-   * If prompted for **Root Directory**, set it to `client` (or leave as root; both `client/vercel.json` and root `vercel.json` are pre-configured).
-   * **Framework Preset**: Vite
-   * **Build Command**: `npm run build`
-   * **Output Directory**: `dist`
-3. **Environment Variables on Vercel**:
-   * Add the following environment variable pointing to your deployed backend API:
-     * `VITE_API_URL`: `https://your-cyclone-backend.onrender.com` (leave blank if deploying backend on the same domain or local reverse proxy).
-4. Click **Deploy**. Vercel will build the frontend and serve it globally on a custom `.vercel.app` URL with automatic SPA rewriting (no 404s on page refresh).
+### 3. 🔐 Secure Authentication & Role-Based Access Control (RBAC)
+* **Cryptographic Identity Protection:** Passwords secured with salted `bcryptjs` hashing (10 work factor rounds).
+* **Stateless Token Governance:** Secure JSON Web Tokens (JWT) signed with HMAC-SHA256 containing user ID, role, and operational jurisdiction.
+* **Interactive Role Sandbox:** Demo mode shortcut controls allowing evaluation of all 6 operational role tiers without manual form entry.
+* **Guarded Routing:** Client-side `ProtectedRoute` intercepts unauthorized URL navigation and redirects users to their designated operational deck.
 
-### Option B: Deploying Backend to Render / Railway
+### 4. 🎛️ EOC Command Center Overview (`/dashboard`)
+* **Real-time KPI Telemetry Cards:** High-level metrics tracking active severe cyclones, critical life-threat incidents, open shelter occupancies, deployed rescue squads, and active evacuations.
+* **Active Storm Summary:** Instant overview of nearest approaching storms, Saffir-Simpson intensity categories, sustained wind speeds, central pressure, and estimated time to landfall.
+* **Live System Health Indicator:** Real-time Socket.IO connection status displaying gateway connectivity and last synchronized meteorological timestamp.
 
-1. Create a **Web Service** on [Render](https://render.com) or [Railway](https://railway.app).
-2. Set **Root Directory** to `server`.
-3. **Build Command**: `npm install`
-4. **Start Command**: `npm start`
-5. **Environment Variables**:
-   * `PORT`: `5000`
-   * `NODE_ENV`: `production`
-   * `MONGO_URI`: `mongodb+srv://<username>:<password>@cluster.mongodb.net/cyclone_command_eoc?retryWrites=true&w=majority`
-   * `JWT_SECRET`: `<your_secure_random_jwt_secret>`
-   * `CORS_ORIGIN`: `https://your-frontend.vercel.app`
+### 5. 🗺️ Live GIS Doppler Radar & Cyclone Tracking (`/dashboard/cyclones`)
+* **Doppler Radar Canvas:** Full-screen Leaflet GIS map with smooth mouse-wheel zooming, eye-position centering, and dual light/dark tactical cartography.
+* **Live Global Weather Ingestion:** Direct integration with global meteorological feeds (**NOAA National Hurricane Center**, **NASA EONET**, and **UN GDACS**) without requiring private API keys.
+* **72-Hour Numerical Predictions:** Dynamic cone of uncertainty ($\pm 35\text{ km}$ to $\pm 275\text{ km}$) calculated from atmospheric steering currents and Coriolis parameter models.
+* **On-Demand Satellite Synchronization:** One-click manual refresh button polling global satellite endpoints with live visual sync progress feedback.
+
+### 6. 📊 Algorithmic Multi-Criteria Risk Scoring (`/dashboard/risk`)
+* **Quantitative Vulnerability Index:** Automated multi-criteria threat calculation combining storm surge height, proximity to landfall, population density, and infrastructure exposure:
+  $$\text{Risk Score} = 0.35 \times C_{\text{proximity}} + 0.25 \times P_{\text{density}} + 0.20 \times I_{\text{exposure}} + 0.20 \times T_{\text{surge}}$$
+* **Coastal Sector Vulnerability Matrix:** Dynamic categorization of coastal districts into **Severe (Red)**, **High (Orange)**, **Moderate (Yellow)**, and **Low (Green)** threat sectors.
+* **Population Impact Estimation:** Automated calculation of exposed human populations within forecasted inundation contours.
+
+### 7. 🛣️ Dynamic Evacuation Route Planning (`/dashboard/evacuation`)
+* **Corridor Waybills & Geometry:** Interactive Leaflet polylines delineating designated green evacuation corridors from coastal lowlands to elevated inland facilities.
+* **Roadblock & Inundation Warnings:** Live incident flags indicating flooded bridges, downed power lines, tree falls, and high-tide road closures.
+* **Travel Time & Bottleneck Estimation:** Predictive transit duration metrics considering real-time congestion and storm proximity.
+
+### 8. 🏢 Multi-Agency Cyclone Shelter Network (`/dashboard/shelters`)
+* **Live Capacity & Bed Availability:** Real-time occupancy tracking across multi-purpose cyclone shelters, schools, and community centers.
+* **Rapid Field Intake Controls:** Instant increment/decrement adjustments (`+50` / `-50`) allowing on-site camp managers to update headcounts in real-time.
+* **Relief Supply Reserves:** Monitor on-site stores of potable water, dry rations, medical kits, and backup power generators.
+* **One-Click Turn-by-Turn Directions:** Direct deep-links to Google Maps navigation for each shelter with precise GPS coordinates.
+
+### 9. 🆘 Threat-to-Life Incident Triage Desk (`/dashboard/incidents`)
+* **Priority-Ranked Emergency Queue:** Prioritized triage system classifying field requests into **P1 Critical (Life Threat)**, **P2 High (Property/Injury)**, and **P3 Moderate (Assistance)**.
+* **Lifecycle Workflow:** Transparent status state machine: `REPORTED` $\rightarrow$ `ASSIGNED` $\rightarrow$ `IN_PROGRESS` $\rightarrow$ `RESOLVED`.
+* **Strike Team Dispatch:** One-click dispatch modal linking nearby NDRF, SDRF, or Fire Service teams to incoming emergency calls.
+
+### 10. 🚤 Specialized Strike Response Teams (`/dashboard/teams`)
+* **Inter-Agency Force Readiness:** Status roster tracking National Disaster Response Force (NDRF), Indian Coast Guard, State Disaster Response Forces (SDRF), and Medical Corps.
+* **Equipment & Asset Manifests:** Operational tracking of specialized assets including inflatable motorized rescue boats (IRBs), tree-cutting chainsaws, de-watering pumps, and high-clearance ambulances.
+* **Live Responder GPS Locations:** Visual mapping of squad locations, designated team commanders, and communication radio channels.
+
+### 11. 📦 Emergency Relief Logistics & Inventory (`/dashboard/relief`)
+* **Warehouse Stockpile Depots:** Monitor state and district emergency relief storehouses.
+* **Automated Burn-Rate Forecasting:** Dynamic calculations forecasting daily depletion rates for drinking water ($3\text{ L/person/day}$ standard), food rations, and infant formula.
+* **Relief Convoy Dispatch:** Manifest generator and en-route tracker for emergency truck convoys carrying supplies to isolated relief camps.
+
+### 12. 📱 Citizen Emergency SOS Portal (`/dashboard/citizen`)
+* **1-Touch Emergency SOS Broadcast:** Single-tap emergency button that queries the browser Geolocation API (`navigator.geolocation`) and pushes a priority distress signal with exact GPS coordinates to the EOC command desk.
+* **Nearest Safe Shelter Locator:** Spatial calculation sorting all operational shelters by straight-line geodesic distance from the citizen's current position.
+* **Disaster Helplines Directory:** Direct tap-to-call links for Police, Fire, Ambulance, Coast Guard, Childline, and State Disaster Helplines (1070 / 1077).
+* **Survival Guidelines:** Offline emergency checklists for pre-cyclone home preparation, emergency go-bag packing, and post-landfall precautions.
+
+### 13. 🤝 Community Volunteer Coordination & Photo Proofs (`/dashboard/volunteer-tasks`)
+* **Crowdsourced Tasking:** Task allocation board for registered community volunteers (clearing tree branches, distributing food packets, welfare checks on elderly citizens).
+* **Cloudinary Photo Verification:** Volunteers can snap and upload photographic proof directly from mobile cameras upon task completion.
+* **In-App Lightbox Viewer:** Control room officers can click to inspect high-resolution photo proofs in a lightbox modal before marking tasks verified.
+
+### 14. 🛰️ High-Frequency Multi-Entity GPS Live Tracking (`/dashboard/live-tracking`)
+* **Unified GIS Tactical Stage:** Simultaneous live map plotting active Citizen SOS distress beacons, NDRF response teams, and relief supply convoys.
+* **Socket.IO Real-Time Pings:** Low-latency WebSockets telemetry relay (`tracking:live_ping`) streaming coordinate updates without page refreshes.
+* **Layer Toggles:** Switch between OpenStreetMap street views and ESRI World Imagery satellite tiles.
+
+### 15. 📢 Common Alerting Protocol (CAP v1.2) Broadcast Desk (`/dashboard/alerts`)
+* **Dual-Key Public Warning Desk:** Authorized broadcast panel for issuing urgent disaster warnings.
+* **Multi-Channel Distribution:** Simulate and format alerts across SMS, Emergency Siren Arrays, Cell Broadcast, and Local FM Radio channels.
+* **Multilingual Message Previews:** Auto-generates warning bulletins in English, Tamil, Telugu, Hindi, and Bengali.
+
+### 16. 📈 Executive Disaster Analytics & Trends (`/dashboard/analytics`)
+* **Visual Telemetry Charts:** Interactive charts depicting shelter capacity distribution, incident resolution times, response team deployment percentages, and zone threat levels.
+* **Operational Readiness Index:** High-level executive score rating the overall preparedness and supply safety margin across all sectors.
+
+### 17. 📄 Statutory Situation Report (SITREP) & Official PDF Generator (`/dashboard/reports`)
+* **Government-Standard Reporting:** Formatted to NDRF / State Disaster Management Authority statutory standards.
+* **Server-Side PDF Compilation:** Generates structured vector PDF documents on-demand using `pdfkit` complete with official headers, verification stamps, incident statistics, and digital signature lines.
+* **CSV Data Export:** One-click tabular exports of incident logs, shelter registries, and relief manifests for audit compliance.
+
+### 18. 🛡️ Central Administration & User Governance (`/dashboard/admin`)
+* **User Identity Directory:** Comprehensive personnel table displaying all registered users, assigned agencies, contact numbers, and operational roles.
+* **Role Elevation & Account Controls:** EOC Commanders can promote field volunteers to responders, update agency affiliations, or deactivate compromised credentials.
+* **Strike Team Assembly:** Direct creation and roster assignment of new emergency response teams.
+
+### 19. 📲 Progressive Web App (PWA) Offline Architecture
+* **Service Worker (`sw.js`):** Production service worker caching static assets, stylesheets, scripts, and fonts for resilient offline execution during network brownouts.
+* **Web App Manifest:** Configured `manifest.json` enabling the platform to be installed as a standalone application on Android, iOS, Windows, and macOS devices.
+
+---
+
+## 🛡️ Role-Based Access Control (RBAC) Matrix
+
+The system provides 6 distinct operational roles with route-level security:
+
+| Module / Route | Chief Commander (Admin) | Operations Lead (Officer) | NDRF Responder (Responder) | Logistics Coordinator | Community Volunteer | Public Citizen |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Command Center Overview** (`/dashboard`) | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| **GIS Cyclone Radar** (`/dashboard/cyclones`) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Risk Scoring** (`/dashboard/risk`) | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Evacuation Routes** (`/dashboard/evacuation`) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Shelters Network** (`/dashboard/shelters`) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Incident Triage** (`/dashboard/incidents`) | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **Response Teams** (`/dashboard/teams`) | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **Relief & Inventory** (`/dashboard/relief`) | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| **Citizen SOS Portal** (`/dashboard/citizen`) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Volunteer Tasks & Proofs** (`/dashboard/volunteer-tasks`) | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ |
+| **Live GPS Tracking** (`/dashboard/live-tracking`) | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| **Alerts Broadcast** (`/dashboard/alerts`) | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Executive Analytics** (`/dashboard/analytics`) | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **SITREP & PDF Reports** (`/dashboard/reports`) | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| **System Administration** (`/dashboard/admin`) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ---
 
@@ -85,74 +158,73 @@ This repository is optimized for quick, production-ready deployment on **Vercel*
 
 ### 1. Prerequisites
 * **Node.js** (v18.0.0 or higher)
-* **MongoDB** (Local instance or free MongoDB Atlas URI)
+* **MongoDB** (Local instance or MongoDB Atlas cluster)
 * **npm** (v9.0.0 or higher)
 
-### 2. Environment Variables Configuration
-Ensure `server/.env` contains your MongoDB connection string:
+### 2. Configure Environment Variables
+Create a file named `.env` in the `server/` directory (refer to `server/.env.example`):
 ```env
 PORT=5000
 NODE_ENV=development
-MONGO_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/cyclone_command_eoc?retryWrites=true&w=majority
-JWT_SECRET=emergency_command_secret_key_2026
-JWT_EXPIRE=30d
+CLIENT_URL=http://localhost:5173
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-url>/cyclone_command_eoc?retryWrites=true&w=majority
+JWT_SECRET=your_secure_jwt_secret_key_here
+JWT_EXPIRE=7d
+
+# Cloudinary Media Storage (Optional, for volunteer photo proofs)
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
 
-### 3. Seed Database with All 6 Roles & Live Meteorological Data
+### 3. Install Dependencies & Seed Demonstration Data
 ```bash
+# Seed initial agencies, strike teams, shelters, and sample operational records
 cd server
 npm install
 npm run seed
 ```
 
 ### 4. Run Both Servers Locally
-* **Terminal 1 (Backend REST API & Socket.IO):**
+* **Terminal 1 — Backend API & WebSockets Server:**
   ```bash
   cd server
   npm start
-  # Running at http://localhost:5000 (Health Check: http://localhost:5000/api/health)
+  # Server runs at http://localhost:5000
+  # Health check endpoint: http://localhost:5000/api/health
   ```
-* **Terminal 2 (Frontend Client):**
+* **Terminal 2 — Frontend Application:**
   ```bash
   cd client
   npm install
   npm run dev
-  # Running at http://localhost:5173
+  # Application opens at http://localhost:5173
   ```
 
 ---
 
-## 🌟 Core Modules & Architecture
+## 🚀 Deployment Instructions
 
-### 1. GIS Command Radar & Trajectory Map (`/dashboard/cyclones`)
-* **Doppler Radar GIS Stage:** Interactive OpenStreetMap canvas with smooth mouse wheel zooming, eye position centering, and dual light/dark tactical cartography.
-* **Real-time Live Meteorological Feeds:** Ingests live severe storms from **NASA EONET**, **GDACS (UN-OCHA / European Commission)**, and **NOAA NHC** without requiring private API keys.
-* **72-Hour Numerical Predictions:** Expanding cone of uncertainty (±35 km to ±275 km) derived from atmospheric steering currents and Coriolis parameter models.
+### Frontend (Static SPA Hosting)
+1. Set build command to `npm run build` and publish directory to `dist`.
+2. Configure your environment variable:
+   * `VITE_API_URL`: Your backend API gateway URL (e.g., `https://api.yourdomain.com`).
+3. Single Page App rewrites are configured in `vercel.json` (`/(.*) -> /index.html`) to ensure clean routing on page refresh.
 
-### 2. Multi-Criteria Risk Scoring (`/dashboard/risk`)
-* Dynamic algorithmic threat calculation combining storm surge height, proximity to landfall, population density, and infrastructure exposure:
-  $$\text{Risk Score} = 0.35 \times C_{\text{proximity}} + 0.25 \times P_{\text{density}} + 0.20 \times I_{\text{exposure}} + 0.20 \times T_{\text{surge}}$$
+### Backend (Node.js Web Service)
+1. Deploy from the `server/` root directory.
+2. Build command: `npm install`
+3. Start command: `npm start`
+4. Set required production environment variables:
+   * `PORT`: `5000`
+   * `NODE_ENV`: `production`
+   * `MONGODB_URI`: `<your_production_mongodb_connection_string>`
+   * `JWT_SECRET`: `<your_high_entropy_jwt_secret>`
+   * `CLIENT_URL`: `<your_frontend_domain_url>`
+   * `CLOUDINARY_*`: `<your_cloudinary_credentials>`
 
-### 3. Evacuation Planning & Bottleneck Mitigation (`/dashboard/evacuation`)
-* Dynamic corridor waybills with interactive Leaflet polylines, checkpoint statuses, road blockage warnings (e.g. coastal inundation), and route travel time estimates.
+---
 
-### 4. Shelters Management (`/dashboard/shelters`)
-* Real-time capacity and occupancy tracking (+50/-50 manual intake controls for field staff), bed availability indicators, and automated overflow rerouting.
+## 📄 License
 
-### 5. Threat-to-Life Incident Triage (`/dashboard/incidents`)
-* Prioritized emergency queue (P1 Critical, P2 High, P3 Moderate) with automated closest-squad dispatch and live status transitions (`REPORTED` → `ASSIGNED` → `IN_PROGRESS` → `RESOLVED`).
-
-### 6. Strike Response Teams (`/dashboard/teams`)
-* Complete readiness tracker for specialized rescue forces (NDRF, Coast Guard, SDRF, Medical Corps) with live GPS locations, amphibious boat assets, and equipment manifests.
-
-### 7. Logistics & Relief Inventory (`/dashboard/relief`)
-* Stockpile volume tracking, automated burn rate forecasting (drinking water at $3\text{L/person/day}$, meal rations, hygiene kits, baby formula), and live GPS tracking for emergency relief convoys.
-
-### 8. Common Alerting Protocol (CAP v1.2) Gateway (`/dashboard/alerts`)
-* Dual-key broadcast mechanism with multi-channel dispatch (Cell Broadcast, Siren Array, SMS, FM Radio) and multilingual translation previews (English, Tamil, Telugu, Hindi, Bengali, Odia).
-
-### 9. Mobile Citizen SOS Portal (`/dashboard/citizen`)
-* 1-touch SOS beacon broadcasting live GPS coordinates directly to the EOC triage desk, accompanied by nearest shelter lookup and emergency helplines.
-
-### 10. Operational Reports & Auditing (`/dashboard/reports` & `/dashboard/admin`)
-* Statutory incident documentation templates (NDRF / FEMA Form 201/202), printable official SITREP summaries with verification signatures, CSV exports, and zero-trust audit ledger.
+This project is licensed under the terms of the [LICENSE](LICENSE.md) file included in this repository.

@@ -18,7 +18,7 @@ export const SocketProvider = ({ children }) => {
     ? import.meta.env.VITE_API_URL.replace(/\/+$/, '')
     : (typeof window !== 'undefined' && window.location.hostname === 'localhost'
         ? 'http://localhost:5000'
-        : 'https://cyclone-ops.onrender.com');
+        : (typeof window !== 'undefined' ? window.location.origin : ''));
 
   const checkHealth = useCallback(async () => {
     try {
