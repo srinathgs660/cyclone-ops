@@ -7,3 +7,20 @@ dist/
 npm-debug.log*
 .vscode/
 .idea/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+server/.env
+server/.env.*
+!server/.env.example
+client/.env
+client/.env.*
+!client/.env.example
+
+# Reports & binaries
+*.docx
+*.pdf
+.DS_Store
+Thumbs.db
