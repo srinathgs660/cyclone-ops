@@ -124,15 +124,16 @@ const LandingPage = () => {
 
       {/* Top Floating Navbar */}
       <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-[#0F172A]/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+        <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-1.5 sm:gap-2">
           {/* Brand Logo & Title */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <div className="flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-xl overflow-hidden p-0.5 border border-cyan-500/40 bg-slate-900 shadow-lg shadow-cyan-900/30 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+            <div className="flex h-8 w-8 sm:h-11 sm:w-11 items-center justify-center rounded-xl overflow-hidden p-0.5 border border-cyan-500/40 bg-slate-900 shadow-lg shadow-cyan-900/30 shrink-0">
               <img src="/logo.png" alt="CycloneCommand Logo" className="h-full w-full object-contain rounded-lg" />
             </div>
             <div>
-              <span className="text-xs sm:text-sm font-extrabold tracking-wider text-white font-mono uppercase block leading-tight">
-                CycloneCommand
+              <span className="text-xs sm:text-sm font-extrabold tracking-tight text-white font-mono uppercase block leading-tight">
+                <span className="sm:hidden">CYCLONE</span>
+                <span className="hidden sm:inline">CycloneCommand</span>
               </span>
               <span className="hidden sm:block text-[10px] font-mono text-cyan-400 font-semibold tracking-widest uppercase">
                 {t('landingSubBrand')}
@@ -141,7 +142,7 @@ const LandingPage = () => {
           </div>
 
           {/* Right Controls Bar - Strictly flex-nowrap to prevent overflowing/wrapping */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-nowrap shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 flex-nowrap shrink-0">
             {/* Regional Language Selector */}
             <div
               className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/90 px-1.5 py-1 sm:px-2.5 sm:py-1.5 text-xs shadow-sm shrink-0"
@@ -166,7 +167,7 @@ const LandingPage = () => {
             <button
               type="button"
               onClick={() => (isSpeaking ? stopVoiceBroadcast() : speakEmergencyWarning({ withSiren: true }))}
-              className={`flex items-center justify-center h-8 sm:h-9 px-2 sm:px-3 rounded-lg border font-mono font-bold text-xs transition shadow shrink-0 ${
+              className={`flex items-center justify-center h-8 w-8 sm:h-9 sm:w-auto px-1 sm:px-3 rounded-lg border font-mono font-bold text-xs transition shadow shrink-0 ${
                 isSpeaking
                   ? 'border-rose-500 bg-rose-600 text-white animate-pulse'
                   : 'border-rose-500/50 bg-rose-600/90 text-white hover:bg-rose-500'
@@ -208,11 +209,11 @@ const LandingPage = () => {
             {/* Sign In Button */}
             <button
               onClick={handleAccessSystem}
-              className="flex items-center gap-1 rounded-lg bg-blue-600 bg-gradient-to-r from-cyan-500 to-blue-600 px-2.5 sm:px-4 py-1 sm:py-2 text-xs font-bold text-white shadow-md hover:brightness-110 transition shrink-0 whitespace-nowrap"
+              className="flex items-center justify-center rounded-lg bg-blue-600 bg-gradient-to-r from-cyan-500 to-blue-600 px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs font-bold text-white shadow-md hover:brightness-110 transition shrink-0 whitespace-nowrap"
               style={{ backgroundColor: '#2563EB', color: '#FFFFFF' }}
             >
               <span style={{ color: '#FFFFFF' }}>{t('landingSignInBtn')}</span>
-              <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" style={{ color: '#FFFFFF' }} />
+              <ArrowRight className="hidden sm:inline h-3.5 w-3.5 shrink-0 ml-1" style={{ color: '#FFFFFF' }} />
             </button>
           </div>
         </div>
