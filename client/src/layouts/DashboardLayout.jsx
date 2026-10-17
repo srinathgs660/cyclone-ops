@@ -419,7 +419,7 @@ const DashboardLayout = () => {
               {/* Live Data Connection Indicator */}
               {connected ? (
                 <div 
-                  className="hidden lg:flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-300 font-mono shadow-sm"
+                  className="hidden sm:flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1.5 text-xs text-emerald-300 font-mono shadow-sm shrink-0"
                   title="Live Telemetry Stream Connected (Socket.IO & Meteorological Gateway)"
                 >
                   <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
@@ -428,7 +428,7 @@ const DashboardLayout = () => {
               ) : (
                 <button
                   onClick={reconnect}
-                  className="hidden lg:flex items-center gap-2 rounded-lg border border-amber-500/40 bg-amber-500/15 px-3 py-1.5 text-xs text-amber-300 font-mono hover:bg-amber-500/25 transition cursor-pointer shadow-sm"
+                  className="hidden sm:flex items-center gap-1.5 rounded-lg border border-amber-500/40 bg-amber-500/15 px-2.5 py-1.5 text-xs text-amber-300 font-mono hover:bg-amber-500/25 transition cursor-pointer shadow-sm shrink-0"
                   title="Connection interrupted. Click to reconnect to telemetry gateway."
                 >
                   <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
@@ -437,34 +437,29 @@ const DashboardLayout = () => {
               )}
             </div>
 
-            {/* Right section: language selector, voice siren, last updated, refresh, theme, notifications, profile */}
-            <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-              <div className="hidden 2xl:flex flex-col text-right text-xs">
-                <span className="text-[10px] text-slate-500 font-mono uppercase">{t('lastUpdated')}</span>
-                <span className="font-mono text-slate-300 font-semibold">{lastUpdated.toLocaleTimeString()}</span>
-              </div>
-
-              {/* Regional Multilingual Selector (English Kept as Default + Tamil, Telugu, Hindi, Bengali) */}
-              <div className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/90 px-2 py-1 text-xs shadow-sm shrink-0" title="Regional Language Selector (English, Tamil, Telugu, Hindi, Bengali)">
+            {/* Right section: language selector, voice siren, toolbar, profile */}
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+              {/* Regional Multilingual Selector */}
+              <div className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/90 px-2 py-1.5 text-xs shadow-sm shrink-0" title="Regional Language Selector (English, Tamil, Telugu, Hindi, Bengali)">
                 <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
                   aria-label="Select Regional Language"
-                  className="bg-transparent text-xs font-bold text-slate-200 focus:outline-none cursor-pointer font-mono pr-1"
+                  className="bg-transparent text-xs font-bold text-slate-200 focus:outline-none cursor-pointer font-mono pr-0.5"
                 >
                   {supportedLanguages.map((lang) => (
                     <option key={lang.code} value={lang.code} className="bg-slate-900 text-white">
-                      {lang.code === 'en' ? 'English (EN)' : `${lang.nativeName} (${lang.name})`}
+                      {lang.code === 'en' ? 'English (EN)' : `${lang.nativeName}`}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Automated Regional Audio Voice Siren Warning Button */}
+              {/* Automated Audio Voice Siren Warning Button */}
               <button
                 onClick={() => (isSpeaking ? stopVoiceBroadcast() : speakEmergencyWarning({ withSiren: true }))}
-                className={`flex items-center justify-center h-9 px-2.5 sm:px-3 py-1.5 rounded-lg border font-mono font-bold text-xs transition shadow-sm shrink-0 ${
+                className={`flex items-center justify-center h-9 px-2 sm:px-2.5 rounded-lg border font-mono font-bold text-xs transition shadow-sm shrink-0 ${
                   isSpeaking
                     ? 'border-rose-500 bg-rose-600 text-white animate-pulse'
                     : 'border-rose-500/40 bg-rose-500/15 text-rose-300 hover:bg-rose-500/25'
@@ -475,109 +470,98 @@ const DashboardLayout = () => {
                 {isSpeaking ? (
                   <>
                     <VolumeX className="h-4 w-4 shrink-0" />
-                    <span className="hidden sm:inline ml-1.5">{t('stopVoiceBtn')}</span>
+                    <span className="hidden xl:inline ml-1.5">{t('stopVoiceBtn')}</span>
                   </>
                 ) : (
                   <>
                     <Volume2 className="h-4 w-4 shrink-0 text-rose-400" />
-                    <span className="hidden sm:inline ml-1.5">{t('voiceSirenBtn')}</span>
+                    <span className="hidden xl:inline ml-1.5">{t('voiceSirenBtn')}</span>
                   </>
                 )}
               </button>
 
-              {/* On-Demand Real-Time Satellite Refresh */}
-              <button
-                onClick={() => syncRealtimeCyclones()}
-                disabled={isSyncing}
-                className="flex items-center justify-center h-9 w-9 sm:w-auto sm:px-3 sm:py-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500/25 hover:border-cyan-400 transition shadow-sm disabled:opacity-50 shrink-0"
-                title="Fetch latest real-time cyclone telemetry from IMD, NOAA & NASA satellites"
-              >
-                <RefreshCw className={`h-4 w-4 shrink-0 ${isSyncing ? 'animate-spin text-cyan-400' : 'text-cyan-300'}`} />
-                <span className="hidden lg:inline font-mono font-bold text-xs ml-1.5">{isSyncing ? t('syncing') : t('refresh')}</span>
-              </button>
-
-              {/* Dark / Light Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className="flex items-center justify-center h-9 w-9 sm:w-auto sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-750 hover:text-white transition shadow shrink-0"
-                title={`Switch to ${isLight ? 'Dark' : 'Light'} Mode`}
-              >
-                {isLight ? (
-                  <>
-                    <Moon className="h-4 w-4 text-indigo-400 shrink-0" />
-                    <span className="hidden lg:inline font-mono text-[11px] ml-1.5">Dark</span>
-                  </>
-                ) : (
-                  <>
-                    <Sun className="h-4 w-4 text-amber-400 shrink-0" />
-                    <span className="hidden lg:inline font-mono text-[11px] ml-1.5">Light</span>
-                  </>
-                )}
-              </button>
-
-              {/* Offline-First "Grid-Down" Mode Vault */}
-              <button
-                onClick={() => setOfflineVaultOpen(true)}
-                className={`flex items-center justify-center h-9 px-2 sm:px-2.5 sm:py-1.5 rounded-lg border transition shadow-sm shrink-0 ${
-                  !isOnline
-                    ? 'border-rose-500 bg-rose-500/25 text-rose-300 animate-pulse'
-                    : 'border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-750 hover:text-white'
-                }`}
-                title="Offline-First 'Grid-Down' Vault: Shelters, Family QR Passport, SOS Queue, Radio Frequencies"
-              >
-                <WifiOff className={`h-4 w-4 shrink-0 ${!isOnline ? 'text-rose-400' : 'text-amber-400'}`} />
-                <span className="hidden lg:inline font-mono font-bold text-xs ml-1.5">
-                  {!isOnline ? t('gridDown') : t('offline')}
-                </span>
-              </button>
-
-              {/* Notification Dropdown */}
-              <div className="relative shrink-0">
+              {/* Quick Actions Icon Toolbar */}
+              <div className="flex items-center gap-1">
+                {/* On-Demand Real-Time Satellite Refresh */}
                 <button
-                  onClick={() => setNotificationsOpen(!notificationsOpen)}
-                  className="relative flex items-center justify-center h-9 w-9 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 transition"
-                  title="Emergency Notifications"
+                  onClick={() => syncRealtimeCyclones()}
+                  disabled={isSyncing}
+                  className="flex items-center justify-center h-9 w-9 rounded-lg border border-cyan-500/40 bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500/25 hover:border-cyan-400 transition shadow-sm disabled:opacity-50 shrink-0"
+                  title="Fetch latest real-time cyclone telemetry from IMD, NOAA & NASA satellites"
                 >
-                  <Bell className="h-4 w-4 shrink-0" />
-                  {liveAlerts.length > 0 && (
-                    <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white font-mono animate-pulse">
-                      {liveAlerts.length}
-                    </span>
-                  )}
+                  <RefreshCw className={`h-4 w-4 shrink-0 ${isSyncing ? 'animate-spin text-cyan-400' : 'text-cyan-300'}`} />
                 </button>
 
-                {notificationsOpen && (
-                  <div className="absolute right-0 mt-2 w-80 rounded-xl border border-slate-700 bg-[#131D31] p-3 shadow-2xl z-50">
-                    <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                      <h5 className="text-xs font-bold uppercase tracking-wider text-slate-300 font-mono">Emergency Notifications</h5>
-                      <span className="text-[10px] text-cyan-400 font-mono">{liveAlerts.length} Active</span>
-                    </div>
-                    <div className="mt-2 max-h-72 overflow-y-auto space-y-2">
-                      {liveAlerts.length === 0 ? (
-                        <p className="py-4 text-center text-xs text-slate-500">No unacknowledged alerts</p>
-                      ) : (
-                        liveAlerts.map(a => (
-                          <div key={a.id} className="rounded-lg border border-slate-800 bg-slate-900/80 p-2.5 text-xs">
-                            <div className="flex items-center justify-between">
-                              <span className="font-bold text-rose-400 font-mono text-[10px]">{a.severity}</span>
-                              <span className="text-[10px] text-slate-500 font-mono">{new Date(a.time).toLocaleTimeString()}</span>
+                {/* Dark / Light Theme Toggle */}
+                <button
+                  onClick={toggleTheme}
+                  className="flex items-center justify-center h-9 w-9 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-750 hover:text-white transition shadow shrink-0"
+                  title={`Switch to ${isLight ? 'Dark' : 'Light'} Mode`}
+                >
+                  {isLight ? <Moon className="h-4 w-4 text-indigo-400 shrink-0" /> : <Sun className="h-4 w-4 text-amber-400 shrink-0" />}
+                </button>
+
+                {/* Offline-First "Grid-Down" Mode Vault */}
+                <button
+                  onClick={() => setOfflineVaultOpen(true)}
+                  className={`flex items-center justify-center h-9 w-9 rounded-lg border transition shadow-sm shrink-0 ${
+                    !isOnline
+                      ? 'border-rose-500 bg-rose-500/25 text-rose-300 animate-pulse'
+                      : 'border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-750 hover:text-white'
+                  }`}
+                  title="Offline-First 'Grid-Down' Vault: Shelters, Family QR Passport, SOS Queue, Radio Frequencies"
+                >
+                  <WifiOff className={`h-4 w-4 shrink-0 ${!isOnline ? 'text-rose-400' : 'text-amber-400'}`} />
+                </button>
+
+                {/* Notification Dropdown */}
+                <div className="relative shrink-0">
+                  <button
+                    onClick={() => setNotificationsOpen(!notificationsOpen)}
+                    className="relative flex items-center justify-center h-9 w-9 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 transition"
+                    title="Emergency Notifications"
+                  >
+                    <Bell className="h-4 w-4 shrink-0" />
+                    {liveAlerts.length > 0 && (
+                      <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white font-mono animate-pulse">
+                        {liveAlerts.length}
+                      </span>
+                    )}
+                  </button>
+
+                  {notificationsOpen && (
+                    <div className="absolute right-0 mt-2 w-80 rounded-xl border border-slate-700 bg-[#131D31] p-3 shadow-2xl z-50">
+                      <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <h5 className="text-xs font-bold uppercase tracking-wider text-slate-300 font-mono">Emergency Notifications</h5>
+                        <span className="text-[10px] text-cyan-400 font-mono">{liveAlerts.length} Active</span>
+                      </div>
+                      <div className="mt-2 max-h-72 overflow-y-auto space-y-2">
+                        {liveAlerts.length === 0 ? (
+                          <p className="py-4 text-center text-xs text-slate-500">No unacknowledged alerts</p>
+                        ) : (
+                          liveAlerts.map(a => (
+                            <div key={a.id} className="rounded-lg border border-slate-800 bg-slate-900/80 p-2.5 text-xs">
+                              <div className="flex items-center justify-between">
+                                <span className="font-bold text-rose-400 font-mono text-[10px]">{a.severity}</span>
+                                <span className="text-[10px] text-slate-500 font-mono">{new Date(a.time).toLocaleTimeString()}</span>
+                              </div>
+                              <p className="mt-1 font-semibold text-slate-200">{a.title}</p>
                             </div>
-                            <p className="mt-1 font-semibold text-slate-200">{a.title}</p>
-                          </div>
-                        ))
-                      )}
+                          ))
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               {/* User Badge - Desktop Only */}
-              <div className="hidden md:flex items-center gap-2 border-l border-slate-800 pl-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-600 to-blue-700 text-white font-bold text-xs shadow">
+              <div className="hidden md:flex items-center gap-2 border-l border-slate-800 pl-2.5 shrink-0">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-600 to-blue-700 text-white font-bold text-xs shadow shrink-0">
                   {user?.name?.[0] || 'U'}
                 </div>
-                <div className="hidden lg:flex flex-col text-left">
-                  <span className="text-xs font-bold text-white leading-none">{user?.name || 'Authorized Personnel'}</span>
+                <div className="hidden 2xl:flex flex-col text-left">
+                  <span className="text-xs font-bold text-white leading-none truncate max-w-[140px]">{user?.name || 'Authorized Personnel'}</span>
                   <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider font-semibold">{user?.role || 'Citizen'}</span>
                 </div>
               </div>
@@ -585,17 +569,16 @@ const DashboardLayout = () => {
               {/* Hide / Remove Top Bar button - Desktop Only */}
               <button
                 onClick={toggleTopBar}
-                className="hidden md:flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/80 px-2 py-1.5 text-xs text-slate-400 hover:text-cyan-400 hover:bg-slate-700 transition"
+                className="hidden md:flex items-center justify-center h-9 w-9 rounded-lg border border-slate-700 bg-slate-800 text-slate-400 hover:text-cyan-400 hover:bg-slate-700 transition shrink-0"
                 title="Hide Top Navigation Bar (Maximized Workspace)"
               >
                 <ChevronUp className="h-4 w-4" />
-                <span className="hidden xl:inline font-mono text-[11px]">Hide Bar</span>
               </button>
 
               {/* Sign Out Button - Desktop Only */}
               <button
                 onClick={logout}
-                className="hidden md:flex rounded-lg border border-slate-700 bg-slate-800 p-2 text-slate-400 hover:bg-rose-500/20 hover:text-rose-400 transition"
+                className="hidden md:flex items-center justify-center h-9 w-9 rounded-lg border border-slate-700 bg-slate-800 text-slate-400 hover:bg-rose-500/20 hover:text-rose-400 transition shrink-0"
                 title="Sign Out"
               >
                 <LogOut className="h-4 w-4" />

@@ -182,15 +182,15 @@ const LoginPage = ({ defaultMode }) => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#0B1120] p-4 font-['Plus_Jakarta_Sans',sans-serif]">
       {/* Top Multilingual & Audio Voice Siren Control Bar */}
-      <div className="w-full max-w-lg mb-4 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-800 bg-[#131D31]/95 px-3.5 py-2.5 shadow-xl">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+      <div className="w-full max-w-lg mb-4 flex items-center justify-between gap-2 rounded-2xl border border-slate-800 bg-[#131D31]/95 px-3 py-2 shadow-xl">
+        <div className="flex items-center gap-1 overflow-x-auto py-0.5 no-scrollbar">
+          <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0 mr-0.5" />
           {(supportedLanguages || []).map((lang) => (
             <button
               key={lang.code}
               type="button"
               onClick={() => setLanguage(lang.code)}
-              className={`rounded-lg px-2 py-1 text-[11px] font-bold transition-all border ${
+              className={`rounded-lg px-2 py-1 text-[11px] font-bold transition-all border shrink-0 ${
                 language === lang.code
                   ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white border-cyan-400 shadow-sm'
                   : 'bg-slate-900/90 text-slate-300 border-slate-700 hover:border-cyan-500/50 hover:text-white'
@@ -201,11 +201,11 @@ const LoginPage = ({ defaultMode }) => {
           ))}
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 shrink-0">
           <button
             type="button"
             onClick={() => isSpeaking ? stopVoiceBroadcast() : speakEmergencyWarning()}
-            className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-bold font-mono transition ${
+            className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-bold font-mono transition shrink-0 ${
               isSpeaking
                 ? 'border-rose-500 bg-rose-600 text-white animate-pulse'
                 : 'border-amber-500/50 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25'
@@ -213,13 +213,13 @@ const LoginPage = ({ defaultMode }) => {
             title="Play Regional Audio Voice Siren Warning"
           >
             {isSpeaking ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
-            <span>{isSpeaking ? t('stopVoiceBtn', 'Stop') : t('voiceSirenBtn', 'Voice Siren')}</span>
+            <span className="hidden sm:inline">{isSpeaking ? t('stopVoiceBtn', 'Stop') : t('voiceSirenBtn', 'Voice Siren')}</span>
           </button>
 
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/80 p-1.5 text-slate-300 hover:text-white transition"
+            className="flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/80 p-1.5 text-slate-300 hover:text-white transition shrink-0"
             title="Toggle Light / Dark Mode"
           >
             {isLight ? <Moon className="h-3.5 w-3.5 text-indigo-400" /> : <Sun className="h-3.5 w-3.5 text-amber-400" />}

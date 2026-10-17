@@ -124,25 +124,27 @@ const LandingPage = () => {
 
       {/* Top Floating Navbar */}
       <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-[#0F172A]/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl overflow-hidden p-0.5 border border-cyan-500/40 bg-slate-900 shadow-lg shadow-cyan-900/30">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+          {/* Brand Logo & Title */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-xl overflow-hidden p-0.5 border border-cyan-500/40 bg-slate-900 shadow-lg shadow-cyan-900/30 shrink-0">
               <img src="/logo.png" alt="CycloneCommand Logo" className="h-full w-full object-contain rounded-lg" />
             </div>
             <div>
-              <span className="text-sm font-extrabold tracking-wider text-white font-mono uppercase block leading-none">
+              <span className="text-xs sm:text-sm font-extrabold tracking-wider text-white font-mono uppercase block leading-tight">
                 CycloneCommand
               </span>
-              <span className="text-[10px] font-mono text-cyan-400 font-semibold tracking-widest uppercase">
+              <span className="text-[9px] sm:text-[10px] font-mono text-cyan-400 font-semibold tracking-widest uppercase block">
                 {t('landingSubBrand')}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end">
-            {/* Regional Language Selector (English Default + Tamil, Telugu, Hindi, Bengali) */}
+          {/* Right Controls Bar - Strictly flex-nowrap to prevent overflowing/wrapping */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-nowrap shrink-0">
+            {/* Regional Language Selector */}
             <div
-              className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/90 px-2.5 py-1.5 text-xs shadow-sm"
+              className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/90 px-2 py-1 sm:px-2.5 sm:py-1.5 text-xs shadow-sm shrink-0"
               title="Select Language (English, தமிழ், తెలుగు, हिन्दी, বাংলা)"
             >
               <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
@@ -154,7 +156,7 @@ const LandingPage = () => {
               >
                 {supportedLanguages.map((lang) => (
                   <option key={lang.code} value={lang.code} className="bg-slate-900 text-white">
-                    {lang.code === 'en' ? 'English (EN)' : `${lang.nativeName} (${lang.name})`}
+                    {lang.code === 'en' ? 'English (EN)' : `${lang.nativeName}`}
                   </option>
                 ))}
               </select>
@@ -164,19 +166,23 @@ const LandingPage = () => {
             <button
               type="button"
               onClick={() => (isSpeaking ? stopVoiceBroadcast() : speakEmergencyWarning({ withSiren: true }))}
-              className="flex items-center gap-1.5 rounded-lg border border-rose-500/50 bg-rose-600 px-3 py-1.5 text-xs font-mono font-bold text-white shadow hover:bg-rose-500 transition"
+              className={`flex items-center justify-center h-8 sm:h-9 px-2 sm:px-3 rounded-lg border font-mono font-bold text-xs transition shadow shrink-0 ${
+                isSpeaking
+                  ? 'border-rose-500 bg-rose-600 text-white animate-pulse'
+                  : 'border-rose-500/50 bg-rose-600/90 text-white hover:bg-rose-500'
+              }`}
               style={{ backgroundColor: '#E11D48', color: '#FFFFFF' }}
               title="Play Automated Audio Voice Siren Warning"
             >
               {isSpeaking ? (
                 <>
-                  <VolumeX className="h-3.5 w-3.5" style={{ color: '#FFFFFF' }} />
-                  <span className="hidden md:inline" style={{ color: '#FFFFFF' }}>{t('stopVoiceBtn')}</span>
+                  <VolumeX className="h-4 w-4 shrink-0" style={{ color: '#FFFFFF' }} />
+                  <span className="hidden md:inline ml-1.5" style={{ color: '#FFFFFF' }}>{t('stopVoiceBtn')}</span>
                 </>
               ) : (
                 <>
-                  <Volume2 className="h-3.5 w-3.5" style={{ color: '#FFFFFF' }} />
-                  <span className="hidden md:inline" style={{ color: '#FFFFFF' }}>🔊 {t('voiceSirenBtn')}</span>
+                  <Volume2 className="h-4 w-4 shrink-0" style={{ color: '#FFFFFF' }} />
+                  <span className="hidden md:inline ml-1.5" style={{ color: '#FFFFFF' }}>🔊 {t('voiceSirenBtn')}</span>
                 </>
               )}
             </button>
@@ -184,49 +190,40 @@ const LandingPage = () => {
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/80 px-2.5 py-1.5 text-xs text-slate-300 hover:bg-slate-700 transition"
+              className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 rounded-lg border border-slate-700 bg-slate-800/80 text-xs text-slate-300 hover:bg-slate-700 transition shrink-0"
               title={`Switch to ${isLight ? 'Dark' : 'Light'} Mode`}
             >
               {isLight ? <Moon className="h-4 w-4 text-indigo-400" /> : <Sun className="h-4 w-4 text-amber-400" />}
-              <span className="hidden sm:inline text-[11px] font-mono">{isLight ? 'Dark' : 'Light'}</span>
             </button>
 
+            {/* Citizen SOS Quick Link (Large Screens) */}
             <button
               onClick={handleCitizenPortal}
-              className="hidden sm:flex items-center gap-1.5 rounded-lg border border-rose-500/40 bg-rose-500/15 px-3 py-1.5 text-xs font-bold text-rose-300 hover:bg-rose-500/25 transition"
+              className="hidden lg:flex items-center gap-1.5 rounded-lg border border-rose-500/40 bg-rose-500/15 px-3 py-1.5 text-xs font-bold text-rose-300 hover:bg-rose-500/25 transition shrink-0"
             >
               <HeartPulse className="h-4 w-4 text-rose-400 animate-pulse" />
               {t('landingCitizenSosBtn')}
             </button>
 
-            <button
-              onClick={() => navigate('/signup')}
-              className="hidden sm:flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/15 px-3 py-1.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/25 transition"
-            >
-              <Users className="h-4 w-4 text-emerald-400" />
-              {t('landingSignUpBtn')}
-            </button>
-
+            {/* Sign In Button */}
             <button
               onClick={handleAccessSystem}
-              className="flex items-center gap-2 rounded-lg bg-blue-600 bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-cyan-500/25 hover:brightness-110 transition"
+              className="flex items-center gap-1.5 rounded-lg bg-blue-600 bg-gradient-to-r from-cyan-500 to-blue-600 px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold text-white shadow-md hover:brightness-110 transition shrink-0 whitespace-nowrap"
               style={{ backgroundColor: '#2563EB', color: '#FFFFFF' }}
             >
               <span style={{ color: '#FFFFFF' }}>{t('landingSignInBtn')}</span>
-              <ArrowRight className="h-3.5 w-3.5" style={{ color: '#FFFFFF' }} />
+              <ArrowRight className="h-3.5 w-3.5 shrink-0" style={{ color: '#FFFFFF' }} />
             </button>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative z-10 pt-10 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        {/* Prominent 5-Language Quick Switcher Bar for Fishermen & Coastal Citizens */}
-        <div className="mx-auto mb-6 inline-flex flex-wrap items-center justify-center gap-1.5 rounded-2xl border border-slate-700/80 bg-[#131D31]/95 p-1.5 shadow-lg">
-          <span className="px-2.5 py-1 text-[11px] font-mono font-bold text-slate-400 flex items-center gap-1">
-            <Globe className="h-3.5 w-3.5 text-cyan-400" />
-            Language:
-          </span>
+      <section className="relative z-10 pt-6 sm:pt-10 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+        {/* Sleek, Single-Row Regional Language Selector Bar */}
+        <div className="mx-auto mb-6 inline-flex max-w-full items-center justify-center gap-1 overflow-x-auto rounded-full border border-slate-700/80 bg-[#131D31]/95 py-1 px-2.5 shadow-lg">
+          <Globe className="h-3.5 w-3.5 text-cyan-400 shrink-0 ml-1" />
+          <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider shrink-0 mr-1">Region:</span>
           {supportedLanguages.map((lang) => {
             const active = language === lang.code;
             return (
@@ -234,14 +231,14 @@ const LandingPage = () => {
                 key={lang.code}
                 type="button"
                 onClick={() => setLanguage(lang.code)}
-                className={`rounded-xl px-3 py-1 text-xs font-bold transition ${
+                className={`rounded-full px-2.5 py-0.5 text-xs font-bold transition shrink-0 ${
                   active
                     ? 'bg-blue-600 text-white shadow-xs'
                     : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                 }`}
                 style={active ? { backgroundColor: '#2563EB', color: '#FFFFFF' } : undefined}
               >
-                {lang.code === 'en' ? 'English' : `${lang.nativeName} (${lang.name})`}
+                {lang.code === 'en' ? 'English' : `${lang.nativeName}`}
               </button>
             );
           })}
