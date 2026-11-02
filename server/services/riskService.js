@@ -91,10 +91,12 @@ const computeZoneRisk = (zone, activeCyclone) => {
 const recalculateAllRisk = async () => {
   let activeCyclone = null;
   try {
-    const { getLiveCyclones } = require('./liveCycloneService');
-    const liveCyclones = await getLiveCyclones();
+    const { getLiveCyclones, syncGlobalCyclones } = require('./liveCycloneService');
+    let liveCyclones = getLiveCyclones();
+    if (!liveCyclones || liveCyclones.length === 0) {
+      liveCyclones = await syncGlobalCyclones();
+    }
     if (liveCyclones && liveCyclones.length > 0) {
-      // Prioritize storms in Indian Ocean, else first active storm
       const indianOceanStorm = liveCyclones.find(c => c.basinCode === 'indian-ocean');
       activeCyclone = indianOceanStorm || liveCyclones[0];
     }

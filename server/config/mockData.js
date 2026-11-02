@@ -11,6 +11,44 @@ const mockAgencies = [
 
 const mockCyclones = [
   {
+    _id: 'imd-bob-2026-murasu',
+    name: 'Murasu',
+    title: 'Severe Cyclonic Storm Murasu',
+    source: 'IMD RSMC New Delhi / DWR Chennai Radar',
+    externalId: 'BOB-04-2026',
+    basin: 'North Indian Ocean',
+    basinCode: 'indian-ocean',
+    subBasin: 'Bay of Bengal',
+    flag: '🇮🇳',
+    category: 'Severe Cyclonic Storm',
+    currentLocation: { type: 'Point', coordinates: [81.40, 14.10] },
+    windSpeed: 105,
+    windSpeedUnit: 'km/h',
+    pressure: 986,
+    movementSpeed: 16,
+    movementDirection: 'NW',
+    movementBearing: 315,
+    pastTrack: [
+      { time: new Date(Date.now() - 12 * 3600 * 1000), coordinates: [82.20, 13.50], windSpeed: 90, pressure: 994 },
+      { time: new Date(Date.now() - 6 * 3600 * 1000), coordinates: [81.80, 13.90], windSpeed: 100, pressure: 989 }
+    ],
+    forecastTrack: [
+      { time: new Date(Date.now() + 6 * 3600 * 1000), coordinates: [80.95, 14.65], windSpeed: 110, pressure: 982, category: 'Severe Cyclonic Storm', uncertaintyRadiusKm: 35 },
+      { time: new Date(Date.now() + 12 * 3600 * 1000), coordinates: [80.50, 15.20], windSpeed: 115, pressure: 980, category: 'Severe Cyclonic Storm (Landfall)', uncertaintyRadiusKm: 55 },
+      { time: new Date(Date.now() + 18 * 3600 * 1000), coordinates: [80.05, 15.70], windSpeed: 85, pressure: 990, category: 'Cyclonic Storm (Inland)', uncertaintyRadiusKm: 90 },
+      { time: new Date(Date.now() + 24 * 3600 * 1000), coordinates: [79.40, 16.20], windSpeed: 55, pressure: 998, category: 'Deep Depression', uncertaintyRadiusKm: 140 }
+    ],
+    affectedRegions: ['South Andhra Coast', 'North Coastal Tamil Nadu', 'Nellore', 'Ongole', 'Chennai', 'Tiruvallur'],
+    status: 'ACTIVE',
+    landfallEstimate: {
+      time: new Date(Date.now() + 12 * 3600 * 1000),
+      locationName: 'South Andhra Coast (between Nellore & Narsapur, near Ongole)',
+      coordinates: [80.50, 15.20],
+      confidence: 'HIGH'
+    },
+    intensityRadius: { galeWindKm: 180, stormWindKm: 95, hurricaneWindKm: 45 }
+  },
+  {
     _id: '6a9fb636e3261447d0177ee9',
     name: 'Cyclone Varun',
     source: 'IMD Arabian Sea Wing',
