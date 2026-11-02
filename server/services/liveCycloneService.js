@@ -433,7 +433,7 @@ async function fetchNasaEonetStorms() {
 async function fetchGdacsStorms() {
   try {
     const res = await axios.get('https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventtypes=TC', {
-      timeout: 9000,
+      timeout: 15000,
       headers: { 'User-Agent': 'CycloneCommand-EOC/2.0' }
     });
 
@@ -525,23 +525,42 @@ async function fetchGdacsStorms() {
   }
 }
 
-const KEY_COASTAL_STATIONS = [
-  { id: 'ennore', name: 'Ennore Port & Kattupalli Hub', coordinates: [80.331, 13.250], district: 'Tiruvallur / North Chennai', shelterCount: 8, populationAtRisk: 85000 },
-  { id: 'chennai', name: 'Chennai Port / Marina Coastal Zone', coordinates: [80.298, 13.084], district: 'Chennai District', shelterCount: 14, populationAtRisk: 140000 },
-  { id: 'mahabalipuram', name: 'Mahabalipuram Coastal Strip', coordinates: [80.198, 12.620], district: 'Chengalpattu', shelterCount: 6, populationAtRisk: 42000 },
-  { id: 'cuddalore', name: 'Cuddalore Deep-Water Harbor', coordinates: [79.771, 11.750], district: 'Cuddalore', shelterCount: 9, populationAtRisk: 68000 },
-  { id: 'nagapattinam', name: 'Nagapattinam Fishing Harbor', coordinates: [79.845, 10.765], district: 'Nagapattinam', shelterCount: 7, populationAtRisk: 52000 },
-  { id: 'nellore', name: 'Krishnapatnam Port / Nellore Coast', coordinates: [80.125, 14.250], district: 'Nellore (AP)', shelterCount: 5, populationAtRisk: 39000 },
-  { id: 'machilipatnam', name: 'Machilipatnam Coastal Delta', coordinates: [81.135, 16.185], district: 'Krishna (AP)', shelterCount: 4, populationAtRisk: 31000 }
-];
+const REGIONAL_COASTAL_STATIONS = {
+  'indian-ocean': [
+    { id: 'ennore', name: 'Ennore Port & Kattupalli Hub', coordinates: [80.331, 13.250], district: 'Tiruvallur / North Chennai', shelterCount: 8, populationAtRisk: 85000 },
+    { id: 'chennai', name: 'Chennai Port / Marina Coastal Zone', coordinates: [80.298, 13.084], district: 'Chennai District', shelterCount: 14, populationAtRisk: 140000 },
+    { id: 'mahabalipuram', name: 'Mahabalipuram Coastal Strip', coordinates: [80.198, 12.620], district: 'Chengalpattu', shelterCount: 6, populationAtRisk: 42000 },
+    { id: 'cuddalore', name: 'Cuddalore Deep-Water Harbor', coordinates: [79.771, 11.750], district: 'Cuddalore', shelterCount: 9, populationAtRisk: 68000 },
+    { id: 'nagapattinam', name: 'Nagapattinam Fishing Harbor', coordinates: [79.845, 10.765], district: 'Nagapattinam', shelterCount: 7, populationAtRisk: 52000 },
+    { id: 'nellore', name: 'Krishnapatnam Port / Nellore Coast', coordinates: [80.125, 14.250], district: 'Nellore (AP)', shelterCount: 5, populationAtRisk: 39000 },
+    { id: 'machilipatnam', name: 'Machilipatnam Coastal Delta', coordinates: [81.135, 16.185], district: 'Krishna (AP)', shelterCount: 4, populationAtRisk: 31000 },
+    { id: 'visakhapatnam', name: 'Visakhapatnam Deep Harbor', coordinates: [83.300, 17.686], district: 'Visakhapatnam (AP)', shelterCount: 11, populationAtRisk: 115000 }
+  ],
+  'pacific': [
+    { id: 'tokyo', name: 'Tokyo Bay Coastal Maritime Hub', coordinates: [139.77, 35.62], district: 'Tokyo Metropolis', shelterCount: 25, populationAtRisk: 420000 },
+    { id: 'okinawa', name: 'Naha Port & Southern Islands', coordinates: [127.67, 26.21], district: 'Okinawa Prefecture', shelterCount: 12, populationAtRisk: 130000 },
+    { id: 'manila', name: 'Manila Bay Maritime Terminal', coordinates: [120.98, 14.59], district: 'National Capital Region', shelterCount: 20, populationAtRisk: 380000 },
+    { id: 'taipei', name: 'Keelung Port Coastal Sector', coordinates: [121.74, 25.13], district: 'Northern Coastal Corridor', shelterCount: 15, populationAtRisk: 210000 },
+    { id: 'hongkong', name: 'Victoria Harbour Coastal Defense', coordinates: [114.16, 22.28], district: 'Hong Kong SAR', shelterCount: 18, populationAtRisk: 310000 }
+  ],
+  'atlantic': [
+    { id: 'miami', name: 'Miami Harbor & Biscayne Bay', coordinates: [-80.18, 25.77], district: 'Miami-Dade County', shelterCount: 22, populationAtRisk: 350000 },
+    { id: 'tampa', name: 'Tampa Bay Coastal Corridor', coordinates: [-82.45, 27.95], district: 'Hillsborough County', shelterCount: 16, populationAtRisk: 240000 },
+    { id: 'neworleans', name: 'Gulf Coast Lake Pontchartrain Barrier', coordinates: [-90.07, 29.95], district: 'Orleans Parish', shelterCount: 18, populationAtRisk: 290000 },
+    { id: 'san_juan', name: 'San Juan Coastal Strip', coordinates: [-66.10, 18.46], district: 'San Juan Coastal Zone', shelterCount: 10, populationAtRisk: 120000 },
+    { id: 'cape_hatteras', name: 'Outer Banks Barrier Island', coordinates: [-75.53, 35.25], district: 'Dare County', shelterCount: 8, populationAtRisk: 45000 }
+  ]
+};
 
 /**
  * Dynamic Coastal Landfall ETA & Impact Countdown Matrix
  */
-function calculateCoastalEtaMatrix(coords, movementSpeedKmh = 18, movementBearing = 295, galeRadiusKm = 180) {
+function calculateCoastalEtaMatrix(coords, movementSpeedKmh = 18, movementBearing = 295, galeRadiusKm = 180, basinCode = 'indian-ocean') {
   if (!coords || coords.length < 2) return [];
 
-  return KEY_COASTAL_STATIONS.map(st => {
+  const stations = REGIONAL_COASTAL_STATIONS[basinCode] || REGIONAL_COASTAL_STATIONS['indian-ocean'];
+
+  return stations.map(st => {
     const distKm = Math.round(haversineDistanceKm(coords, st.coordinates));
     const bearingToSt = Math.round(calculateBearing(coords, st.coordinates));
     const angleDiffDeg = Math.abs(movementBearing - bearingToSt);
@@ -609,103 +628,39 @@ function calculateCoastalEtaMatrix(coords, movementSpeedKmh = 18, movementBearin
 /**
  * INCOIS Ocean State Forecast: Storm Surge & Coastal Tide Inundation Model
  */
-function generateIncoisSurgeForecast(coords, windKmh = 175) {
-  const baseSurge = parseFloat(Math.min(4.4, Math.max(1.5, (windKmh / 175) * 3.2)).toFixed(1));
-  const astroTide = 1.1; // meters
+function generateIncoisSurgeForecast(coords, windKmh = 120, basinCode = 'indian-ocean') {
+  const baseSurge = parseFloat(Math.min(4.4, Math.max(0.4, (windKmh / 175) * 2.8)).toFixed(1));
+  const astroTide = 0.9;
   const totalWater = parseFloat((baseSurge + astroTide).toFixed(1));
 
+  const stations = REGIONAL_COASTAL_STATIONS[basinCode] || REGIONAL_COASTAL_STATIONS['indian-ocean'];
+
   return {
-    source: 'INCOIS Ocean State Forecast & Earth System Science Organisation (ESSO)',
+    source: basinCode === 'indian-ocean' 
+      ? 'INCOIS Ocean State Forecast & Earth System Science Organisation (ESSO)' 
+      : 'Authoritative Regional Hydrodynamic Coastal Surge Model',
     model: 'ADCIRC High-Resolution Shallow-Water Hydrodynamic Model',
     astronomicalTideMeters: astroTide,
-    tidePhase: 'Spring High Tide Peak at 19:15 IST (+1.1m Above Chart Datum)',
+    tidePhase: 'High Tide Phase (+0.9m Above Chart Datum)',
     peakSurgeMeters: baseSurge,
     totalWaterLevelMeters: totalWater,
-    inundationWarning: 'MANDATORY EVACUATION: LOW-LYING ESTUARIES & SEAWALL BUFFER (0-500M INLAND)',
+    inundationWarning: baseSurge > 2.0 
+      ? 'MANDATORY EVACUATION: LOW-LYING ESTUARIES & SEAWALL BUFFER' 
+      : 'COASTAL CAUTION: Normal tidal surge monitored',
     confidence: 'HIGH NUMERICAL CONFIDENCE',
-    stations: [
-      { name: 'Ennore Creek & Kattupalli Estuary', surgeMeters: parseFloat((baseSurge * 1.05).toFixed(1)), tideMeters: 1.1, totalWaterMeters: parseFloat((baseSurge * 1.05 + 1.1).toFixed(1)), alertLevel: 'CRITICAL INUNDATION', peakTime: 'T-18h (Landfall Concurrence)' },
-      { name: 'Chennai Marina / Cooum River Mouth', surgeMeters: parseFloat((baseSurge * 0.95).toFixed(1)), tideMeters: 1.0, totalWaterMeters: parseFloat((baseSurge * 0.95 + 1.0).toFixed(1)), alertLevel: 'SEVERE SURGE', peakTime: 'T-16h' },
-      { name: 'Mahabalipuram Coastal Strip', surgeMeters: parseFloat((baseSurge * 0.85).toFixed(1)), tideMeters: 0.9, totalWaterMeters: parseFloat((baseSurge * 0.85 + 0.9).toFixed(1)), alertLevel: 'HIGH SURGE', peakTime: 'T-14h' },
-      { name: 'Cuddalore Deep-Water Harbor', surgeMeters: parseFloat((baseSurge * 0.72).toFixed(1)), tideMeters: 0.9, totalWaterMeters: parseFloat((baseSurge * 0.72 + 0.9).toFixed(1)), alertLevel: 'MODERATE SURGE', peakTime: 'T-12h' },
-      { name: 'Nagapattinam Fishing Harbor', surgeMeters: parseFloat((baseSurge * 0.60).toFixed(1)), tideMeters: 0.8, totalWaterMeters: parseFloat((baseSurge * 0.60 + 0.8).toFixed(1)), alertLevel: 'CAUTION SURGE', peakTime: 'T-10h' }
-    ]
-  };
-}
-
-/**
- * 4. Active Regional Mission Storm: Cyclone Amara (Bay of Bengal EOC Operations Scenario)
- */
-function getActiveEocMissionStorm() {
-  const coords = [81.65, 12.75];
-  const windSpeed = 175;
-  const speedKmh = 18;
-  const bearing = 295;
-
-  return {
-    _id: 'active-eoc-amara',
-    externalId: 'IMD-BOB-2026-AMARA',
-    name: 'Amara',
-    title: 'Very Severe Cyclonic Storm Amara',
-    isDemo: true,
-    isScenario: true,
-    source: 'EOC Scenario Benchmark (IMD Model)',
-    basin: 'North Indian Ocean',
-    basinCode: 'indian-ocean',
-    subBasin: 'Bay of Bengal',
-    flag: '🇮🇳',
-    region: 'Tamil Nadu & Andhra Pradesh Coast',
-    category: 'Category 3 Severe Cyclone',
-    windSpeed: windSpeed,
-    windSpeedUnit: 'km/h',
-    pressure: 962,
-    movementSpeed: speedKmh,
-    movementDirection: 'WNW',
-    movementBearing: bearing,
-    currentLocation: {
-      type: 'Point',
-      coordinates: coords
-    },
-    coastalEtaMatrix: calculateCoastalEtaMatrix(coords, speedKmh, bearing, 180),
-    incoisSurgeForecast: generateIncoisSurgeForecast(coords, windSpeed),
-    rapidIntensification: {
-      detected: true,
-      deltaPressure6h: -13,
-      deltaWind6h: +30,
-      advisory: 'RAPID INTENSIFICATION DETECTED: Central barometric pressure plunged 13 hPa in last 6 hours.'
-    },
-    trackDeviation: {
-      detected: false,
-      deviationDegrees: 4,
-      advisory: 'Track trajectory stable along WNW vector towards North Chennai / Ennore sector.'
-    },
-    pastTrack: [
-      { time: new Date(Date.now() - 24 * 3600000), coordinates: [85.2, 10.8], windSpeed: 115, pressure: 985 },
-      { time: new Date(Date.now() - 18 * 3600000), coordinates: [84.1, 11.4], windSpeed: 135, pressure: 978 },
-      { time: new Date(Date.now() - 12 * 3600000), coordinates: [83.2, 11.9], windSpeed: 155, pressure: 970 },
-      { time: new Date(Date.now() - 6 * 3600000), coordinates: [82.4, 12.3], windSpeed: 165, pressure: 965 }
-    ],
-    forecastTrack: [
-      { time: new Date(Date.now() + 6 * 3600000), coordinates: [80.9, 13.1], windSpeed: 180, pressure: 958, category: 'Category 3 Severe Cyclone', uncertaintyRadiusKm: 35 },
-      { time: new Date(Date.now() + 12 * 3600000), coordinates: [80.4, 13.3], windSpeed: 185, pressure: 954, category: 'Category 3 Severe Cyclone', uncertaintyRadiusKm: 65 },
-      { time: new Date(Date.now() + 18 * 3600000), coordinates: [80.25, 13.4], windSpeed: 170, pressure: 960, category: 'Category 3 Severe Cyclone', uncertaintyRadiusKm: 110 },
-      { time: new Date(Date.now() + 24 * 3600000), coordinates: [79.8, 13.6], windSpeed: 130, pressure: 975, category: 'Category 1 Cyclone', uncertaintyRadiusKm: 185 },
-      { time: new Date(Date.now() + 48 * 3600000), coordinates: [78.9, 14.1], windSpeed: 75, pressure: 994, category: 'Tropical Storm', uncertaintyRadiusKm: 275 }
-    ],
-    landfallEstimate: {
-      time: new Date(Date.now() + 18 * 3600000),
-      locationName: 'North Chennai / Ennore Coastal Sector',
-      coordinates: [80.25, 13.4],
-      confidence: 'CRITICAL (T-18h)'
-    },
-    intensityRadius: {
-      galeWindKm: 180,
-      stormWindKm: 90,
-      hurricaneWindKm: 45
-    },
-    status: 'ACTIVE',
-    isLive: true,
-    lastUpdated: new Date()
+    stations: stations.slice(0, 5).map(st => {
+      const dist = coords ? haversineDistanceKm(coords, st.coordinates) : 500;
+      const proximityFactor = Math.max(0.2, Math.min(1.2, 1 - (dist / 1200)));
+      const surge = parseFloat((baseSurge * proximityFactor).toFixed(1));
+      return {
+        name: st.name,
+        surgeMeters: surge,
+        tideMeters: astroTide,
+        totalWaterMeters: parseFloat((surge + astroTide).toFixed(1)),
+        alertLevel: surge > 2.5 ? 'CRITICAL INUNDATION' : surge > 1.5 ? 'SEVERE SURGE' : 'MONITORING',
+        peakTime: 'Forecast Landfall Window'
+      };
+    })
   };
 }
 
@@ -727,17 +682,13 @@ async function syncGlobalCyclones() {
 
     const stormMap = new Map();
 
-    // 1. Add active EOC mission storm (Amara - Bay of Bengal)
-    const eocStorm = getActiveEocMissionStorm();
-    stormMap.set(eocStorm.name.toLowerCase(), eocStorm);
-
-    // 2. Add NOAA NHC verified active storms
+    // 1. Add NOAA NHC verified active storms
     for (const storm of noaaStorms) {
       const key = storm.name.toLowerCase().replace(/[^a-z0-9]/g, '');
       stormMap.set(key, storm);
     }
 
-    // 3. Add NASA EONET active storms (filtered strictly to last 48h)
+    // 2. Add NASA EONET active storms (filtered strictly to last 48h)
     for (const storm of eonetStorms) {
       const key = storm.name.toLowerCase().replace(/[^a-z0-9]/g, '');
       if (!stormMap.has(key)) {
@@ -745,7 +696,7 @@ async function syncGlobalCyclones() {
       }
     }
 
-    // 4. Add GDACS active storms (filtered strictly to iscurrent=true and within 48h)
+    // 3. Add GDACS active storms (filtered strictly to iscurrent=true and within 48h)
     for (const storm of gdacsStorms) {
       const key = storm.name.toLowerCase().replace(/[^a-z0-9]/g, '');
       if (!stormMap.has(key)) {
@@ -754,14 +705,17 @@ async function syncGlobalCyclones() {
     }
 
     const merged = Array.from(stormMap.values()).map(c => {
-      if (c.basinCode === 'indian-ocean' && (!c.coastalEtaMatrix || c.coastalEtaMatrix.length === 0)) {
+      if (!c.coastalEtaMatrix || c.coastalEtaMatrix.length === 0) {
         c.coastalEtaMatrix = calculateCoastalEtaMatrix(
           c.currentLocation.coordinates, 
           c.movementSpeed || 18, 
           c.movementBearing || 295, 
-          c.intensityRadius?.galeWindKm || 180
+          c.intensityRadius?.galeWindKm || 180,
+          c.basinCode
         );
-        c.incoisSurgeForecast = generateIncoisSurgeForecast(c.currentLocation.coordinates, c.windSpeed);
+      }
+      if (!c.incoisSurgeForecast) {
+        c.incoisSurgeForecast = generateIncoisSurgeForecast(c.currentLocation.coordinates, c.windSpeed, c.basinCode);
       }
       return c;
     });

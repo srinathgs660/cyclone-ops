@@ -22,16 +22,16 @@ router.get('/executive-data', async (req, res, next) => {
     ]);
 
     const cyclones = getLiveCyclones();
-    const primaryCyclone = cyclones.find(c => c.name?.includes('Amara')) || cyclones[0] || {
-      name: 'Severe Cyclonic Storm Amara',
-      category: 'Category 3 Severe Cyclone',
-      windSpeed: 175,
-      pressure: 962,
-      movementSpeed: 18,
-      movementDirection: 'WNW',
+    const primaryCyclone = cyclones[0] || {
+      name: 'Active Weather Monitoring',
+      category: 'Normal / Calm',
+      windSpeed: 35,
+      pressure: 1010,
+      movementSpeed: 10,
+      movementDirection: 'N/A',
       landfallEstimate: {
-        locationName: 'North Chennai / Ennore Coastal Corridor',
-        time: new Date(Date.now() + 14 * 3600000)
+        locationName: 'No Immediate Maritime Coastal Threat',
+        time: new Date(Date.now() + 48 * 3600000)
       }
     };
 

@@ -73,7 +73,7 @@ const CommandCenter = () => {
     }
   };
 
-  const primaryCyclone = cyclones.find(c => c.name?.includes('Amara')) || cyclones[0] || null;
+  const primaryCyclone = cyclones[0] || null;
 
   return (
     <div className="space-y-6">

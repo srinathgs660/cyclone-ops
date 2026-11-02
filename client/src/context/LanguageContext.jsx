@@ -192,9 +192,9 @@ export const TRANSLATIONS = {
     helplinesSubtitle: 'Direct toll-free lines to central control rooms.',
     // Voice Broadcast Script
     voiceWarningNative:
-      'Attention coastal residents and fishermen! Red Alert for Severe Cyclone Amara. Sustained wind speed is 175 kilometers per hour. Landfall is expected in 18 hours near North Chennai, Ennore, and the Coromandel coast. All fishermen are strictly advised not to venture into the Bay of Bengal. Residents in low-lying coastal areas must evacuate immediately along National Highway 48 and Highway 38 to the nearest safe cyclone shelter. For immediate life-saving rescue, press the red Send SOS button or call toll-free helpline 1 0 7 0.',
+      'Attention coastal residents and fishermen! Red Alert for Severe Tropical Cyclone Weather Alert. Sustained wind speed is 175 kilometers per hour. Landfall is expected in 18 hours near North Chennai, Ennore, and the Coromandel coast. All fishermen are strictly advised not to venture into the Bay of Bengal. Residents in low-lying coastal areas must evacuate immediately along National Highway 48 and Highway 38 to the nearest safe cyclone shelter. For immediate life-saving rescue, press the red Send SOS button or call toll-free helpline 1 0 7 0.',
     voiceWarningPhonetic:
-      'Attention coastal residents and fishermen! Red Alert for Severe Cyclone Amara. Sustained wind speed is 175 kilometers per hour. Landfall is expected in 18 hours near North Chennai, Ennore, and the Coromandel coast. All fishermen are strictly advised not to venture into the Bay of Bengal. Residents in low-lying coastal areas must evacuate immediately along National Highway 48 and Highway 38 to the nearest safe cyclone shelter. For immediate life-saving rescue, press the red Send SOS button or call toll-free helpline 1 0 7 0.'
+      'Attention coastal residents and fishermen! Red Alert for Severe Tropical Cyclone Weather Alert. Sustained wind speed is 175 kilometers per hour. Landfall is expected in 18 hours near North Chennai, Ennore, and the Coromandel coast. All fishermen are strictly advised not to venture into the Bay of Bengal. Residents in low-lying coastal areas must evacuate immediately along National Highway 48 and Highway 38 to the nearest safe cyclone shelter. For immediate life-saving rescue, press the red Send SOS button or call toll-free helpline 1 0 7 0.'
   },
 
   ta: {
@@ -340,7 +340,7 @@ export const TRANSLATIONS = {
     voiceWarningNative:
       'கடலோர மக்களுக்கும் மீனவர்களுக்கும் முக்கிய அவசர எச்சரிக்கை! தீவிர அமாரா புயல் மணிக்கு 175 கிலோமீட்டர் வேகத்தில் நெருங்கி வருகிறது. அடுத்த 18 மணி நேரத்தில் வட சென்னை மற்றும் எண்ணூர் கடற்கரை அருகே புயல் கரையை கடக்கும். மீனவர்கள் யாரும் வங்கக்கடலுக்குள் மீன்பிடிக்கச் செல்ல வேண்டாம். தாழ்வான பகுதிகளில் வசிக்கும் மக்கள் உடனடியாக தேசிய நெடுஞ்சாலை 48 மற்றும் 38 வழியாக அருகிலுள்ள அரசு புயல் பாதுகாப்பு முகாம்களுக்குச் செல்லவும். அவசர மீட்பு உதவிக்கு சிவப்பு நிற எஸ்.ஓ.எஸ் பட்டனை அழுத்தவும் அல்லது 1 0 7 0 என்ற எண்ணை அழைக்கவும்.',
     voiceWarningPhonetic:
-      'Kadalora makkalukkum meenavargalukkum mukkiya avasara echarikkai! Theevira Amara puyal manikku 175 kilometer vegathil nerungi varugirathu. Adutha 18 mani nerathil Vada Chennai matrum Ennore kadarkarai arugey puyal karaiyai kadakkum. Meenavargal yaarum kadalukkul sella vendaam. Thazhvana paguthigalil vasikkum makkal udanadiyaga arukilulla arasu puyalugappu mugamgalukku sellavum. Avasara udhavikku 1 0 7 0 enra ennai azhaikkavum.'
+      'Kadalora makkalukkum meenavargalukkum mukkiya avasara echarikkai! Theevira Puyal Echarikkai manikku 175 kilometer vegathil nerungi varugirathu. Adutha 18 mani nerathil Vada Chennai matrum Ennore kadarkarai arugey puyal karaiyai kadakkum. Meenavargal yaarum kadalukkul sella vendaam. Thazhvana paguthigalil vasikkum makkal udanadiyaga arukilulla arasu puyalugappu mugamgalukku sellavum. Avasara udhavikku 1 0 7 0 enra ennai azhaikkavum.'
   },
 
   te: {
@@ -486,7 +486,7 @@ export const TRANSLATIONS = {
     voiceWarningNative:
       'తీరప్రాంత ప్రజలకు మరియు మత్స్యకారులకు అత్యవసర హెచ్చరిక! తీవ్రమైన అమారా తుఫాను గంటకు 175 కిలోమీటర్ల వేగంతో తీరం వైపు దూసుకొస్తోంది. రాగల 18 గంటల్లో ఉత్తర చెన్నై మరియు ఎన్నోర్ తీరం వద్ద తుఫాను తీరం దాటనుంది. మత్స్యకారులు ఎవరూ బంగాళాఖాతంలో వేటకు వెళ్లరాదు. లోతట్టు తీరప్రాంత ప్రజలు తక్షణమే జాతీయ రహదారి 48 మరియు 38 ద్వారా సమీప సురక్షిత పునరావాస కేంద్రాలకు తరలి వెళ్లాలి. తక్షణ సహాయం కోసం ఎరుపు రంగు ఎస్.ఓ.ఎస్ బటన్ నొక్కండి లేదా 1 0 7 0 నంబర్‌కు కాల్ చేయండి.',
     voiceWarningPhonetic:
-      'Teeraprantha prajalaku mariyu matsyakarulaku atyavasara hecharika! Teevramaina Amara tuphanu gantaku 175 kilometerla vegamtho teeram vaipu doosukostondi. Ragala 18 gantallo Uttara Chennai mariyu Ennore teeram vadda tuphanu teeram datanundi. Matsyakarulu evaru samudram loki vellaraadu. Lothattu prajalu takshaname sameepa surakshita punaravasa kendralaku vellali. Sahayam kosam 1 0 7 0 ku call cheyandi.'
+      'Teeraprantha prajalaku mariyu matsyakarulaku atyavasara hecharika! Teevramaina Tuphanu Hecharika gantaku 175 kilometerla vegamtho teeram vaipu doosukostondi. Ragala 18 gantallo Uttara Chennai mariyu Ennore teeram vadda tuphanu teeram datanundi. Matsyakarulu evaru samudram loki vellaraadu. Lothattu prajalu takshaname sameepa surakshita punaravasa kendralaku vellali. Sahayam kosam 1 0 7 0 ku call cheyandi.'
   },
 
   hi: {
@@ -632,7 +632,7 @@ export const TRANSLATIONS = {
     voiceWarningNative:
       'तटीय निवासियों और मछुआरों के लिए अत्यंत महत्वपूर्ण चेतावनी! भीषण चक्रवात अमारा 175 किलोमीटर प्रति घंटे की रफ़्तार से तट की ओर बढ़ रहा है। अगले 18 घंटों में उत्तरी चेन्नई और एन्नोर तट के पास चक्रवात के टकराने की संभावना है। सभी मछुआरों को सख्त सलाह दी जाती है कि वे बंगाल की खाड़ी में न जाएं। निचले तटीय इलाकों के निवासी तुरंत राष्ट्रीय राजमार्ग 48 और 38 से होकर निकटतम सुरक्षित चक्रवात आश्रय गृह में पहुंचें। तत्काल बचाव के लिए लाल एसओएस बटन दबाएं या टोल-फ्री नंबर 1 0 7 0 पर कॉल करें।',
     voiceWarningPhonetic:
-      'Tatiya nivasiyon aur machhuaron ke liye mahatvapurna chetavani! Bheeshan chakravat Amara 175 kilometer prati ghante ki raftaar se tat ki or badh raha hai. Agle 18 ghanton mein Uttari Chennai aur Ennore tat ke paas chakravat takrayega. Sabhi machhuare samudra mein na jayein. Nichle ilakon ke log turant surakshit aashray grih mein pahunchein. Tatkal bachav ke liye 1 0 7 0 par call karein.'
+      'Tatiya nivasiyon aur machhuaron ke liye mahatvapurna chetavani! Bheeshan Chakravat Chetavani 175 kilometer prati ghante ki raftaar se tat ki or badh raha hai. Agle 18 ghanton mein Uttari Chennai aur Ennore tat ke paas chakravat takrayega. Sabhi machhuare samudra mein na jayein. Nichle ilakon ke log turant surakshit aashray grih mein pahunchein. Tatkal bachav ke liye 1 0 7 0 par call karein.'
   },
 
   bn: {
@@ -778,7 +778,7 @@ export const TRANSLATIONS = {
     voiceWarningNative:
       'উপকূলীয় বাসিন্দা এবং মৎস্যজীবীদের জন্য জরুরি সতর্কবার্তা! তীব্র ঘূর্ণিঝড় আমারা ঘণ্টায় ১৭৫ কিলোমিটার বেগে উপকূলের দিকে ধেয়ে আসছে। আগামী ১৮ ঘণ্টার মধ্যে উত্তর চেন্নাই এবং এন্নোর উপকূলে ঘূর্ণিঝড়টি আঘাত হানবে। সকল মৎস্যজীবীকে বঙ্গোপসাগরে মাছ ধরতে না যাওয়ার জন্য কঠোরভাবে নির্দেশ দেওয়া হচ্ছে। নিচু উপকূলীয় অঞ্চলের বাসিন্দারা অবিলম্বে জাতীয় সড়ক ৪৮ এবং ৩৮ ধরে নিকটতম নিরাপদ ঘূর্ণিঝড় আশ্রয়কেন্দ্রে চলে যান। জরুরি উদ্ধারের জন্য লাল এসওএস বোতাম টিপুন অথবা ১০৭০ নম্বরে কল করুন।',
     voiceWarningPhonetic:
-      'Upakuliyo basinda ebong matsyajibider jonyo joruri satarkabarta! Tibro ghurnijhor Amara ghontay 175 kilometer bege upakuler dike dheye asche. Agami 18 ghontar modhye Uttar Chennai ebong Ennore upakule ghurnijhorti aghat hanbe. Sakal matsyajibike samudre na jawar nirdesh dewa hocche. Nichu elakar basindara abilambe nikatatama nirapad ashraykendre chole jan. Joruri uddharer jonyo 1 0 7 0 nombore call korun.'
+      'Upakuliyo basinda ebong matsyajibider jonyo joruri satarkabarta! Tibro Ghurnijhor Satarkabarta ghontay 175 kilometer bege upakuler dike dheye asche. Agami 18 ghontar modhye Uttar Chennai ebong Ennore upakule ghurnijhorti aghat hanbe. Sakal matsyajibike samudre na jawar nirdesh dewa hocche. Nichu elakar basindara abilambe nikatatama nirapad ashraykendre chole jan. Joruri uddharer jonyo 1 0 7 0 nombore call korun.'
   }
 };
 
