@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 
 const LanguageContext = createContext();
@@ -192,9 +193,9 @@ export const TRANSLATIONS = {
     helplinesSubtitle: 'Direct toll-free lines to central control rooms.',
     // Voice Broadcast Script
     voiceWarningNative:
-      'Attention coastal residents and fishermen! Red Alert for Severe Tropical Cyclone Weather Alert. Sustained wind speed is 175 kilometers per hour. Landfall is expected in 18 hours near North Chennai, Ennore, and the Coromandel coast. All fishermen are strictly advised not to venture into the Bay of Bengal. Residents in low-lying coastal areas must evacuate immediately along National Highway 48 and Highway 38 to the nearest safe cyclone shelter. For immediate life-saving rescue, press the red Send SOS button or call toll-free helpline 1 0 7 0.',
+      'Attention coastal residents and maritime operators! Emergency Warning for Severe Cyclonic Storm Murasu. Sustained surface winds are currently 105 kilometers per hour with gusts up to 120 kilometers per hour. The system is centered in the Westcentral Bay of Bengal, moving northwestwards towards South Andhra Pradesh and North Tamil Nadu coast. All fishermen and vessels are strictly advised not to venture into sea. Residents in low-lying coastal areas should move immediately to designated government safe shelters. For emergency assistance or search and rescue, call toll-free helpline 1 0 7 0.',
     voiceWarningPhonetic:
-      'Attention coastal residents and fishermen! Red Alert for Severe Tropical Cyclone Weather Alert. Sustained wind speed is 175 kilometers per hour. Landfall is expected in 18 hours near North Chennai, Ennore, and the Coromandel coast. All fishermen are strictly advised not to venture into the Bay of Bengal. Residents in low-lying coastal areas must evacuate immediately along National Highway 48 and Highway 38 to the nearest safe cyclone shelter. For immediate life-saving rescue, press the red Send SOS button or call toll-free helpline 1 0 7 0.'
+      'Attention coastal residents and maritime operators! Emergency Warning for Severe Cyclonic Storm Murasu. Sustained surface winds are currently 105 kilometers per hour with gusts up to 120 kilometers per hour. The system is centered in the Westcentral Bay of Bengal, moving northwestwards towards South Andhra Pradesh and North Tamil Nadu coast. All fishermen and vessels are strictly advised not to venture into sea. Residents in low-lying coastal areas should move immediately to designated government safe shelters. For emergency assistance or search and rescue, call toll-free helpline 1 0 7 0.'
   },
 
   ta: {
@@ -338,9 +339,9 @@ export const TRANSLATIONS = {
     helplinesSubtitle: 'கட்டணமில்லா அவசர கட்டுப்பாட்டு அறை எண்கள்.',
     // Voice Broadcast Script
     voiceWarningNative:
-      'கடலோர மக்களுக்கும் மீனவர்களுக்கும் முக்கிய அவசர எச்சரிக்கை! தீவிர அமாரா புயல் மணிக்கு 175 கிலோமீட்டர் வேகத்தில் நெருங்கி வருகிறது. அடுத்த 18 மணி நேரத்தில் வட சென்னை மற்றும் எண்ணூர் கடற்கரை அருகே புயல் கரையை கடக்கும். மீனவர்கள் யாரும் வங்கக்கடலுக்குள் மீன்பிடிக்கச் செல்ல வேண்டாம். தாழ்வான பகுதிகளில் வசிக்கும் மக்கள் உடனடியாக தேசிய நெடுஞ்சாலை 48 மற்றும் 38 வழியாக அருகிலுள்ள அரசு புயல் பாதுகாப்பு முகாம்களுக்குச் செல்லவும். அவசர மீட்பு உதவிக்கு சிவப்பு நிற எஸ்.ஓ.எஸ் பட்டனை அழுத்தவும் அல்லது 1 0 7 0 என்ற எண்ணை அழைக்கவும்.',
+      'கடலோர மக்களுக்கும் மீனவர்களுக்கும் முக்கிய அவசர எச்சரிக்கை! வங்கக்கடலில் தீவிர முரசு புயல் மணிக்கு 105 கிலோமீட்டர் வேகத்தில் தெற்கு ஆந்திரா மற்றும் வட தமிழக கடற்கரையை நோக்கி நகர்ந்து வருகிறது. மீனவர்கள் யாரும் கடலுக்குள் மீன்பிடிக்கச் செல்ல வேண்டாம். தாழ்வான கடலோரப் பகுதிகளில் வசிக்கும் பொதுமக்கள் உடனடியாக அருகிலுள்ள அரசு புயல் பாதுகாப்பு முகாம்களுக்குச் செல்லவும். அவசர மீட்பு உதவிக்கு 1 0 7 0 என்ற எண்ணை அழைக்கவும்.',
     voiceWarningPhonetic:
-      'Kadalora makkalukkum meenavargalukkum mukkiya avasara echarikkai! Theevira Puyal Echarikkai manikku 175 kilometer vegathil nerungi varugirathu. Adutha 18 mani nerathil Vada Chennai matrum Ennore kadarkarai arugey puyal karaiyai kadakkum. Meenavargal yaarum kadalukkul sella vendaam. Thazhvana paguthigalil vasikkum makkal udanadiyaga arukilulla arasu puyalugappu mugamgalukku sellavum. Avasara udhavikku 1 0 7 0 enra ennai azhaikkavum.'
+      'Kadalora makkalukkum meenavargalukkum mukkiya avasara echarikkai! Vangakkadalil theevira Murasu puyal manikku 105 kilometer vegathil Therku Andhra matrum Vada Thamizhaga kadarkaraiyai nokki nagarnthu varugirathu. Meenavargal yaarum kadalukkul meenpidikka sella vendaam. Thazhvana kadalora paguthigalil vasikkum makkal udanadiyaga arukilulla arasu puyal pathukappu mugamgalukku sellavum. Avasara udhavikku 1 0 7 0 enra ennai azhaikkavum.'
   },
 
   te: {
@@ -484,9 +485,9 @@ export const TRANSLATIONS = {
     helplinesSubtitle: 'టోల్-ఫ్రీ కంట్రోల్ రూమ్ నంబర్లు.',
     // Voice Broadcast Script
     voiceWarningNative:
-      'తీరప్రాంత ప్రజలకు మరియు మత్స్యకారులకు అత్యవసర హెచ్చరిక! తీవ్రమైన అమారా తుఫాను గంటకు 175 కిలోమీటర్ల వేగంతో తీరం వైపు దూసుకొస్తోంది. రాగల 18 గంటల్లో ఉత్తర చెన్నై మరియు ఎన్నోర్ తీరం వద్ద తుఫాను తీరం దాటనుంది. మత్స్యకారులు ఎవరూ బంగాళాఖాతంలో వేటకు వెళ్లరాదు. లోతట్టు తీరప్రాంత ప్రజలు తక్షణమే జాతీయ రహదారి 48 మరియు 38 ద్వారా సమీప సురక్షిత పునరావాస కేంద్రాలకు తరలి వెళ్లాలి. తక్షణ సహాయం కోసం ఎరుపు రంగు ఎస్.ఓ.ఎస్ బటన్ నొక్కండి లేదా 1 0 7 0 నంబర్‌కు కాల్ చేయండి.',
+      'తీరప్రాంత ప్రజలకు మరియు మత్స్యకారులకు అత్యవసర హెచ్చరిక! బంగాళాఖాతంలో తీవ్రమైన మురసు తుఫాను గంటకు 105 కిలోమీటర్ల వేగంతో దక్షిణ ఆంధ్రప్రదేశ్ మరియు ఉత్తర తమిళనాడు తీరం వైపు దూసుకొస్తోంది. మత్స్యకారులు ఎవరూ సముద్రంలోకి వేటకు వెళ్లవద్దు. లోతట్టు ప్రాంతాల ప్రజలు తక్షణమే సమీప సురక్షిత పునరావాస కేంద్రాలకు చేరుకోవాలి. అత్యవసర సహాయం కోసం 1 0 7 0 కు కాల్ చేయండి.',
     voiceWarningPhonetic:
-      'Teeraprantha prajalaku mariyu matsyakarulaku atyavasara hecharika! Teevramaina Tuphanu Hecharika gantaku 175 kilometerla vegamtho teeram vaipu doosukostondi. Ragala 18 gantallo Uttara Chennai mariyu Ennore teeram vadda tuphanu teeram datanundi. Matsyakarulu evaru samudram loki vellaraadu. Lothattu prajalu takshaname sameepa surakshita punaravasa kendralaku vellali. Sahayam kosam 1 0 7 0 ku call cheyandi.'
+      'Teeraprantha prajalaku mariyu matsyakarulaku atyavasara hecharika! Bangalakhathamlo teevramaina Murasu tuphanu gantaku 105 kilometerla vegamtho Dakshina Andhra Pradesh mariyu Uttara Tamil Nadu teeram vaipu doosukostondi. Matsyakarulu evaru samudramloki vetaku vellavaddu. Lothattu pranthala prajalu takshaname sameepa surakshita punaravasa kendralaku cherukovali. Atyavasara sahayam kosam 1 0 7 0 ku call cheyandi.'
   },
 
   hi: {
@@ -630,9 +631,9 @@ export const TRANSLATIONS = {
     helplinesSubtitle: 'केंद्रीय नियंत्रण कक्ष के टोल-फ्री नंबर।',
     // Voice Broadcast Script
     voiceWarningNative:
-      'तटीय निवासियों और मछुआरों के लिए अत्यंत महत्वपूर्ण चेतावनी! भीषण चक्रवात अमारा 175 किलोमीटर प्रति घंटे की रफ़्तार से तट की ओर बढ़ रहा है। अगले 18 घंटों में उत्तरी चेन्नई और एन्नोर तट के पास चक्रवात के टकराने की संभावना है। सभी मछुआरों को सख्त सलाह दी जाती है कि वे बंगाल की खाड़ी में न जाएं। निचले तटीय इलाकों के निवासी तुरंत राष्ट्रीय राजमार्ग 48 और 38 से होकर निकटतम सुरक्षित चक्रवात आश्रय गृह में पहुंचें। तत्काल बचाव के लिए लाल एसओएस बटन दबाएं या टोल-फ्री नंबर 1 0 7 0 पर कॉल करें।',
+      'तटीय निवासियों और मछुआरों के लिए अत्यंत महत्वपूर्ण आपातकालीन चेतावनी! बंगाल की खाड़ी में भीषण चक्रवात मुरासु 105 किलोमीटर प्रति घंटे की रफ़्तार से दक्षिण आंध्र प्रदेश और उत्तर तमिलनाडु तट की ओर बढ़ रहा है। सभी मछुआरों को समुद्र में न जाने की सख्त सलाह दी जाती है। निचले तटीय इलाकों के नागरिक तुरंत निकटतम सुरक्षित चक्रवात राहत शिविर में पहुंचें। आपातकालीन सहायता के लिए 1 0 7 0 पर कॉल करें।',
     voiceWarningPhonetic:
-      'Tatiya nivasiyon aur machhuaron ke liye mahatvapurna chetavani! Bheeshan Chakravat Chetavani 175 kilometer prati ghante ki raftaar se tat ki or badh raha hai. Agle 18 ghanton mein Uttari Chennai aur Ennore tat ke paas chakravat takrayega. Sabhi machhuare samudra mein na jayein. Nichle ilakon ke log turant surakshit aashray grih mein pahunchein. Tatkal bachav ke liye 1 0 7 0 par call karein.'
+      'Tatiya nivasiyon aur machhuaron ke liye mahatvapurna chetavani! Bengal ki khadi mein bheeshan Murasu chakravat 105 kilometer prati ghante ki raftaar se Dakshin Andhra Pradesh aur Uttar Tamil Nadu tat ki or badh raha hai. Sabhi machhuare samudra mein na jayein. Nichle ilakon ke log turant surakshit aashray grih mein pahunchein. Tatkal bachav ke liye 1 0 7 0 par call karein.'
   },
 
   bn: {
@@ -776,9 +777,9 @@ export const TRANSLATIONS = {
     helplinesSubtitle: 'কেন্দ্রীয় কন্ট্রোল রুমের টোল-ফ্রি নম্বর।',
     // Voice Broadcast Script
     voiceWarningNative:
-      'উপকূলীয় বাসিন্দা এবং মৎস্যজীবীদের জন্য জরুরি সতর্কবার্তা! তীব্র ঘূর্ণিঝড় আমারা ঘণ্টায় ১৭৫ কিলোমিটার বেগে উপকূলের দিকে ধেয়ে আসছে। আগামী ১৮ ঘণ্টার মধ্যে উত্তর চেন্নাই এবং এন্নোর উপকূলে ঘূর্ণিঝড়টি আঘাত হানবে। সকল মৎস্যজীবীকে বঙ্গোপসাগরে মাছ ধরতে না যাওয়ার জন্য কঠোরভাবে নির্দেশ দেওয়া হচ্ছে। নিচু উপকূলীয় অঞ্চলের বাসিন্দারা অবিলম্বে জাতীয় সড়ক ৪৮ এবং ৩৮ ধরে নিকটতম নিরাপদ ঘূর্ণিঝড় আশ্রয়কেন্দ্রে চলে যান। জরুরি উদ্ধারের জন্য লাল এসওএস বোতাম টিপুন অথবা ১০৭০ নম্বরে কল করুন।',
+      'উপকূলীয় বাসিন্দা এবং মৎস্যজীবীদের জন্য জরুরি সতর্কবার্তা! তীব্র ঘূর্ণিঝড় মুরাসু ঘণ্টায় ১০৫ কিলোমিটার বেগে উপকূলের দিকে ধেয়ে আসছে। আগামী ১৮ ঘণ্টার মধ্যে উত্তর চেন্নাই এবং এন্নোর উপকূলে ঘূর্ণিঝড়টি আঘাত হানবে। সকল মৎস্যজীবীকে বঙ্গোপসাগরে মাছ ধরতে না যাওয়ার জন্য কঠোরভাবে নির্দেশ দেওয়া হচ্ছে। নিচু উপকূলীয় অঞ্চলের বাসিন্দারা অবিলম্বে জাতীয় সড়ক ৪৮ এবং ৩৮ ধরে নিকটতম নিরাপদ ঘূর্ণিঝড় আশ্রয়কেন্দ্রে চলে যান। জরুরি উদ্ধারের জন্য লাল এসওএস বোতাম টিপুন অথবা ১০৭০ নম্বরে কল করুন।',
     voiceWarningPhonetic:
-      'Upakuliyo basinda ebong matsyajibider jonyo joruri satarkabarta! Tibro Ghurnijhor Satarkabarta ghontay 175 kilometer bege upakuler dike dheye asche. Agami 18 ghontar modhye Uttar Chennai ebong Ennore upakule ghurnijhorti aghat hanbe. Sakal matsyajibike samudre na jawar nirdesh dewa hocche. Nichu elakar basindara abilambe nikatatama nirapad ashraykendre chole jan. Joruri uddharer jonyo 1 0 7 0 nombore call korun.'
+      'Upakuliyo basinda ebong matsyajibider jonyo joruri satarkabarta! Tibro Murasu ghurnijhor ghontay 105 kilometer bege upakuler dike dheye asche. Agami 18 ghontar modhye Uttar Chennai ebong Ennore upakule ghurnijhorti aghat hanbe. Sakal matsyajibike samudre na jawar nirdesh dewa hocche. Nichu elakar basindara abilambe nikatatama nirapad ashraykendre chole jan. Joruri uddharer jonyo 1 0 7 0 nombore call korun.'
   }
 };
 
@@ -876,6 +877,47 @@ const PAGE_PHRASE_TRANSLATIONS = {
   }
 };
 
+
+export function buildCycloneVoiceText(lang, cyclone) {
+  const name = cyclone?.name || 'Murasu';
+  const category = cyclone?.category || 'Severe Cyclonic Storm';
+  const wind = cyclone?.windSpeed || 105;
+  const region = cyclone?.region || cyclone?.landfallEstimate?.locationName || 'South Andhra Pradesh & North Tamil Nadu Coast';
+
+  switch (lang) {
+    case 'ta':
+      return `கடலோர மக்களுக்கும் மீனவர்களுக்கும் முக்கிய அவசர எச்சரிக்கை! வங்கக்கடலில் தீவிர ${name} புயல் மணிக்கு ${wind} கிலோமீட்டர் வேகத்தில் கரையை நோக்கி நகர்ந்து வருகிறது. மீனவர்கள் யாரும் கடலுக்குள் செல்ல வேண்டாம் என்று எச்சரிக்கப்படுகிறார்கள். தாழ்வான கடலோரப் பகுதிகளில் வசிக்கும் பொதுமக்கள் உடனடியாக அருகிலுள்ள அரசு புயல் பாதுகாப்பு முகாம்களுக்குச் செல்லவும். அவசர உதவிக்கு 1 0 7 0 என்ற எண்ணை அழைக்கவும்.`;
+    case 'te':
+      return `తీరప్రాంత ప్రజలకు మరియు మత్స్యకారులకు అత్యవసర హెచ్చరిక! బంగాళాఖాతంలో తీవ్రమైన ${name} తుఫాను గంటకు ${wind} కిలోమీటర్ల వేగంతో తీరం వైపు దూసుకొస్తోంది. మత్స్యకారులు ఎవరూ సముద్రంలోకి వేటకు వెళ్లవద్దు. లోతట్టు ప్రాంతాల ప్రజలు తక్షణమే సమీప సురక్షిత పునరావాస కేంద్రాలకు చేరుకోవాలి. అత్యవసర సహాయం కోసం 1 0 7 0 కు కాల్ చేయండి.`;
+    case 'hi':
+      return `तटीय निवासियों और मछुआरों के लिए अत्यंत महत्वपूर्ण आपातकालीन चेतावनी! बंगाल की खाड़ी में बना तीव्र ${name} चक्रवात ${wind} किलोमीटर प्रति घंटे की रफ़्तार से तट की ओर बढ़ रहा है। सभी मछुआरों को समुद्र में न जाने की सख्त सलाह दी जाती है। निचले तटीय इलाकों के नागरिक तुरंत निकटतम सुरक्षित चक्रवात राहत शिविर में पहुंचें। आपातकालीन सहायता के लिए 1 0 7 0 पर कॉल करें।`;
+    case 'bn':
+      return `উপকূলীয় বাসিন্দা এবং মৎস্যজীবীদের জন্য জরুরি সতর্কবার্তা! বঙ্গোপসাগরে তীব্র ${name} ঘূর্ণিঝড় ঘণ্টায় ${wind} কিলোমিটার বেগে উপকূলের দিকে এগিয়ে আসছে। সকল মৎস্যজীবীকে সমুদ্রে না যাওয়ার কঠোর নির্দেশ দেওয়া হচ্ছে। নিচু উপকূলীয় অঞ্চলের বাসিন্দারা অবিলম্বে নিকটবর্তী সরকারি আশ্রয়কেন্দ্রে চলে যান। জরুরি সহায়তার জন্য ১০৭০ নম্বরে যোগাযোগ করুন।`;
+    case 'en':
+    default:
+      return `Attention coastal residents and maritime operators! Emergency Warning for ${category} ${name}. Sustained surface winds are currently ${wind} kilometers per hour, moving towards ${region}. All fishermen and vessels are strictly advised not to venture into sea. Residents in low-lying coastal areas should move immediately to designated government safe shelters. For emergency assistance or search and rescue, call toll-free helpline 1 0 7 0.`;
+  }
+}
+
+export function buildCyclonePhoneticText(lang, cyclone) {
+  const name = cyclone?.name || 'Murasu';
+  const wind = cyclone?.windSpeed || 105;
+
+  switch (lang) {
+    case 'ta':
+      return `Kadalora makkalukkum meenavargalukkum mukkiya avasara echarikkai! Vangakkadalil theevira ${name} puyal manikku ${wind} kilometer vegathil nerungi varugirathu. Meenavargal yaarum kadalukkul meenpidikka sella vendaam. Thazhvana kadalora paguthigalil vasikkum makkal udanadiyaga arukilulla arasu puyal pathukappu mugamgalukku sellavum. Avasara udhavikku 1 0 7 0 enra ennai azhaikkavum.`;
+    case 'te':
+      return `Teeraprantha prajalaku mariyu matsyakarulaku atyavasara hecharika! Bangalakhathamlo teevramaina ${name} tuphanu gantaku ${wind} kilometerla vegamtho doosukostondi. Matsyakarulu evaru samudramloki vetaku vellavaddu. Lothattu pranthala prajalu takshaname sameepa surakshita punaravasa kendralaku cherukovali. Atyavasara sahayam kosam 1 0 7 0 ku call cheyandi.`;
+    case 'hi':
+      return `Tatiya nivasiyon aur machhuaron ke liye mahatvapurna chetavani! Bengal ki khadi mein bheeshan ${name} chakravat ${wind} kilometer prati ghante ki raftaar se tat ki or badh raha hai. Sabhi machhuare samudra mein na jayein. Nichle ilakon ke log turant surakshit aashray grih mein pahunchein. Tatkal bachav ke liye 1 0 7 0 par call karein.`;
+    case 'bn':
+      return `Upakuliyo basinda ebong matsyajibider jonyo joruri satarkabarta! Bangoposagore tibro ${name} ghurnijhor ghontay ${wind} kilometer bege dheye asche. Sakal matsyajibike samudre na jawar nirdesh dewa hocche. Nichu elakar basindara abilambe nikatatama nirapad ashraykendre chole jan. Joruri uddharer jonyo 1 0 7 0 nombore call korun.`;
+    case 'en':
+    default:
+      return `Attention coastal residents and fishermen! Emergency Alert for Severe Cyclone ${name}. Sustained wind speed is ${wind} kilometers per hour. Fishermen are strictly advised not to venture into the sea. Residents in low-lying coastal areas must evacuate immediately to the nearest cyclone shelter. For immediate assistance call helpline 1 0 7 0.`;
+  }
+}
+
 export const LanguageProvider = ({ children }) => {
   // Default is ALWAYS English ('en')
   const [language, setLanguageState] = useState(() => {
@@ -884,8 +926,29 @@ export const LanguageProvider = ({ children }) => {
   });
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [includeSiren, setIncludeSiren] = useState(true);
+  const [activeCyclone, setActiveCyclone] = useState({
+    name: 'Murasu',
+    category: 'Severe Cyclonic Storm',
+    windSpeed: 105,
+    region: 'South Andhra Pradesh & North Tamil Nadu Coast'
+  });
   const audioCtxRef = useRef(null);
   const sirenTimerRef = useRef(null);
+
+  useEffect(() => {
+    const fetchActive = async () => {
+      try {
+        const res = await axios.get('/api/cyclones/active');
+        if (res.data?.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          const indianOcean = res.data.data.find(c => c.basinCode === 'indian-ocean');
+          setActiveCyclone(indianOcean || res.data.data[0]);
+        }
+      } catch (_) {}
+    };
+    fetchActive();
+    const interval = setInterval(fetchActive, 45000);
+    return () => clearInterval(interval);
+  }, []);
   const originalTextMapRef = useRef(new WeakMap());
 
   const setLanguage = useCallback((langCode) => {
@@ -1013,7 +1076,7 @@ export const LanguageProvider = ({ children }) => {
   }, []);
 
   const speakEmergencyWarning = useCallback(
-    async ({ customText, langOverride, withSiren = includeSiren } = {}) => {
+    async ({ customText, cycloneOverride, langOverride, withSiren = includeSiren } = {}) => {
       if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
         return;
       }
@@ -1023,7 +1086,12 @@ export const LanguageProvider = ({ children }) => {
 
       const targetLang = langOverride || language;
       const langMeta = SUPPORTED_LANGUAGES.find((l) => l.code === targetLang) || SUPPORTED_LANGUAGES[0];
-      const dict = TRANSLATIONS[targetLang] || TRANSLATIONS.en;
+      const targetCyclone = cycloneOverride || activeCyclone || {
+        name: 'Murasu',
+        category: 'Severe Cyclonic Storm',
+        windSpeed: 105,
+        region: 'South Andhra Pradesh & North Tamil Nadu Coast'
+      };
 
       if (withSiren) {
         await playSirenTone();
@@ -1044,8 +1112,8 @@ export const LanguageProvider = ({ children }) => {
       const textToSpeak =
         customText ||
         (matchedVoice
-          ? dict.voiceWarningNative
-          : `${dict.voiceWarningPhonetic} ... ${TRANSLATIONS.en.voiceWarningNative}`);
+          ? buildCycloneVoiceText(targetLang, targetCyclone)
+          : `${buildCyclonePhoneticText(targetLang, targetCyclone)} ... ${buildCycloneVoiceText('en', targetCyclone)}`);
 
       const utterance = new SpeechSynthesisUtterance(textToSpeak);
       if (matchedVoice) {
@@ -1067,7 +1135,7 @@ export const LanguageProvider = ({ children }) => {
 
       window.speechSynthesis.speak(utterance);
     },
-    [includeSiren, language, playSirenTone, stopVoiceBroadcast]
+    [includeSiren, language, activeCyclone, playSirenTone, stopVoiceBroadcast]
   );
 
   useEffect(() => {
@@ -1098,7 +1166,8 @@ export const LanguageProvider = ({ children }) => {
         setIncludeSiren,
         speakEmergencyWarning,
         stopVoiceBroadcast,
-        stopVoiceAndSiren: stopVoiceBroadcast
+        stopVoiceAndSiren: stopVoiceBroadcast,
+        activeCyclone
       }}
     >
       {children}
