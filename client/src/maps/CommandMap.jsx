@@ -211,9 +211,39 @@ const CommandMap = ({
     setLayers(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const validCyclones = Array.isArray(cyclones)
-    ? cyclones.filter(c => c && c.currentLocation && Array.isArray(c.currentLocation.coordinates) && c.currentLocation.coordinates.length >= 2)
-    : [];
+  const validCyclones = React.useMemo(() => {
+    if (!Array.isArray(cyclones)) return [];
+    const unique = [];
+    for (const c of cyclones) {
+      if (!c || !c.currentLocation || !Array.isArray(c.currentLocation.coordinates) || c.currentLocation.coordinates.length < 2) continue;
+      const root = (c.name || '')
+        .toLowerCase()
+        .replace(/^(tropical cyclone|cyclone|super typhoon|typhoon|severe cyclonic storm|storm)\s+/i, '')
+        .replace(/[-_]\d+$/g, '')
+        .replace(/\d+$/g, '')
+        .replace(/[^a-z]/g, '');
+      const [lng, lat] = c.currentLocation.coordinates;
+
+      const isDup = unique.some(u => {
+        const uRoot = (u.name || '')
+          .toLowerCase()
+          .replace(/^(tropical cyclone|cyclone|super typhoon|typhoon|severe cyclonic storm|storm)\s+/i, '')
+          .replace(/[-_]\d+$/g, '')
+          .replace(/\d+$/g, '')
+          .replace(/[^a-z]/g, '');
+        if (root && uRoot && (root === uRoot || root.startsWith(uRoot) || uRoot.startsWith(root))) return true;
+        const [uLng, uLat] = u.currentLocation.coordinates;
+        const dLat = Math.abs(lat - uLat);
+        const dLng = Math.abs(lng - uLng);
+        return dLat < 2.5 && dLng < 2.5 && (c.basinCode === u.basinCode || c.basin === u.basin);
+      });
+
+      if (!isDup) {
+        unique.push(c);
+      }
+    }
+    return unique;
+  }, [cyclones]);
 
   const handleSelectAndFocus = (target) => {
     if (!target) return;
@@ -495,7 +525,7 @@ const CommandMap = ({
         )}
 
         {/* 1. CYCLONES LAYER */}
-        {layers.cyclones && Array.isArray(cyclones) && cyclones.filter(Boolean).map((c) => {
+        {layers.cyclones && validCyclones.map((c) => {
           if (!c?.currentLocation?.coordinates || c.currentLocation.coordinates.length < 2) return null;
           const [cLng, cLat] = c.currentLocation.coordinates;
           const isSelected = selectedCycloneId 

@@ -747,6 +747,42 @@ async function fetchImdNorthIndianOceanStorms() {
   return [murasu];
 }
 
+
+function getCleanStormRoot(name) {
+  if (!name) return '';
+  return name
+    .toLowerCase()
+    .replace(/^(tropical cyclone|cyclone|super typhoon|typhoon|severe cyclonic storm|tropical storm|storm)\s+/i, '')
+    .replace(/[-_]\d+$/g, '')
+    .replace(/\d+$/g, '')
+    .replace(/[^a-z]/g, '')
+    .trim();
+}
+
+function isDuplicateStorm(existingList, candidate) {
+  if (!candidate || !candidate.name) return true;
+  const candRoot = getCleanStormRoot(candidate.name);
+  const candCoords = candidate.currentLocation?.coordinates;
+
+  for (const existing of existingList) {
+    const existRoot = getCleanStormRoot(existing.name);
+    // 1. Same normalized root name (e.g. "murasu" vs "murasu-26")
+    if (candRoot && existRoot) {
+      if (candRoot === existRoot || candRoot.includes(existRoot) || existRoot.includes(candRoot)) {
+        return true;
+      }
+    }
+    // 2. Proximity in same ocean basin (within 300 km)
+    if (existing.basinCode === candidate.basinCode && candCoords && existing.currentLocation?.coordinates) {
+      const dist = haversineDistanceKm(candCoords, existing.currentLocation.coordinates);
+      if (dist <= 300) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 async function syncGlobalCyclones() {
   if (isSyncing) return liveCyclonesCache;
   isSyncing = true;
@@ -761,37 +797,37 @@ async function syncGlobalCyclones() {
       fetchImdNorthIndianOceanStorms()
     ]);
 
-    const stormMap = new Map();
+    const uniqueStorms = [];
 
-    // 1. Add IMD RSMC Official North Indian Ocean storms (Murasu)
+    // 1. Add IMD RSMC Official North Indian Ocean storms (Murasu has #1 authority for Bay of Bengal)
     for (const storm of imdStorms) {
-      const key = storm.name.toLowerCase().replace(/[^a-z0-9]/g, '');
-      stormMap.set(key, storm);
+      if (!isDuplicateStorm(uniqueStorms, storm)) {
+        uniqueStorms.push(storm);
+      }
     }
 
     // 2. Add NOAA NHC verified active storms
     for (const storm of noaaStorms) {
-      const key = storm.name.toLowerCase().replace(/[^a-z0-9]/g, '');
-      stormMap.set(key, storm);
+      if (!isDuplicateStorm(uniqueStorms, storm)) {
+        uniqueStorms.push(storm);
+      }
     }
 
-    // 2. Add NASA EONET active storms (filtered strictly to last 48h)
+    // 3. Add NASA EONET active storms (filtered strictly to last 48h)
     for (const storm of eonetStorms) {
-      const key = storm.name.toLowerCase().replace(/[^a-z0-9]/g, '');
-      if (!stormMap.has(key)) {
-        stormMap.set(key, storm);
+      if (!isDuplicateStorm(uniqueStorms, storm)) {
+        uniqueStorms.push(storm);
       }
     }
 
-    // 3. Add GDACS active storms (filtered strictly to iscurrent=true and within 48h)
+    // 4. Add GDACS active storms (deduplicating against already tracked systems)
     for (const storm of gdacsStorms) {
-      const key = storm.name.toLowerCase().replace(/[^a-z0-9]/g, '');
-      if (!stormMap.has(key)) {
-        stormMap.set(key, storm);
+      if (!isDuplicateStorm(uniqueStorms, storm)) {
+        uniqueStorms.push(storm);
       }
     }
 
-    const merged = Array.from(stormMap.values()).map(c => {
+    const merged = uniqueStorms.map(c => {
       if (!c.coastalEtaMatrix || c.coastalEtaMatrix.length === 0) {
         c.coastalEtaMatrix = calculateCoastalEtaMatrix(
           c.currentLocation.coordinates, 
