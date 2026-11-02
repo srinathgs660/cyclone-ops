@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle, Polyline, Tooltip, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { Eye, Layers, Shield, Navigation, Home, AlertTriangle, Users, Compass } from 'lucide-react';
+import { Eye, Layers, Shield, Navigation, Home, AlertTriangle, Users, Compass, ChevronDown } from 'lucide-react';
 
 // Custom Map Helper to fly to coordinates or fit bounds
 const MapRecenter = ({ center, zoom, bounds }) => {
@@ -165,12 +165,28 @@ const CommandMap = ({
   });
 
   const [layerMenuOpen, setLayerMenuOpen] = useState(false);
+  const [focusMenuOpen, setFocusMenuOpen] = useState(false);
+  const focusMenuRef = React.useRef(null);
   const [mapTarget, setMapTarget] = useState({
     center: centerCoords,
     zoom: zoom || 9,
     bounds: null,
     key: 0
   });
+
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (focusMenuRef.current && !focusMenuRef.current.contains(event.target)) {
+        setFocusMenuOpen(false);
+      }
+    };
+    if (focusMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [focusMenuOpen]);
 
   const lastCoordsRef = React.useRef(centerCoords);
   const lastZoomPropRef = React.useRef(zoom);
@@ -195,10 +211,14 @@ const CommandMap = ({
     setLayers(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const focusCyclone = () => {
-    const valid = Array.isArray(cyclones) ? cyclones.filter(Boolean) : [];
-    const target = valid.find(c => c && (c._id === selectedCycloneId || c.name === selectedCycloneId)) || valid[0];
-    if (target?.currentLocation?.coordinates && target.currentLocation.coordinates.length >= 2) {
+  const validCyclones = Array.isArray(cyclones)
+    ? cyclones.filter(c => c && c.currentLocation && Array.isArray(c.currentLocation.coordinates) && c.currentLocation.coordinates.length >= 2)
+    : [];
+
+  const handleSelectAndFocus = (target) => {
+    if (!target) return;
+    if (onCycloneSelect) onCycloneSelect(target);
+    if (target.currentLocation?.coordinates && target.currentLocation.coordinates.length >= 2) {
       const [lng, lat] = target.currentLocation.coordinates;
       setMapTarget({
         center: [lat, lng],
@@ -206,6 +226,16 @@ const CommandMap = ({
         bounds: null,
         key: Date.now()
       });
+    }
+    setFocusMenuOpen(false);
+  };
+
+  const focusCyclone = () => {
+    if (validCyclones.length === 0) return;
+    if (validCyclones.length === 1) {
+      handleSelectAndFocus(validCyclones[0]);
+    } else {
+      setFocusMenuOpen(prev => !prev);
     }
   };
 
@@ -274,14 +304,92 @@ const CommandMap = ({
           <span className="hidden sm:inline">Wind Vortex</span>
         </button>
 
-        <button
-          onClick={focusCyclone}
-          className="flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-slate-900/90 px-2.5 py-1.5 text-xs font-semibold text-cyan-300 backdrop-blur-md shadow-lg transition hover:bg-slate-800"
-          title="Track Active Cyclone Eye"
-        >
-          <Compass className="h-4 w-4 text-cyan-400" />
-          <span className="hidden md:inline">Focus Eye</span>
-        </button>
+        {/* Focus Eye Dropdown Menu */}
+        <div className="relative" ref={focusMenuRef}>
+          <button
+            onClick={() => {
+              if (validCyclones.length === 0) return;
+              setFocusMenuOpen(prev => !prev);
+            }}
+            className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-semibold backdrop-blur-md shadow-lg transition ${
+              focusMenuOpen
+                ? 'border-cyan-400 bg-cyan-600/40 text-cyan-200 font-bold ring-1 ring-cyan-400/50'
+                : 'border-cyan-500/40 bg-slate-900/90 text-cyan-300 hover:bg-slate-800'
+            }`}
+            title="Track Active Cyclone Eye — Select from active storms"
+          >
+            <Compass className="h-4 w-4 text-cyan-400" />
+            <span className="hidden md:inline">Focus Eye</span>
+            {validCyclones.length > 1 && (
+              <span className="rounded-full bg-cyan-500/20 px-1.5 py-0.2 text-[9px] font-bold text-cyan-300 font-mono">
+                {validCyclones.length}
+              </span>
+            )}
+            <ChevronDown className={`h-3 w-3 text-cyan-400 transition-transform ${focusMenuOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {focusMenuOpen && (
+            <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 rounded-xl border border-cyan-500/30 bg-[#0E1626]/95 backdrop-blur-xl p-2.5 shadow-2xl z-[1100] text-xs font-sans">
+              <div className="flex items-center justify-between px-2 py-1.5 border-b border-slate-800 mb-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider font-mono text-cyan-300 flex items-center gap-1.5">
+                  <span className="text-sm">🌀</span> Active Cyclones ({validCyclones.length})
+                </span>
+                <span className="text-[9px] text-slate-400 font-mono">Select to Zoom</span>
+              </div>
+
+              <div className="max-h-64 overflow-y-auto divide-y divide-slate-800/60 custom-scrollbar pr-0.5">
+                {validCyclones.length === 0 ? (
+                  <p className="p-3 text-center text-slate-400 text-xs font-mono">No active cyclones currently tracked.</p>
+                ) : (
+                  validCyclones.map((c) => {
+                    const isSelected = selectedCycloneId && (c._id === selectedCycloneId || c.name === selectedCycloneId);
+                    const coords = c.currentLocation?.coordinates || [0, 0];
+                    return (
+                      <button
+                        key={c._id || c.name}
+                        onClick={() => handleSelectAndFocus(c)}
+                        className={`w-full text-left p-2.5 rounded-lg transition flex items-center justify-between gap-2 ${
+                          isSelected
+                            ? 'bg-cyan-500/20 border border-cyan-500/50 text-white'
+                            : 'hover:bg-slate-800/80 text-slate-300'
+                        }`}
+                      >
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-xs font-bold text-white font-mono uppercase">{c.name}</span>
+                            <span className="rounded bg-rose-500/20 border border-rose-500/30 px-1.5 py-0.2 text-[8px] font-bold text-rose-300 font-mono">
+                              {c.category}
+                            </span>
+                            {isSelected && (
+                              <span className="rounded bg-cyan-500/20 border border-cyan-500/40 px-1 py-0.1 text-[8px] font-bold text-cyan-300 font-mono">
+                                FOCUSED
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[11px] text-slate-400 font-mono mt-0.5 flex items-center gap-2">
+                            <span className="text-cyan-300 font-bold">{c.windSpeed} km/h</span>
+                            <span>•</span>
+                            <span>{c.basin || c.region || 'Global'}</span>
+                          </div>
+                          <div className="text-[10px] text-slate-500 font-mono">
+                            Eye: {coords[1]?.toFixed(2)}°N, {coords[0]?.toFixed(2)}°E
+                          </div>
+                        </div>
+                        <div className={`shrink-0 flex items-center justify-center h-7 w-7 rounded-full border transition ${
+                          isSelected
+                            ? 'bg-cyan-500 border-cyan-300 text-slate-950 font-bold'
+                            : 'bg-slate-800 border-slate-700 text-cyan-400 hover:border-cyan-500'
+                        }`}>
+                          <Compass className="h-3.5 w-3.5" />
+                        </div>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
         <button
           onClick={showWorldView}

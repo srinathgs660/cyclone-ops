@@ -73,7 +73,8 @@ const CommandCenter = () => {
     }
   };
 
-  const primaryCyclone = cyclones[0] || null;
+  const [selectedCycloneId, setSelectedCycloneId] = useState(null);
+  const primaryCyclone = (cyclones && cyclones.find(c => c && (c._id === selectedCycloneId || c.name === selectedCycloneId))) || cyclones[0] || null;
 
   return (
     <div className="space-y-6">
@@ -197,13 +198,19 @@ const CommandCenter = () => {
         <div className="lg:col-span-2 h-[550px]">
           <CommandMap
             cyclones={cyclones}
+            selectedCycloneId={primaryCyclone?._id || primaryCyclone?.name}
+            onCycloneSelect={(c) => setSelectedCycloneId(c._id || c.name)}
             riskZones={riskZones}
             shelters={shelters}
             incidents={incidents}
             responseTeams={responseTeams}
             evacuationPlans={evacuationPlans}
-            centerCoords={[13.0827, 80.2707]}
-            zoom={9}
+            centerCoords={
+              primaryCyclone?.currentLocation?.coordinates?.length >= 2
+                ? [primaryCyclone.currentLocation.coordinates[1], primaryCyclone.currentLocation.coordinates[0]]
+                : [13.0827, 80.2707]
+            }
+            zoom={primaryCyclone ? 7 : 9}
             onShelterSelect={(shl) => navigate('/dashboard/shelters')}
           />
         </div>
@@ -212,6 +219,8 @@ const CommandCenter = () => {
         <div className="space-y-6">
           <CycloneInfoPanel
             cyclone={primaryCyclone}
+            cyclones={cyclones}
+            onCycloneSelect={(c) => setSelectedCycloneId(c._id || c.name)}
             onTrackClick={() => navigate('/dashboard/cyclones')}
           />
 

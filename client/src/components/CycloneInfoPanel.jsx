@@ -2,7 +2,7 @@ import React from 'react';
 import { Wind, Compass, Gauge, AlertCircle, Clock, MapPin, Eye } from 'lucide-react';
 import RiskBadge from './RiskBadge';
 
-const CycloneInfoPanel = ({ cyclone, onTrackClick }) => {
+const CycloneInfoPanel = ({ cyclone, cyclones = [], onCycloneSelect, onTrackClick }) => {
   if (!cyclone) {
     return (
       <div className="rounded-xl border border-slate-800 bg-[#131D31]/90 p-5 text-center text-slate-400">
@@ -17,6 +17,30 @@ const CycloneInfoPanel = ({ cyclone, onTrackClick }) => {
 
   return (
     <div className="rounded-xl border border-slate-800 bg-[#131D31]/95 p-5 shadow-xl backdrop-blur-md">
+      {/* Cyclone Switcher Tabs */}
+      {cyclones && cyclones.length > 1 && (
+        <div className="mb-3.5 flex items-center gap-1.5 overflow-x-auto pb-1.5 custom-scrollbar border-b border-slate-800/80">
+          <span className="text-[10px] text-slate-400 font-mono uppercase tracking-wider shrink-0">Switch Storm:</span>
+          {cyclones.map((c) => {
+            const isSel = (c._id === cyclone?._id || c.name === cyclone?.name);
+            return (
+              <button
+                key={c._id || c.name}
+                onClick={() => onCycloneSelect && onCycloneSelect(c)}
+                className={`shrink-0 rounded-md px-2 py-0.5 text-[10px] font-mono font-bold transition flex items-center gap-1 ${
+                  isSel
+                    ? 'bg-cyan-500/25 text-cyan-200 border border-cyan-400/60 shadow-sm ring-1 ring-cyan-400/30'
+                    : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800 hover:bg-slate-800'
+                }`}
+              >
+                <span>🌀</span>
+                <span>{c.name}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       <div className="flex items-start justify-between border-b border-slate-800 pb-4">
         <div>
           <div className="flex items-center gap-2">
