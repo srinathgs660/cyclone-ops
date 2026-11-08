@@ -879,10 +879,26 @@ const PAGE_PHRASE_TRANSLATIONS = {
 
 
 export function buildCycloneVoiceText(lang, cyclone) {
-  const name = cyclone?.name || 'Murasu';
-  const category = cyclone?.category || 'Severe Cyclonic Storm';
-  const wind = cyclone?.windSpeed || 105;
-  const region = cyclone?.region || cyclone?.landfallEstimate?.locationName || 'South Andhra Pradesh & North Tamil Nadu Coast';
+  if (!cyclone || cyclone.status === 'DISSIPATED' || cyclone.name === 'None Active' || !cyclone.name) {
+    switch (lang) {
+      case 'ta':
+        return 'அனைத்தும் அமைதியாக உள்ளது. தற்போது இந்தியப் பெருங்கடல் மற்றும் வங்கக்கடலில் எவ்வித புயல் அச்சுறுத்தலும் இல்லை. வானிலை மற்றும் கடல் நிலைமை சீராக உள்ளது. பேரிடர் கட்டுப்பாட்டு மையம் இயல்பு நிலை கண்காணிப்பில் உள்ளது.';
+      case 'te':
+        return 'అంతా ప్రశాంతంగా ఉంది. ప్రస్తుతం బంగాళాఖాతంలో లేదా తీరప్రాంతాల్లో ఎటువంటి తుఫాను ముప్పు లేదు. సముద్రం ప్రశాంతంగా ఉంది. అత్యవసర కమాండ్ సెంటర్ సాధారణ పర్యవేక్షణలో ఉంది.';
+      case 'hi':
+        return 'सभी तटीय क्षेत्रों में स्थिति पूरी तरह से सामान्य और शांत है। वर्तमान में कोई सक्रिय चक्रवात खतरा नहीं है। मौसम विभाग और आपदा प्रतिक्रिया बल सामान्य निगरानी मोड में हैं।';
+      case 'bn':
+        return 'সব স্বাভাবিক ও শান্ত। বর্তমানে উপকূলীয় অঞ্চলে কোনো সক্রিয় ঘূর্ণিঝড়ের হুমকি নেই। সমুদ্র শান্ত এবং আবহাওয়া অনুকূল রয়েছে। জরুরি অপারেশন সেন্টার সাধারণ পর্যবেক্ষণে রয়েছে।';
+      case 'en':
+      default:
+        return 'All clear. There are currently no active cyclonic storms threatening coastal sectors. Coastal waters and atmospheric conditions are normal. The Disaster Operations Command Center remains on standard routine monitoring.';
+    }
+  }
+
+  const name = cyclone.name;
+  const category = cyclone.category || 'Severe Cyclonic Storm';
+  const wind = cyclone.windSpeed || 100;
+  const region = cyclone.region || cyclone.landfallEstimate?.locationName || 'Coastal Sector';
 
   switch (lang) {
     case 'ta':
@@ -900,8 +916,24 @@ export function buildCycloneVoiceText(lang, cyclone) {
 }
 
 export function buildCyclonePhoneticText(lang, cyclone) {
-  const name = cyclone?.name || 'Murasu';
-  const wind = cyclone?.windSpeed || 105;
+  if (!cyclone || cyclone.status === 'DISSIPATED' || cyclone.name === 'None Active' || !cyclone.name) {
+    switch (lang) {
+      case 'ta':
+        return 'Anaithum amaidhiyaaga ulladhu. Tharpodhu puyal ethuvum illai. Vaanilai seeraga ulladhu.';
+      case 'te':
+        return 'Anthaa prashaanthamgaa undhi. Prathystham tufaanu muppu ledhu. Samudram shaantamgaa undhi.';
+      case 'hi':
+        return 'Sthiti poori tarah shaant hai. Koi sakriya chakrawat khatra nahi hai.';
+      case 'bn':
+        return 'Shob shanto o swabhabik. Bartamane kono ghurnijhorer bipod nei.';
+      case 'en':
+      default:
+        return 'All clear. There are currently no active cyclonic storms threatening coastal sectors.';
+    }
+  }
+
+  const name = cyclone.name;
+  const wind = cyclone.windSpeed || 100;
 
   switch (lang) {
     case 'ta':
@@ -926,12 +958,7 @@ export const LanguageProvider = ({ children }) => {
   });
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [includeSiren, setIncludeSiren] = useState(true);
-  const [activeCyclone, setActiveCyclone] = useState({
-    name: 'Murasu',
-    category: 'Severe Cyclonic Storm',
-    windSpeed: 105,
-    region: 'South Andhra Pradesh & North Tamil Nadu Coast'
-  });
+  const [activeCyclone, setActiveCyclone] = useState(null);
   const audioCtxRef = useRef(null);
   const sirenTimerRef = useRef(null);
 
@@ -939,14 +966,18 @@ export const LanguageProvider = ({ children }) => {
     const fetchActive = async () => {
       try {
         const res = await axios.get('/api/cyclones/active');
-        if (res.data?.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
-          const indianOcean = res.data.data.find(c => c.basinCode === 'indian-ocean');
-          setActiveCyclone(indianOcean || res.data.data[0]);
+        if (res.data?.success && Array.isArray(res.data.data)) {
+          if (res.data.data.length > 0) {
+            const indianOcean = res.data.data.find(c => c.basinCode === 'indian-ocean');
+            setActiveCyclone(indianOcean || res.data.data[0]);
+          } else {
+            setActiveCyclone(null);
+          }
         }
       } catch (_) {}
     };
     fetchActive();
-    const interval = setInterval(fetchActive, 45000);
+    const interval = setInterval(fetchActive, 30000);
     return () => clearInterval(interval);
   }, []);
   const originalTextMapRef = useRef(new WeakMap());
@@ -1086,14 +1117,9 @@ export const LanguageProvider = ({ children }) => {
 
       const targetLang = langOverride || language;
       const langMeta = SUPPORTED_LANGUAGES.find((l) => l.code === targetLang) || SUPPORTED_LANGUAGES[0];
-      const targetCyclone = cycloneOverride || activeCyclone || {
-        name: 'Murasu',
-        category: 'Severe Cyclonic Storm',
-        windSpeed: 105,
-        region: 'South Andhra Pradesh & North Tamil Nadu Coast'
-      };
+      const targetCyclone = cycloneOverride !== undefined ? cycloneOverride : activeCyclone;
 
-      if (withSiren) {
+      if (withSiren && targetCyclone && targetCyclone.status !== 'DISSIPATED') {
         await playSirenTone();
       }
 

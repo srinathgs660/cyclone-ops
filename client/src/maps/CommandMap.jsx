@@ -214,28 +214,42 @@ const CommandMap = ({
   const validCyclones = React.useMemo(() => {
     if (!Array.isArray(cyclones)) return [];
     const unique = [];
+    const DISSIPATED_NAMES = ['murasu', 'amara', 'varun'];
+
     for (const c of cyclones) {
       if (!c || !c.currentLocation || !Array.isArray(c.currentLocation.coordinates) || c.currentLocation.coordinates.length < 2) continue;
-      const root = (c.name || '')
-        .toLowerCase()
-        .replace(/^(tropical cyclone|cyclone|super typhoon|typhoon|severe cyclonic storm|storm)\s+/i, '')
+      if (c.status === 'DISSIPATED') continue;
+
+      const rawName = (c.name || c.title || '').toLowerCase();
+      const root = rawName
+        .replace(/^(tropical cyclone|cyclone|super typhoon|typhoon|severe cyclonic storm|tropical storm|storm)\s+/i, '')
         .replace(/[-_]\d+$/g, '')
         .replace(/\d+$/g, '')
-        .replace(/[^a-z]/g, '');
+        .replace(/[^a-z]/g, '')
+        .trim();
+
+      // Discard any dissipated storms
+      if (DISSIPATED_NAMES.some(d => root === d || root.includes(d) || d.includes(root))) {
+        continue;
+      }
+
       const [lng, lat] = c.currentLocation.coordinates;
 
       const isDup = unique.some(u => {
-        const uRoot = (u.name || '')
-          .toLowerCase()
+        const uRawName = (u.name || u.title || '').toLowerCase();
+        const uRoot = uRawName
           .replace(/^(tropical cyclone|cyclone|super typhoon|typhoon|severe cyclonic storm|storm)\s+/i, '')
           .replace(/[-_]\d+$/g, '')
           .replace(/\d+$/g, '')
-          .replace(/[^a-z]/g, '');
-        if (root && uRoot && (root === uRoot || root.startsWith(uRoot) || uRoot.startsWith(root))) return true;
+          .replace(/[^a-z]/g, '')
+          .trim();
+
+        if (root && uRoot && (root === uRoot || root.includes(uRoot) || uRoot.includes(root))) return true;
+
         const [uLng, uLat] = u.currentLocation.coordinates;
         const dLat = Math.abs(lat - uLat);
         const dLng = Math.abs(lng - uLng);
-        return dLat < 2.5 && dLng < 2.5 && (c.basinCode === u.basinCode || c.basin === u.basin);
+        return dLat < 3.0 && dLng < 3.0 && (c.basinCode === u.basinCode || c.basin === u.basin);
       });
 
       if (!isDup) {
@@ -337,39 +351,47 @@ const CommandMap = ({
         {/* Focus Eye Dropdown Menu */}
         <div className="relative" ref={focusMenuRef}>
           <button
-            onClick={() => {
-              if (validCyclones.length === 0) return;
-              setFocusMenuOpen(prev => !prev);
-            }}
+            onClick={() => setFocusMenuOpen(prev => !prev)}
             className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-semibold backdrop-blur-md shadow-lg transition ${
               focusMenuOpen
                 ? 'border-cyan-400 bg-cyan-600/40 text-cyan-200 font-bold ring-1 ring-cyan-400/50'
+                : validCyclones.length === 0
+                ? 'border-emerald-500/40 bg-slate-900/90 text-emerald-300 hover:bg-slate-800'
                 : 'border-cyan-500/40 bg-slate-900/90 text-cyan-300 hover:bg-slate-800'
             }`}
             title="Track Active Cyclone Eye — Select from active storms"
           >
-            <Compass className="h-4 w-4 text-cyan-400" />
-            <span className="hidden md:inline">Focus Eye</span>
-            {validCyclones.length > 1 && (
+            <Compass className={`h-4 w-4 ${validCyclones.length === 0 ? 'text-emerald-400' : 'text-cyan-400'}`} />
+            <span className="hidden md:inline">{validCyclones.length === 0 ? 'All Clear' : 'Focus Eye'}</span>
+            {validCyclones.length > 0 && (
               <span className="rounded-full bg-cyan-500/20 px-1.5 py-0.2 text-[9px] font-bold text-cyan-300 font-mono">
                 {validCyclones.length}
               </span>
             )}
-            <ChevronDown className={`h-3 w-3 text-cyan-400 transition-transform ${focusMenuOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`h-3 w-3 ${validCyclones.length === 0 ? 'text-emerald-400' : 'text-cyan-400'} transition-transform ${focusMenuOpen ? 'rotate-180' : ''}`} />
           </button>
 
           {focusMenuOpen && (
             <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 rounded-xl border border-cyan-500/30 bg-[#0E1626]/95 backdrop-blur-xl p-2.5 shadow-2xl z-[1100] text-xs font-sans">
               <div className="flex items-center justify-between px-2 py-1.5 border-b border-slate-800 mb-1.5">
                 <span className="text-[11px] font-bold uppercase tracking-wider font-mono text-cyan-300 flex items-center gap-1.5">
-                  <span className="text-sm">🌀</span> Active Cyclones ({validCyclones.length})
+                  <span className="text-sm">{validCyclones.length === 0 ? '☀️' : '🌀'}</span> {validCyclones.length === 0 ? 'Coastal Weather Calm' : `Active Cyclones (${validCyclones.length})`}
                 </span>
-                <span className="text-[9px] text-slate-400 font-mono">Select to Zoom</span>
+                <span className="text-[9px] text-slate-400 font-mono">{validCyclones.length === 0 ? 'Monitoring' : 'Select to Zoom'}</span>
               </div>
 
               <div className="max-h-64 overflow-y-auto divide-y divide-slate-800/60 custom-scrollbar pr-0.5">
                 {validCyclones.length === 0 ? (
-                  <p className="p-3 text-center text-slate-400 text-xs font-mono">No active cyclones currently tracked.</p>
+                  <div className="p-3 text-center space-y-2">
+                    <p className="text-emerald-400 text-xs font-mono font-bold">No Active Tropical Cyclones</p>
+                    <p className="text-slate-400 text-[11px]">IMD confirms Cyclone Murasu has dissipated. Bay of Bengal and coastal sectors are calm.</p>
+                    <button
+                      onClick={() => { resetCoastView(); setFocusMenuOpen(false); }}
+                      className="w-full mt-2 rounded bg-slate-800 px-2 py-1 text-[11px] text-cyan-300 hover:bg-slate-700 transition font-mono"
+                    >
+                      Center on Coastline (Chennai / AP)
+                    </button>
+                  </div>
                 ) : (
                   validCyclones.map((c) => {
                     const isSelected = selectedCycloneId && (c._id === selectedCycloneId || c.name === selectedCycloneId);

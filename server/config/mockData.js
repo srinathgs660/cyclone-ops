@@ -13,63 +13,38 @@ const mockCyclones = [
   {
     _id: 'imd-bob-2026-murasu',
     name: 'Murasu',
-    title: 'Severe Cyclonic Storm Murasu',
-    source: 'IMD RSMC New Delhi / DWR Chennai Radar',
+    title: 'Severe Cyclonic Storm Murasu (Dissipated)',
+    source: 'IMD RSMC New Delhi Bulletin',
     externalId: 'BOB-04-2026',
     basin: 'North Indian Ocean',
     basinCode: 'indian-ocean',
     subBasin: 'Bay of Bengal',
     flag: '🇮🇳',
-    category: 'Severe Cyclonic Storm',
-    currentLocation: { type: 'Point', coordinates: [81.40, 14.10] },
-    windSpeed: 105,
+    category: 'Dissipated Low Pressure System',
+    currentLocation: { type: 'Point', coordinates: [79.40, 16.20] },
+    windSpeed: 30,
     windSpeedUnit: 'km/h',
-    pressure: 986,
-    movementSpeed: 16,
-    movementDirection: 'NW',
-    movementBearing: 315,
+    pressure: 1004,
+    movementSpeed: 0,
+    movementDirection: 'Stationary',
+    movementBearing: 0,
     pastTrack: [
-      { time: new Date(Date.now() - 12 * 3600 * 1000), coordinates: [82.20, 13.50], windSpeed: 90, pressure: 994 },
-      { time: new Date(Date.now() - 6 * 3600 * 1000), coordinates: [81.80, 13.90], windSpeed: 100, pressure: 989 }
+      { time: new Date('2026-11-03T06:00:00Z'), coordinates: [81.80, 13.90], windSpeed: 100, pressure: 989 },
+      { time: new Date('2026-11-03T18:00:00Z'), coordinates: [81.40, 14.10], windSpeed: 105, pressure: 986 },
+      { time: new Date('2026-11-04T06:00:00Z'), coordinates: [80.50, 15.20], windSpeed: 85, pressure: 994 },
+      { time: new Date('2026-11-04T12:00:00Z'), coordinates: [79.40, 16.20], windSpeed: 30, pressure: 1004 }
     ],
-    forecastTrack: [
-      { time: new Date(Date.now() + 6 * 3600 * 1000), coordinates: [80.95, 14.65], windSpeed: 110, pressure: 982, category: 'Severe Cyclonic Storm', uncertaintyRadiusKm: 35 },
-      { time: new Date(Date.now() + 12 * 3600 * 1000), coordinates: [80.50, 15.20], windSpeed: 115, pressure: 980, category: 'Severe Cyclonic Storm (Landfall)', uncertaintyRadiusKm: 55 },
-      { time: new Date(Date.now() + 18 * 3600 * 1000), coordinates: [80.05, 15.70], windSpeed: 85, pressure: 990, category: 'Cyclonic Storm (Inland)', uncertaintyRadiusKm: 90 },
-      { time: new Date(Date.now() + 24 * 3600 * 1000), coordinates: [79.40, 16.20], windSpeed: 55, pressure: 998, category: 'Deep Depression', uncertaintyRadiusKm: 140 }
-    ],
-    affectedRegions: ['South Andhra Coast', 'North Coastal Tamil Nadu', 'Nellore', 'Ongole', 'Chennai', 'Tiruvallur'],
-    status: 'ACTIVE',
+    forecastTrack: [],
+    affectedRegions: ['South Andhra Coast', 'Interior Rayalaseema'],
+    status: 'DISSIPATED',
+    dissipatedAt: new Date('2026-11-04T12:00:00Z'),
     landfallEstimate: {
-      time: new Date(Date.now() + 12 * 3600 * 1000),
-      locationName: 'South Andhra Coast (between Nellore & Narsapur, near Ongole)',
+      time: new Date('2026-11-04T06:00:00Z'),
+      locationName: 'Landfall Completed - System Fully Dissipated Inland',
       coordinates: [80.50, 15.20],
-      confidence: 'HIGH'
+      confidence: 'FINAL IMD BULLETIN'
     },
-    intensityRadius: { galeWindKm: 180, stormWindKm: 95, hurricaneWindKm: 45 }
-  },
-  {
-    _id: '6a9fb636e3261447d0177ee9',
-    name: 'Cyclone Varun',
-    source: 'IMD Arabian Sea Wing',
-    externalId: 'ARB-02-2026',
-    category: 'Category 1',
-    currentLocation: { type: 'Point', coordinates: [70.20, 17.50] },
-    windSpeed: 125,
-    windSpeedUnit: 'km/h',
-    pressure: 984,
-    movementSpeed: 14,
-    movementDirection: 'NW',
-    pastTrack: [
-      { time: new Date(Date.now() - 12 * 3600 * 1000), coordinates: [71.10, 16.80], windSpeed: 100, pressure: 992 }
-    ],
-    forecastTrack: [
-      { time: new Date(Date.now() + 12 * 3600 * 1000), coordinates: [69.40, 18.20], windSpeed: 135, pressure: 980, category: 'Category 1', uncertaintyRadiusKm: 50 },
-      { time: new Date(Date.now() + 24 * 3600 * 1000), coordinates: [68.50, 19.00], windSpeed: 145, pressure: 975, category: 'Category 1', uncertaintyRadiusKm: 75 }
-    ],
-    affectedRegions: ['Gujarat Coast', 'North Maharashtra'],
-    status: 'ACTIVE',
-    intensityRadius: { galeWindKm: 160, stormWindKm: 75, hurricaneWindKm: 35 }
+    intensityRadius: { galeWindKm: 0, stormWindKm: 0, hurricaneWindKm: 0 }
   }
 ];
 

@@ -5,8 +5,62 @@ import RiskBadge from './RiskBadge';
 const CycloneInfoPanel = ({ cyclone, cyclones = [], onCycloneSelect, onTrackClick }) => {
   if (!cyclone) {
     return (
-      <div className="rounded-xl border border-slate-800 bg-[#131D31]/90 p-5 text-center text-slate-400">
-        <p>No active cyclone in immediate radar tracking range.</p>
+      <div className="rounded-xl border border-emerald-500/30 bg-[#101b2b]/95 p-5 shadow-xl backdrop-blur-md">
+        <div className="flex items-start justify-between border-b border-slate-800 pb-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xl">☀️</span>
+              <h3 className="text-base font-bold tracking-tight text-white uppercase font-mono">
+                Atmospheric State: All Clear
+              </h3>
+            </div>
+            <p className="mt-1 text-xs text-slate-400">
+              IMD & Coastal Radar Telemetry • Status: <span className="text-emerald-400 font-semibold font-mono">CALM / MONITORING</span>
+            </p>
+          </div>
+          <span className="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2.5 py-0.5 text-[10px] font-bold text-emerald-300 font-mono">
+            LOW RISK
+          </span>
+        </div>
+
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="rounded-lg border border-slate-800/80 bg-slate-900/60 p-2.5">
+            <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              <Wind className="h-3.5 w-3.5 text-cyan-400" />
+              <span>Coastal Wind</span>
+            </div>
+            <p className="mt-1 text-base font-bold font-mono text-cyan-300">18 <span className="text-xs font-normal text-slate-400">km/h</span></p>
+          </div>
+
+          <div className="rounded-lg border border-slate-800/80 bg-slate-900/60 p-2.5">
+            <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              <Gauge className="h-3.5 w-3.5 text-amber-400" />
+              <span>Sea-Level Baro</span>
+            </div>
+            <p className="mt-1 text-base font-bold font-mono text-amber-300">1012 <span className="text-xs font-normal text-slate-400">hPa</span></p>
+          </div>
+
+          <div className="rounded-lg border border-slate-800/80 bg-slate-900/60 p-2.5">
+            <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              <Compass className="h-3.5 w-3.5 text-blue-400" />
+              <span>Sea Surface</span>
+            </div>
+            <p className="mt-1 text-base font-bold font-mono text-emerald-300">Normal Swell</p>
+          </div>
+
+          <div className="rounded-lg border border-slate-800/80 bg-slate-900/60 p-2.5">
+            <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              <MapPin className="h-3.5 w-3.5 text-emerald-400" />
+              <span>Active Storms</span>
+            </div>
+            <p className="mt-1 text-base font-bold font-mono text-emerald-400">0 in Basin</p>
+          </div>
+        </div>
+
+        <div className="mt-3.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-2.5 text-xs text-emerald-300 flex items-center gap-2">
+          <span className="text-sm">✓</span>
+          <span>IMD confirms Cyclone Murasu has fully dissipated inland. No active cyclonic systems threatening coastal corridors.</span>
+        </div>
       </div>
     );
   }

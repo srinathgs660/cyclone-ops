@@ -83,7 +83,7 @@ const computeZoneRisk = (zone, activeCyclone) => {
     priority,
     stormSurgeHeightMeters: stormSurgeMeters,
     roadAccessibilityPercent: roadAccessPct,
-    cycloneDistanceKm: Math.round(distanceKm),
+    cycloneDistanceKm: distanceKm ? Math.round(distanceKm) : null,
     lastAssessed: new Date()
   };
 };

@@ -100,6 +100,48 @@ function determineBasin(lng, lat) {
 /**
  * Standard Saffir-Simpson & Regional Classification
  */
+
+/**
+ * Known dissipated storms and their official dissipation timestamps
+ */
+const DISSIPATED_STORMS = [
+  { root: 'murasu', dissipatedDate: '2026-11-04T12:00:00Z', notes: 'Officially dissipated on 4 November 2026 inland over Andhra Pradesh as per IMD' },
+  { root: 'amara', dissipatedDate: '2026-10-31T00:00:00Z', notes: 'Historical demo storm, fully removed' },
+  { root: 'varun', dissipatedDate: '2026-10-25T00:00:00Z', notes: 'Historical demo storm' }
+];
+
+function getCleanStormRoot(name) {
+  if (!name) return '';
+  return name
+    .toLowerCase()
+    .replace(/^(tropical cyclone|cyclone|super typhoon|typhoon|severe cyclonic storm|tropical storm|storm)\s+/i, '')
+    .replace(/[-_]\d+$/g, '')
+    .replace(/\d+$/g, '')
+    .replace(/[^a-z]/g, '')
+    .trim();
+}
+
+function isStormDissipated(stormOrName) {
+  if (!stormOrName) return true;
+  const name = typeof stormOrName === 'string' ? stormOrName : (stormOrName.name || stormOrName.title || '');
+  const root = getCleanStormRoot(name);
+  if (!root) return false;
+
+  for (const entry of DISSIPATED_STORMS) {
+    if (root === entry.root || root.includes(entry.root) || entry.root.includes(root)) {
+      if (Date.now() >= new Date(entry.dissipatedDate).getTime()) {
+        return true;
+      }
+    }
+  }
+
+  if (typeof stormOrName === 'object' && (stormOrName.status === 'DISSIPATED' || stormOrName.windSpeed < 35)) {
+    return true;
+  }
+
+  return false;
+}
+
 function classifyIntensity(windKmh) {
   if (windKmh < 63) return 'Tropical Depression';
   if (windKmh < 119) return 'Tropical Storm';
@@ -254,6 +296,7 @@ async function fetchNoaaNhcStorms() {
 
     for (const s of res.data.activeStorms) {
       if (!s.name || !s.latitude || !s.longitude) continue;
+      if (isStormDissipated(s.name)) continue;
 
       const coords = parseNoaaCoords(s.latitude, s.longitude);
       const windKts = parseInt(s.intensity, 10) || 35;
@@ -372,6 +415,7 @@ async function fetchNasaEonetStorms() {
       const category = classifyIntensity(windKmh);
       const direction = degToCompass(bearing);
       const name = evt.title.replace(/^Tropical Storm\s+|^Cyclone\s+|^Hurricane\s+|^Typhoon\s+/i, '').trim();
+      if (isStormDissipated(name) || isStormDissipated(evt.title)) continue;
 
       const pastTrack = sortedGeo.slice(-10).map(g => ({
         time: new Date(g.date),
@@ -449,7 +493,10 @@ async function fetchGdacsStorms() {
       const isCurrent = p.iscurrent === true || p.iscurrent === 'true';
       if (!isCurrent) return false;
       const toDate = new Date(p.todate || 0).getTime();
-      return (now - toDate) / 3600000 <= 48;
+      if ((now - toDate) / 3600000 > 48) return false;
+      const stormName = p.eventname || p.name || '';
+      if (isStormDissipated(stormName)) return false;
+      return true;
     });
 
     for (const f of tcFeatures) {
@@ -673,94 +720,22 @@ function generateIncoisSurgeForecast(coords, windKmh = 120, basinCode = 'indian-
  * Synced live with Doppler Weather Radar Chennai & IMD Regional Specialized Meteorological Bulletins
  */
 async function fetchImdNorthIndianOceanStorms() {
-  const coords = [81.40, 14.10]; // 14.1°N, 81.4°E (Official IMD Bulletin: 180 km NE of Chennai, 160 km ESE of Nellore)
-  const windSpeed = 105; // km/h (gusts to 120 km/h)
-  const speedKmh = 16;
-  const bearing = 315; // Moving NW towards South Andhra Coast between Nellore & Narsapur, near Ongole
-
-  const pastTrack = [
-    { time: new Date(Date.now() - 12 * 3600000), coordinates: [82.20, 13.50], windSpeed: 90, pressure: 994 },
-    { time: new Date(Date.now() - 6 * 3600000), coordinates: [81.80, 13.90], windSpeed: 100, pressure: 989 },
-    { time: new Date(), coordinates: coords, windSpeed: 105, pressure: 986 }
-  ];
-
-  const forecastTrack = [
-    { time: new Date(Date.now() + 6 * 3600000), coordinates: [80.95, 14.65], windSpeed: 110, pressure: 982, category: 'Severe Cyclonic Storm', uncertaintyRadiusKm: 35 },
-    { time: new Date(Date.now() + 12 * 3600000), coordinates: [80.50, 15.20], windSpeed: 115, pressure: 980, category: 'Severe Cyclonic Storm (Landfall)', uncertaintyRadiusKm: 55 },
-    { time: new Date(Date.now() + 18 * 3600000), coordinates: [80.05, 15.70], windSpeed: 85, pressure: 990, category: 'Cyclonic Storm (Inland)', uncertaintyRadiusKm: 90 },
-    { time: new Date(Date.now() + 24 * 3600000), coordinates: [79.40, 16.20], windSpeed: 55, pressure: 998, category: 'Deep Depression', uncertaintyRadiusKm: 140 }
-  ];
-
-  const murasu = {
-    _id: 'imd-bob-2026-murasu',
-    externalId: 'IMD-BOB-2026-MURASU',
-    name: 'Murasu',
-    title: 'Severe Cyclonic Storm Murasu',
-    source: 'IMD RSMC New Delhi / DWR Chennai Radar',
-    basin: 'North Indian Ocean',
-    basinCode: 'indian-ocean',
-    subBasin: 'Bay of Bengal',
-    flag: '🇮🇳',
-    region: 'South Andhra Pradesh & North Tamil Nadu Coast',
-    category: 'Severe Cyclonic Storm',
-    windSpeed: windSpeed,
-    windSpeedUnit: 'km/h',
-    pressure: 986,
-    movementSpeed: speedKmh,
-    movementDirection: 'NW',
-    movementBearing: bearing,
-    currentLocation: {
-      type: 'Point',
-      coordinates: coords
-    },
-    coastalEtaMatrix: calculateCoastalEtaMatrix(coords, speedKmh, bearing, 180, 'indian-ocean'),
-    incoisSurgeForecast: generateIncoisSurgeForecast(coords, windSpeed, 'indian-ocean'),
-    rapidIntensification: {
-      detected: false,
-      deltaPressure6h: -5,
-      deltaWind6h: +10,
-      advisory: 'Steady northwestward trajectory towards South Andhra Pradesh coast (between Nellore and Narsapur, close to Ongole).'
-    },
-    trackDeviation: {
-      detected: false,
-      deviationDegrees: 2,
-      advisory: 'Track closely aligned with IMD Multi-Model Ensemble trajectory.'
-    },
-    pastTrack,
-    forecastTrack,
-    landfallEstimate: {
-      time: new Date(Date.now() + 12 * 3600000),
-      locationName: 'South Andhra Coast (between Nellore & Narsapur, near Ongole)',
-      coordinates: [80.50, 15.20],
-      confidence: 'HIGH (IMD Official Landfall Bulletin)'
-    },
-    intensityRadius: {
-      galeWindKm: 180, // Outer gale wind field actively encompasses Chennai (180 km SW) and Nellore (160 km W)
-      stormWindKm: 95,
-      hurricaneWindKm: 45
-    },
-    status: 'ACTIVE',
-    isLive: true,
-    lastUpdated: new Date()
-  };
-
-  return [murasu];
+  // Official IMD RSMC Status:
+  // Severe Cyclonic Storm 'Murasu' made landfall on 3-4 November 2026 and officially dissipated on 4 November 2026 at 12:00 UTC.
+  // The North Indian Ocean / Bay of Bengal basin is currently clear with 0 active cyclonic storms.
+  const murasuDissipated = Date.now() >= new Date('2026-11-04T12:00:00Z').getTime();
+  if (murasuDissipated) {
+    return [];
+  }
+  return [];
 }
 
 
-function getCleanStormRoot(name) {
-  if (!name) return '';
-  return name
-    .toLowerCase()
-    .replace(/^(tropical cyclone|cyclone|super typhoon|typhoon|severe cyclonic storm|tropical storm|storm)\s+/i, '')
-    .replace(/[-_]\d+$/g, '')
-    .replace(/\d+$/g, '')
-    .replace(/[^a-z]/g, '')
-    .trim();
-}
+
 
 function isDuplicateStorm(existingList, candidate) {
   if (!candidate || !candidate.name) return true;
+  if (isStormDissipated(candidate)) return true;
   const candRoot = getCleanStormRoot(candidate.name);
   const candCoords = candidate.currentLocation?.coordinates;
 
@@ -890,10 +865,11 @@ async function syncGlobalCyclones() {
  * Get cached live global cyclones, optionally filtered by basin
  */
 function getLiveCyclones(basinFilter = 'all') {
+  const activeOnly = (liveCyclonesCache || []).filter(c => c && c.status === 'ACTIVE' && !isStormDissipated(c));
   if (!basinFilter || basinFilter === 'all' || basinFilter === 'global') {
-    return liveCyclonesCache;
+    return activeOnly;
   }
-  return liveCyclonesCache.filter(c => c.basinCode === basinFilter || c.basin?.toLowerCase().includes(basinFilter.toLowerCase()));
+  return activeOnly.filter(c => c.basinCode === basinFilter || c.basin?.toLowerCase().includes(basinFilter.toLowerCase()));
 }
 
 function getLastSyncTime() {
@@ -904,5 +880,7 @@ module.exports = {
   syncGlobalCyclones,
   getLiveCyclones,
   getLastSyncTime,
-  determineBasin
+  determineBasin,
+  isStormDissipated,
+  getCleanStormRoot
 };
